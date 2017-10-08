@@ -1,4 +1,5 @@
-package org.firstinspires.ftc.robotcontroller.external.samples;
+//package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.team11750;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -23,7 +24,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Servo channel:  Servo to move left clamp: "left_hand"
  * Servo channel:  Servo to move right clamp:"right_hand"
  */
-public class HardwarePushbot
+public class HardwareBellatorum
 {
     /* Public OpMode members. */
     public DcMotor  leftFrontMotor   = null;
@@ -43,7 +44,7 @@ public class HardwarePushbot
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
-    public HardwarePushbot(){
+    public HardwareBellatorum(){
 
     }
 
