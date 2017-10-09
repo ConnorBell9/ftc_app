@@ -59,7 +59,7 @@ import org.firstinspires.ftc.teamInventum.HardwareInventum;
  */
 
 @TeleOp(name="Inventum: Teleop Tank", group="Inventum")
-@Disabled
+//@Disabled
 public class InventumTeleopTank_Iterative extends OpMode{
 
     /* Declare OpMode members. */
