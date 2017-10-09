@@ -46,7 +46,7 @@ import org.firstinspires.ftc.team11750.HardwareBellatorum;
  * This OpMode uses the common Pushbot hardware class to define the devices on the robot.
  * All device access is managed through the HardwarePushbot class.
  *
- * This particular OpMode executes a basic Tank Drive Teleop for a PushBot
+ * This particular OpMode executes a basic Omni Drive Teleop for a PushBot
  * It raises and lowers the claw using the Gampad Y and A buttons respectively.
  * It also opens and closes the claws slowly using the left and right Bumper buttons.
  *
@@ -54,9 +54,8 @@ import org.firstinspires.ftc.team11750.HardwareBellatorum;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Bellatorum: Teleop Tank", group="Bellatorum")
-//@Disabled
-public class BellatorumTeleopTank_Iterative extends OpMode{
+@TeleOp(name="Bellatorum: Teleop Omni", group="Bellatorum")
+public class BellatorumTeleopOmni_Iterative extends OpMode{
 
     /* Declare OpMode members. */
     HardwareBellatorum robot       = new HardwareBellatorum(); // use the class created to define a Pushbot's hardware
