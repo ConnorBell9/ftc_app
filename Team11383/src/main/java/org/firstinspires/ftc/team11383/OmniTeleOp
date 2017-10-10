@@ -18,6 +18,7 @@ public class OmniTeleOp extends OpMode {
     DcMotor frontright; // Front Left Motor  // Runs in X Direction //
     DcMotor backright; // Back Right Motor  // Runs in X Direction //
     DcMotor backleft; // Back Left Motor   // Runs in Y Direction //
+    DcMotor arm; // arm //
     Servo armleft;
     Servo armright;
 
@@ -29,16 +30,19 @@ public class OmniTeleOp extends OpMode {
         frontleft = hardwareMap.dcMotor.get("fl");
         backright = hardwareMap.dcMotor.get("br");
         backleft = hardwareMap.dcMotor.get("bl");
+        arm = hardwareMap.dcMotor.get("arm");
     }
     @Override
     public void loop() {
         float x = gamepad1.left_stick_x;
         float y = gamepad1.left_stick_y;
         float r = gamepad1.right_stick_x;
+        float u = gamepad2.right_stick_y;
 
         frontleft.setPower(x+r);  // Set wheels equal to left stick //
         frontright.setPower(y+r);  // direction plus amount of turn, //
         backright.setPower(r-x);  //   determined by right stick.   //
         backleft.setPower(r-y);
+        arm.setPower(u*.2);
     }
 }
