@@ -31,17 +31,13 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 //package org.firstinspires.ftc.robotcontroller.external.samples;
-package org.firstinspires.ftc.teamInventum;
+package org.firstinspires.ftc.team11750;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamInventum.HardwareInventum;
+import org.firstinspires.ftc.team11750.HardwareBellatorum;
 
 /**
  * This file provides basic Telop driving for a Pushbot robot.
@@ -50,7 +46,7 @@ import org.firstinspires.ftc.teamInventum.HardwareInventum;
  * This OpMode uses the common Pushbot hardware class to define the devices on the robot.
  * All device access is managed through the HardwarePushbot class.
  *
- * This particular OpMode executes a basic Tank Drive Teleop for a PushBot
+ * This particular OpMode executes a basic Omni Drive Teleop for a PushBot
  * It raises and lowers the claw using the Gampad Y and A buttons respectively.
  * It also opens and closes the claws slowly using the left and right Bumper buttons.
  *
@@ -58,11 +54,11 @@ import org.firstinspires.ftc.teamInventum.HardwareInventum;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Inventum: Teleop Tank", group="Inventum")
-public class InventumTeleopTank_Iterative extends OpMode{
+@TeleOp(name="Bellatorum: Teleop Omni", group="Bellatorum")
+public class BellatorumTeleopOmni_Iterative extends OpMode{
 
     /* Declare OpMode members. */
-    HardwareInventum robot       = new HardwareInventum(); // use the class created to define a Pushbot's hardware
+    HardwareBellatorum robot       = new HardwareBellatorum(); // use the class created to define a Pushbot's hardware
                                                          // could also use HardwarePushbotMatrix class.
     double          clawOffset  = 0.0 ;                  // Servo mid position
     final double    CLAW_SPEED  = 0.02 ;                 // sets rate to move servo
@@ -101,15 +97,18 @@ public class InventumTeleopTank_Iterative extends OpMode{
      */
     @Override
     public void loop() {
-        double left;
-        double right;
 
-        // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
-        left = -gamepad1.left_stick_y;
-        right = -gamepad1.right_stick_y;
-        robot.leftMotor.setPower(left);
-        robot.rightMotor.setPower(right);
+        // Read the x,y displacement from the left stick
+        float x = gamepad1.left_stick_x;
+        float y = gamepad1.left_stick_y;
+        float r = gamepad1.right_stick_x; // Read the rotation from the right stick
 
+        robot.leftFrontMotor.setPower(x+r);  // Set wheels equal to left stick //
+        robot.rightFrontMotor.setPower(y+r);  // direction plus amount of turn  //
+        robot.rightBackMotor.setPower(r-x);
+        robot.leftBackMotor.setPower(r-y);
+
+        /*
         // Use gamepad left & right Bumpers to open and close the claw
         if (gamepad1.right_bumper)
             clawOffset += CLAW_SPEED;
@@ -128,11 +127,11 @@ public class InventumTeleopTank_Iterative extends OpMode{
             robot.armMotor.setPower(robot.ARM_DOWN_POWER);
         else
             robot.armMotor.setPower(0.0);
-
+*/
         // Send telemetry message to signify robot running;
-        telemetry.addData("claw",  "Offset = %.2f", clawOffset);
-        telemetry.addData("left",  "%.2f", left);
-        telemetry.addData("right", "%.2f", right);
+        //telemetry.addData("claw",  "Offset = %.2f", clawOffset);
+        telemetry.addData("left.x,y",  "%.2f, %.2f", x, y);
+        telemetry.addData("right.rotation", "%.2f", r);
     }
 
     /*
