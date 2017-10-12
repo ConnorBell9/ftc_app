@@ -35,7 +35,7 @@ public class HardwareBellatorum
     public Servo    leftClamp   = null;
     public Servo    rightClamp  = null;
 
-    public static final double BACK_SERVO      =  0.0;
+    public static final double BACK_SERVO      =  0.5;
     public static final double LIFT_UP_POWER    =  0.45 ;
     public static final double LIFT_DOWN_POWER  = -0.45 ;
 
