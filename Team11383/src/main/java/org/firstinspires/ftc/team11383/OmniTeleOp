@@ -37,7 +37,7 @@ public class OmniTeleOp extends OpMode {
         float x = gamepad1.left_stick_x;
         float y = gamepad1.left_stick_y;
         float r = gamepad1.right_stick_x;
-        float u = gamepad2.left_stick_y;
+        float u = gamepad2.right_stick_y;
 
         frontleft.setPower(x+r);  // Set wheels equal to left stick //
         frontright.setPower(y+r);  // direction plus amount of turn, //
