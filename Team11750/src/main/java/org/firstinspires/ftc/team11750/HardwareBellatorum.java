@@ -2,6 +2,7 @@
 package org.firstinspires.ftc.team11750;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -35,7 +36,7 @@ public class HardwareBellatorum
     public Servo    leftClamp   = null;
     public Servo    rightClamp  = null;
 
-    public static final double BACK_SERVO      =  0.0;
+    public static final double BACK_SERVO      =  0.5;
     public static final double LIFT_UP_POWER    =  0.45 ;
     public static final double LIFT_DOWN_POWER  = -0.45 ;
 
@@ -59,10 +60,10 @@ public class HardwareBellatorum
         leftBackMotor    = hwMap.dcMotor.get("left_back_drive");
         rightBackMotor   = hwMap.dcMotor.get("right_back_drive");
         liftMotor    = hwMap.dcMotor.get("lift_arm");
-        leftFrontMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
-        rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
-        leftBackMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
-        rightBackMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
+        leftFrontMotor.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
+        rightFrontMotor.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
+        leftBackMotor.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
+        rightBackMotor.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
 
 
         // Set all motors to zero power
