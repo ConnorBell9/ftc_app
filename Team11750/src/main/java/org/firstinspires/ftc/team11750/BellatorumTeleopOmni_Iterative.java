@@ -120,9 +120,9 @@ public class BellatorumTeleopOmni_Iterative extends OpMode{
         robot.rightClamp.setPosition(robot.BACK_SERVO - clampOffset);
 
         // Use gamepad buttons to move the lift up (Y) and down (A)
-        if (gamepad1.y)
+        if (gamepad1.a)
             robot.liftMotor.setPower(robot.LIFT_UP_POWER);
-        else if (gamepad1.a)
+        else if (gamepad1.y)
             robot.liftMotor.setPower(robot.LIFT_DOWN_POWER);
         else
             robot.liftMotor.setPower(0.0);
