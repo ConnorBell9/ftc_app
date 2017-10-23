@@ -14,9 +14,6 @@ public class RelativeByrd extends OpMode{
 	DcMotor frontLeft; // Front Left Motor  // Runs in ? Direction //
 	DcMotor backRight; // Back Right Motor  // Runs in ? Direction //
 	DcMotor backLeft; // Back Left Motor   // Runs in ? Direction //
-	
-	frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-	backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
 	ModernRoboticsI2cGyro gyro; // Gyroscope Sensor //
 
@@ -30,6 +27,9 @@ public class RelativeByrd extends OpMode{
         frontLeft = hardwareMap.dcMotor.get("fl");
         backRight = hardwareMap.dcMotor.get("br");
         backLeft = hardwareMap.dcMotor.get("bl");
+	    
+	frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+	backRight.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     @Override
