@@ -197,9 +197,9 @@ public class MechByrd extends OpMode{
 		idolZ.setPower(.5);
 		//idolY.setPower(.5);
 		//idolY.setTargetPosition((int)positionIY);
-		idolZ.setTargetPosition((int)positionIZ);*/
+		idolZ.setTargetPosition((int)positionIZ);
 
-		if(gamepad2.right_trigger>.1 && positionIY<100000*/){
+		if(gamepad2.right_trigger>.1 && positionIY<100000){
 			//positionIY+=gamepad2.right_trigger*10;
 			idolY.setPower(.5*gamepad2.right_trigger);
 		} else if (gamepad2.left_trigger>.1/* && positionIY>0*/){
