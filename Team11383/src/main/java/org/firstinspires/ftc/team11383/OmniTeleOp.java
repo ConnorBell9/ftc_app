@@ -58,7 +58,7 @@ public class OmniTeleOp extends OpMode {
             armleft.setPosition(-.5);
             armright.setPosition(.5);
         }
-        else if (gamepad.b) {
+        else if (gamepad2.b) {
             armleft.setPosition(.5);
             armright.setPosition(-.5);
         }
