@@ -1,21 +1,22 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.team7153;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 
 @TeleOp(name="MechByrd")
+@Disabled
 public class MechByrd extends OpMode{
 
 	DcMotor frontRight; // Front Right Motor // Runs in ? Direction //
 	DcMotor frontLeft; // Front Left Motor  // Runs in ? Direction //
 	DcMotor backRight; // Back Right Motor  // Runs in ? Direction //
 	DcMotor backLeft; // Back Left Motor   // Runs in ? Direction //
-	frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-	backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+
 	
 	ModernRoboticsI2cGyro gyro; // Gyroscope Sensor //
 
@@ -29,7 +30,8 @@ public class MechByrd extends OpMode{
 	    frontLeft = hardwareMap.dcMotor.get("fl");
 	    backRight = hardwareMap.dcMotor.get("br");
 	    backLeft = hardwareMap.dcMotor.get("bl");
-    }
+        frontRight.setDirection(DcMotor.Direction.REVERSE);
+        backRight.setDirection(DcMotor.Direction.REVERSE);    }
 
     @Override
     public void loop() {

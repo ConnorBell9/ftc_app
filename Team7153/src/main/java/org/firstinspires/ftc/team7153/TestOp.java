@@ -1,9 +1,16 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.team7153;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 @TeleOp(name="TestOp")
@@ -32,6 +39,6 @@ public class TestOp extends OpMode{
         telemetry.addData("Color Red: ", color.red());
         telemetry.addData("Color Blue: ", color.blue());
         telemetry.addData("CM Distance: ", range.getDistance(DistanceUnit.CM));
-        telemetry.update;
+        telemetry.update();
     }
 }
