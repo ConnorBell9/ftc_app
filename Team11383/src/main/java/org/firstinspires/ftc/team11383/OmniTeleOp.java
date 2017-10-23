@@ -32,7 +32,7 @@ public class OmniTeleOp extends OpMode {
         backright = hardwareMap.dcMotor.get("br");
         backleft = hardwareMap.dcMotor.get("bl");
         reel = hardwareMap.dcMotor.get("reel");
-        track = harewareMap.dcMotor.get("track");
+        track = hardwareMap.dcMotor.get("track");
         armright = hardwareMap.servo.get("ar");
         armleft = hardwareMap.servo.get("al");
         
