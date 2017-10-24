@@ -25,7 +25,6 @@ public class MechByrd extends OpMode{
 	DcMotor idolZ;
 	DcMotor idolY;
 
-	
 	Servo armL;
 	Servo armR;
 	CRServo suckL;
@@ -43,7 +42,7 @@ public class MechByrd extends OpMode{
 	boolean mode;
 	double positionY;
 	final double travelY = 6;
-	final double countsPerInchY = 1440/3;//1440 is the # of pulses 3 is the perimeter
+	final double countsPerInchY = 1440/2.75;//1440 is the # of pulses 3 is the perimeter
 
 	double positionIZ;
 	double positionIY;
@@ -92,7 +91,7 @@ public class MechByrd extends OpMode{
 	    forkY.setTargetPosition(0);
 	    forkY.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-	    idolZ.setTargetPosition(0);
+	    idolZ.setTargetPosition(1000);
 	    idolZ.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 		
 	    armL.setPosition(.8);
@@ -122,10 +121,10 @@ public class MechByrd extends OpMode{
 	    backLeft.setPower(v3*maxSpeed);
 	    backRight.setPower(v4*maxSpeed);
          
-	    /*if(gamepad2.y && System.currentTimeMillis() > setTime+500){
+	    if(gamepad2.y && System.currentTimeMillis() > setTime+500){
 		    if(mode){mode=false;forkY.setMode(DcMotor.RunMode.RUN_TO_POSITION);forkX.setMode(DcMotor.RunMode.RUN_TO_POSITION);}else{mode=true;forkY.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);forkX.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);}
 			setTime = System.currentTimeMillis();
-	    }*/
+	    }
 
 	    if(gamepad2.a && System.currentTimeMillis() > setTime+500){
 			if(grab){grab=false;}else{grab=true;}
@@ -178,15 +177,10 @@ public class MechByrd extends OpMode{
 		}
 
 	    if(mode){
-			if(gamepad2.dpad_right){
-				forkX.setPower(.2);
-			} else if(gamepad2.dpad_left){
-				forkX.setPower(-.2);
-			} else {forkX.setPower(0);}
-			if(gamepad2.dpad_up){
-				forkY.setPower(.2);
-			} else if (gamepad2.dpad_down){
-				forkY.setPower(-.2);
+			if(gamepad2.left_stick_y>.1){
+				forkY.setPower(gamepad2.left_stick_y);
+			} else if(gamepad2.left_stick_y<-.1){
+				forkY.setPower(gamepad2.left_stick_y*.5);
 			} else {forkY.setPower(0);}
 		} else {
 			forkX.setPower(.5);
@@ -216,10 +210,10 @@ public class MechByrd extends OpMode{
 			idolY.setPower(-.5*gamepad2.left_trigger);
 		} else if(gamepad2.right_bumper && positionIZ < 100000){
 			positionIZ+=100;
-			idolY.setPower(-.4);
+			//idolY.setPower(-.4);
 		}else if(gamepad2.left_bumper && positionIZ > -10000){
 			positionIZ-=100;
-			idolY.setPower(.4);
+			//idolY.setPower(.4);
 		} else {
 			idolY.setPower(0);
 		}
