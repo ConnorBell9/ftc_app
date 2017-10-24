@@ -26,7 +26,6 @@ public class RedLeftByrd extends LinearOpMode {
 	DcMotor idolZ;
 	DcMotor idolY;
 
-	
 	Servo armL;
 	Servo armR;
 	CRServo suckL;
@@ -75,12 +74,12 @@ public class RedLeftByrd extends LinearOpMode {
         final double v3 = r * Math.sin(robotAngle);
         final double v4 = -r * Math.cos(robotAngle);
 
-		frontLeft.setPower(v1);
-		frontRight.setPower(v2);
-		backLeft.setPower(v3);
-		backRight.setPower(v4);
-	    	sleep((long)(distance/power*100));
-		stop();
+	    frontLeft.setPower(v1);
+	    frontRight.setPower(v2);
+	    backLeft.setPower(v3);
+	    backRight.setPower(v4);
+	    sleep((long)(distance/power*100));
+	    stop();
     }
 	
 	void stop(){
@@ -134,17 +133,16 @@ public class RedLeftByrd extends LinearOpMode {
 	    forkY.setTargetPosition(0);
 	    forkY.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-		idolZ.setTargetPosition(0);
-		idolZ.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-		/*idolY.setTargetPosition(0);
-		idolY.setMode(DcMotor.RunMode.RUN_TO_POSITION);*/
+	    idolZ.setTargetPosition(1000);
+	    idolZ.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 		
 	    armL.setPosition(.8);
 	    armR.setPosition(.7);
 	    hammer.setPosition(.9);
+	    grabber.setPosition(.5);
 
-		plateL.setPosition(0);
-		plateR.setPosition(1);
+	    plateL.setPosition(0);
+	    plateR.setPosition(1);
 	    
 	    telemetry.addData(">", "Gyro Calibrating. Do Not move!");
 	    telemetry.update();
