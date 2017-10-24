@@ -55,7 +55,7 @@ public class RedLeftByrd extends LinearOpMode {
 
 	long setTime;
 
-    void move(double angle, double distance, double power){
+    void move(double angle, double distance, double power) throws InterruptedException{
     	double radGyro=(gyro.getHeading()*Math.PI)/180;
 	double r = power;
 	double robotAngle = angle*(Math.PI/180) - Math.PI / 4;
@@ -76,13 +76,16 @@ public class RedLeftByrd extends LinearOpMode {
 		frontRight.setPower(v2);
 		backLeft.setPower(v3);
 		backRight.setPower(v4);
-	    sleep((long)(distance/power*100));
-
+	    	sleep((long)(distance/power*100));
+		stop();
+    }
+	
+	void stop(){
 		frontLeft.setPower(0);
 		frontRight.setPower(0);
 		backLeft.setPower(0);
 		backRight.setPower(0);
-    }
+	}
 	
 	void hammer(){
 		hammer.setPosition(.3);
@@ -95,8 +98,8 @@ public class RedLeftByrd extends LinearOpMode {
 	}
     @Override
     public void runOpMode() throws InterruptedException {
-	    	    gyro = hardwareMap.get(ModernRoboticsI2cGyro.class, "gyro");
-		color = hardwareMap.get(ModernRoboticsI2cColorSensor.class, "color");
+	    gyro = hardwareMap.get(ModernRoboticsI2cGyro.class, "gyro");
+	    color = hardwareMap.get(ModernRoboticsI2cColorSensor.class, "color");
 	    frontRight = hardwareMap.dcMotor.get("fr");
 	    frontLeft = hardwareMap.dcMotor.get("fl");
 	    backRight = hardwareMap.dcMotor.get("br");
@@ -140,10 +143,17 @@ public class RedLeftByrd extends LinearOpMode {
 		plateL.setPosition(0);
 		plateR.setPosition(1);
 	    
+	    telemetry.addData(">", "Gyro Calibrating. Do Not move!");
+	    telemetry.update();
+	    gyro.calibrate();
+	    
 	    while(!isStopRequested() && gyro.isCalibrating()){
 	    	Thread.sleep(50);
 		idle();
 	    }
+	    
+	    telemetry.addData(">", "Gyro Calibrated.  Press Start.");
+	    telemetry.update();
 	    
 	    color.enableLed(false);
 	    
@@ -151,8 +161,9 @@ public class RedLeftByrd extends LinearOpMode {
 	    
 	    gyro.resetZAxisIntegrator();
 	    
+	    move(180,3,.4)
 	    hammer();
-	    move(0,5,.5);
+	    move(0,12,.5);
 	    
     }
 }
