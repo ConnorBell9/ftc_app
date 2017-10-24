@@ -48,7 +48,7 @@ public class MechByrd extends OpMode{
 	double positionIZ;
 	double positionIY;
 
-	boolean grab=true;
+	boolean grab = true;
 	boolean succ;
 	boolean plate;
 	boolean idolGrab;
@@ -92,11 +92,11 @@ public class MechByrd extends OpMode{
 	    forkY.setTargetPosition(0);
 	    forkY.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-		idolZ.setTargetPosition(0);
+		idolZ.setTargetPosition(360);
 		idolZ.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 		
-	    armL.setPosition(.8);
-	    armR.setPosition(.7);
+	    armL.setPosition(.4);
+	    armR.setPosition(1);
 	    hammer.setPosition(.9);
 		grabber.setPosition(0);
 
@@ -140,7 +140,7 @@ public class MechByrd extends OpMode{
 			setTime = System.currentTimeMillis();
 		}
 
-		if(gamepad2.b && System.currentTimeMillis() > setTime+500){
+		if(gamepad1.x && System.currentTimeMillis() > setTime+500){
 			if(idolGrab){idolGrab=false;}else{idolGrab=true;}
 			setTime = System.currentTimeMillis();
 		}
@@ -176,26 +176,23 @@ public class MechByrd extends OpMode{
 		}
 
 	    if(mode){
-			if(gamepad2.dpad_right){
-				forkX.setPower(.2);
-			} else if(gamepad2.dpad_left){
-				forkX.setPower(-.2);
-			} else {forkX.setPower(0);}
-			if(gamepad2.dpad_up){
-				forkY.setPower(.2);
-			} else if (gamepad2.dpad_down){
-				forkY.setPower(-.2);
-			} else {forkY.setPower(0);}
+			if(gamepad2.left_stick_y>.1){
+				forkY.setPower(gamepad2.left_stick_y);
+			} else if(gamepad2.left_stick_y <- .1){
+				forkY.setPower(gamepad2.left_stick_y*.5);
+			} else {forkY.setPower(0);forkX.setPower(0);}
 		} else {
 			forkX.setPower(.5);
 			forkY.setPower(.5);
 			forkY.setTargetPosition((int)positionY);
 			forkX.setTargetPosition((int)positionX);
-			if(gamepad2.dpad_up && !forkY.isBusy() && positionY>-18*countsPerInchY && positionX > 0){
+			if(gamepad2.dpad_up && System.currentTimeMillis() > setTime+500 && positionY>-18*countsPerInchY && positionX > 0){
 				positionY-=travelY*countsPerInchY;
+				setTime=System.currentTimeMillis();
 				if(positionY>18*countsPerInchY){positionY=14*countsPerInchY;}
-			} else if(gamepad2.dpad_down && !forkY.isBusy() && positionY<0){
+			} else if(gamepad2.dpad_down && System.currentTimeMillis() > setTime+500 && positionY<0){
 				positionY+=travelY*countsPerInchY;
+				setTime=System.currentTimeMillis();
 			}
 
 			if(gamepad2.dpad_right){
@@ -213,14 +210,16 @@ public class MechByrd extends OpMode{
 		} else if (gamepad2.left_trigger>.1){
 			idolY.setPower(-.5*gamepad2.left_trigger);
 		} else {idolY.setPower(0);}
-		if(gamepad2.right_bumper && positionIZ < 100000){
-			positionIZ+=2;
-			idolY.setPower(-.4);
-		}else if(gamepad2.left_bumper && positionIZ > -10000){
-			positionIZ-=2;
-			idolY.setPower(.4);
+		if(gamepad2.right_bumper && positionIZ < 1440 && System.currentTimeMillis() > setTime+100){
+			positionIZ+=36;
+			setTime = System.currentTimeMillis();
+			//idolY.setPower(-.4);
+		}else if(gamepad2.left_bumper && positionIZ > -1440 && System.currentTimeMillis() > setTime+100){
+			positionIZ-=36;
+			setTime = System.currentTimeMillis();
+			//idolY.setPower(.4);
 		} else {
-			idolY.setPower(0);
+			//idolY.setPower(0);
 		}
 
 	    telemetry.addData("Mode is: ", mode);
