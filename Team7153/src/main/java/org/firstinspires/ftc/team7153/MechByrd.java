@@ -191,16 +191,18 @@ public class MechByrd extends OpMode{
 			forkY.setPower(.5);
 			forkY.setTargetPosition((int)positionY);
 			forkX.setTargetPosition((int)positionX);
-			if(gamepad2.dpad_up && !forkY.isBusy() && positionY>-18*countsPerInchY && positionX > 0){
+			if(gamepad2.dpad_up && System.currentTimeMillis() > setTime+500 && positionY>-18*countsPerInchY && positionX > 0){
 				positionY-=travelY*countsPerInchY;
+				setTime = System.currentTimeMillis();
 				if(positionY>18*countsPerInchY){positionY=14*countsPerInchY;}
-			} else if(gamepad2.dpad_down && !forkY.isBusy() && positionY<0){
+			} else if(gamepad2.dpad_down && System.currentTimeMillis() > setTime+500 && positionY<0){
 				positionY+=travelY*countsPerInchY;
+				setTime = System.currentTimeMillis();
 			}
 
 			if(gamepad2.dpad_right){
 				positionX = ((1440/(1.25*3.1415))*7);//1440 is the # of pulses 1.25 is the diameter and 11 is the # of inches traveled
-			} else if(gamepad2.dpad_left){
+			} else if(gamepad2.dpad_left && positionY == 0){
 				positionX = 0;
 			}
 		}
