@@ -48,7 +48,7 @@ public class MechByrd extends OpMode{
 	double positionIZ;
 	double positionIY;
 
-	boolean grab=true;
+	boolean grab;
 	boolean succ;
 	boolean plate;
 	boolean idolGrab;
@@ -60,7 +60,7 @@ public class MechByrd extends OpMode{
     @Override
     public void init() {
 	    gyro = hardwareMap.get(ModernRoboticsI2cGyro.class, "gyro");
-		color = hardwareMap.get(ModernRoboticsI2cColorSensor.class, "color");
+	    color = hardwareMap.get(ModernRoboticsI2cColorSensor.class, "color");
 	    frontRight = hardwareMap.dcMotor.get("fr");
 	    frontLeft = hardwareMap.dcMotor.get("fl");
 	    backRight = hardwareMap.dcMotor.get("br");
@@ -98,7 +98,7 @@ public class MechByrd extends OpMode{
 	    armL.setPosition(.8);
 	    armR.setPosition(.7);
 	    hammer.setPosition(.9);
-		grabber.setPosition(0);
+	    grabber.setPosition(.5);
 
 		plateL.setPosition(0);
 		plateR.setPosition(1);
@@ -120,10 +120,10 @@ public class MechByrd extends OpMode{
 	    backLeft.setPower(v3*maxSpeed);
 	    backRight.setPower(v4*maxSpeed);
          
-	    if(gamepad2.y && System.currentTimeMillis() > setTime+500){
+	    /*if(gamepad2.y && System.currentTimeMillis() > setTime+500){
 		    if(mode){mode=false;forkY.setMode(DcMotor.RunMode.RUN_TO_POSITION);forkX.setMode(DcMotor.RunMode.RUN_TO_POSITION);}else{mode=true;forkY.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);forkX.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);}
 			setTime = System.currentTimeMillis();
-	    }
+	    }*/
 
 	    if(gamepad2.a && System.currentTimeMillis() > setTime+500){
 			if(grab){grab=false;}else{grab=true;}
@@ -135,15 +135,15 @@ public class MechByrd extends OpMode{
 			setTime = System.currentTimeMillis();
 	    }
 
-		if(gamepad1.b && System.currentTimeMillis() > setTime+500){
-			if(plate){plate=false;}else{plate=true;}
-			setTime = System.currentTimeMillis();
-		}
+	    if(gamepad1.b && System.currentTimeMillis() > setTime+500){
+		    if(plate){plate=false;}else{plate=true;}
+		    setTime = System.currentTimeMillis();
+	    }
 
-		if(gamepad2.b && System.currentTimeMillis() > setTime+500){
-			if(idolGrab){idolGrab=false;}else{idolGrab=true;}
-			setTime = System.currentTimeMillis();
-		}
+	    if(gamepad1.y && System.currentTimeMillis() > setTime+500){
+		    if(idolGrab){idolGrab=false;}else{idolGrab=true;}
+		    setTime = System.currentTimeMillis();
+	    }
 
 	    if(succ){
 		    suckL.setPower(1);
@@ -172,7 +172,7 @@ public class MechByrd extends OpMode{
 		if(idolGrab){
 			grabber.setPosition(1);
 		} else {
-			grabber.setPosition(0);
+			grabber.setPosition(.5);
 		}
 
 	    if(mode){
@@ -212,12 +212,11 @@ public class MechByrd extends OpMode{
 			idolY.setPower(.5*gamepad2.right_trigger);
 		} else if (gamepad2.left_trigger>.1){
 			idolY.setPower(-.5*gamepad2.left_trigger);
-		} else {idolY.setPower(0);}
-		if(gamepad2.right_bumper && positionIZ < 100000){
-			positionIZ+=2;
+		} else if(gamepad2.right_bumper && positionIZ < 100000){
+			positionIZ+=100;
 			idolY.setPower(-.4);
 		}else if(gamepad2.left_bumper && positionIZ > -10000){
-			positionIZ-=2;
+			positionIZ-=100;
 			idolY.setPower(.4);
 		} else {
 			idolY.setPower(0);
@@ -226,22 +225,22 @@ public class MechByrd extends OpMode{
 	    telemetry.addData("Mode is: ", mode);
 	    telemetry.addData("Grab is: ", grab);
 	    telemetry.addData("Broom is: ", succ);
-		telemetry.addData("Plate is: ", plate);
+	    telemetry.addData("Plate is: ", plate);
 	    telemetry.addData("forkY Running to: ", positionY);
-		telemetry.addData("forkY Running at: ", forkY.getCurrentPosition());
-		telemetry.addData("forkX Running to: ", positionX);
-		telemetry.addData("forkX Running at: ", forkX.getCurrentPosition());
-		telemetry.addData("idolY Running to: ", positionIY);
-		telemetry.addData("idolY Running at: ", idolY.getCurrentPosition());
-		telemetry.addData("idolZ Running to: ", positionIZ);
-		telemetry.addData("idolZ Running at: ", idolZ.getCurrentPosition());
+	    telemetry.addData("forkY Running at: ", forkY.getCurrentPosition());
+	    telemetry.addData("forkX Running to: ", positionX);
+	    telemetry.addData("forkX Running at: ", forkX.getCurrentPosition());
+	    telemetry.addData("idolY Running to: ", positionIY);
+	    telemetry.addData("idolY Running at: ", idolY.getCurrentPosition());
+	    telemetry.addData("idolZ Running to: ", positionIZ);
+	    telemetry.addData("idolZ Running at: ", idolZ.getCurrentPosition());
 	    telemetry.addData("frontLeft", v1);
 	    telemetry.addData("frontRight", v2);
 	    telemetry.addData("backLeft", v3);
 	    telemetry.addData("backRight", v4);
 	    telemetry.addData("Gyro", gyro);
-		telemetry.addData("Color Blue: ", color.blue());
-		telemetry.addData("Color Red: ", color.red());
+	    telemetry.addData("Color Blue: ", color.blue());
+	    telemetry.addData("Color Red: ", color.red());
 	    telemetry.update();
     }
 }
