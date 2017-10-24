@@ -15,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name="RedLeftByrd")
 public class RedLeftByrd extends LinearOpMode {
-    DcMotor frontRight; // Front Right Motor // Runs in ? Direction //
+	DcMotor frontRight; // Front Right Motor // Runs in ? Direction //
 	DcMotor frontLeft; // Front Left Motor  // Runs in ? Direction //
 	DcMotor backRight; // Back Right Motor  // Runs in ? Direction //
 	DcMotor backLeft; // Back Left Motor   // Runs in ? Direction //
@@ -49,17 +49,20 @@ public class RedLeftByrd extends LinearOpMode {
 	double positionIZ;
 	double positionIY;
 
-	boolean grab=true;
+	boolean grab;
 	boolean succ;
 	boolean plate;
 
 	long setTime;
 
     void move(double angle, double distance, double power) throws InterruptedException{
-    	double radGyro=(gyro.getHeading()*Math.PI)/180;
-	double r = power;
-	double robotAngle = angle*(Math.PI/180) - Math.PI / 4;
-	double rightX = gamepad1.right_stick_x;
+    	        if (!opModeIsActive()) {
+			stopMoving();
+			return;
+		}
+	    double radGyro=(gyro.getHeading()*Math.PI)/180;
+	    double r = power;
+	    double robotAngle = angle*(Math.PI/180) - Math.PI / 4;
 
         if(robotAngle>Math.PI){
             robotAngle=Math.PI*-2+robotAngle;
@@ -67,10 +70,10 @@ public class RedLeftByrd extends LinearOpMode {
             robotAngle=Math.PI*2+robotAngle;
         }
 
-        final double v1 = r * Math.cos(robotAngle) + rightX;
-        final double v2 = -r * Math.sin(robotAngle) - rightX;
-        final double v3 = r * Math.sin(robotAngle) + rightX;
-        final double v4 = -r * Math.cos(robotAngle) - rightX;
+        final double v1 = r * Math.cos(robotAngle);
+        final double v2 = -r * Math.sin(robotAngle);
+        final double v3 = r * Math.sin(robotAngle);
+        final double v4 = -r * Math.cos(robotAngle);
 
 		frontLeft.setPower(v1);
 		frontRight.setPower(v2);
@@ -164,6 +167,5 @@ public class RedLeftByrd extends LinearOpMode {
 	    move(180,3,.4)
 	    hammer();
 	    move(0,12,.5);
-	    
     }
 }
