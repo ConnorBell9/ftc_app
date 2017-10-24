@@ -92,16 +92,18 @@ public class MechByrd extends OpMode{
 	    forkY.setTargetPosition(0);
 	    forkY.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-		idolZ.setTargetPosition(0);
-		idolZ.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+	    idolZ.setTargetPosition(0);
+	    idolZ.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 		
 	    armL.setPosition(.8);
 	    armR.setPosition(.7);
 	    hammer.setPosition(.9);
 	    grabber.setPosition(.5);
 
-		plateL.setPosition(0);
-		plateR.setPosition(1);
+	    plateL.setPosition(0);
+	    plateR.setPosition(1);
+	    
+	    color.enableLed(false);
     }
 
     @Override
