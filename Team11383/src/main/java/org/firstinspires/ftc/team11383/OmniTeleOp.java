@@ -51,8 +51,8 @@ public class OmniTeleOp extends OpMode {
         frontright.setPower(y+r);  // direction plus amount of turn, //
         backright.setPower(r-x);  //   determined by right stick.   //
         backleft.setPower(r-y);
-        reel.setPower(u*.1);
-        track.setPower(v*.1);
+        reel.setPower(u*.3);
+        track.setPower(v*.2);
         
         if (gamepad2.x) {
             armleft.setPosition(-.5);

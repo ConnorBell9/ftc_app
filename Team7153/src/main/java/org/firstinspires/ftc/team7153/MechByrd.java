@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.team7153;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
@@ -51,6 +51,7 @@ public class MechByrd extends OpMode{
 	boolean grab=true;
 	boolean succ;
 	boolean plate;
+	boolean idolGrab;
 
 	long setTime;
 
@@ -93,12 +94,11 @@ public class MechByrd extends OpMode{
 
 		idolZ.setTargetPosition(0);
 		idolZ.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-		/*idolY.setTargetPosition(0);
-		idolY.setMode(DcMotor.RunMode.RUN_TO_POSITION);*/
 		
 	    armL.setPosition(.8);
 	    armR.setPosition(.7);
 	    hammer.setPosition(.9);
+		grabber.setPosition(0);
 
 		plateL.setPosition(0);
 		plateR.setPosition(1);
@@ -140,6 +140,11 @@ public class MechByrd extends OpMode{
 			setTime = System.currentTimeMillis();
 		}
 
+		if(gamepad2.b && System.currentTimeMillis() > setTime+500){
+			if(idolGrab){idolGrab=false;}else{idolGrab=true;}
+			setTime = System.currentTimeMillis();
+		}
+
 	    if(succ){
 		    suckL.setPower(1);
 		    suckR.setPower(0);
@@ -163,7 +168,13 @@ public class MechByrd extends OpMode{
 			plateL.setPosition(0);
 			plateR.setPosition(1);
 		}
-		
+
+		if(idolGrab){
+			grabber.setPosition(1);
+		} else {
+			grabber.setPosition(0);
+		}
+
 	    if(mode){
 			if(gamepad2.dpad_right){
 				forkX.setPower(.2);
@@ -195,23 +206,17 @@ public class MechByrd extends OpMode{
 		}
 
 		idolZ.setPower(.5);
-		//idolY.setPower(.5);
-		//idolY.setTargetPosition((int)positionIY);
 		idolZ.setTargetPosition((int)positionIZ);
 
 		if(gamepad2.right_trigger>.1 && positionIY<100000){
-			//positionIY+=gamepad2.right_trigger*10;
 			idolY.setPower(.5*gamepad2.right_trigger);
-		} else if (gamepad2.left_trigger>.1/* && positionIY>0*/){
-			//positionIY-=gamepad2.right_trigger*10;
+		} else if (gamepad2.left_trigger>.1){
 			idolY.setPower(-.5*gamepad2.left_trigger);
 		} else {idolY.setPower(0);}
-		if(gamepad2.right_bumper && positionIZ < 100000/* && positionIY>0*/){
+		if(gamepad2.right_bumper && positionIZ < 100000){
 			positionIZ+=2;
-			//positionIY-=4;
 			idolY.setPower(-.4);
-		}else if(gamepad2.left_bumper && positionIZ > 0/* && positionIY<100000*/){
-			//positionIY+=4;
+		}else if(gamepad2.left_bumper && positionIZ > -10000){
 			positionIZ-=2;
 			idolY.setPower(.4);
 		} else {

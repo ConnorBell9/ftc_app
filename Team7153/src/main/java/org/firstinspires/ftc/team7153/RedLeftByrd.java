@@ -1,19 +1,20 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.team7153;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
-
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.CRServo;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@Autonomous(name="BlueByrdLeft")
-public class BlueByrdLeft extends LinearOpMode {
+@Autonomous(name="RedLeftByrd")
+public class RedLeftByrd extends LinearOpMode {
     DcMotor frontRight; // Front Right Motor // Runs in ? Direction //
 	DcMotor frontLeft; // Front Left Motor  // Runs in ? Direction //
 	DcMotor backRight; // Back Right Motor  // Runs in ? Direction //
@@ -34,9 +35,6 @@ public class BlueByrdLeft extends LinearOpMode {
 	Servo plateL;
 	Servo plateR;
 	Servo grabber;
-	
-	frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-	backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
 	ModernRoboticsI2cGyro gyro; // Gyroscope Sensor //
 	ModernRoboticsI2cColorSensor color;
@@ -70,20 +68,30 @@ public class BlueByrdLeft extends LinearOpMode {
         }
 
         final double v1 = r * Math.cos(robotAngle) + rightX;
-        final double v2 = r * Math.sin(robotAngle) - rightX;
+        final double v2 = -r * Math.sin(robotAngle) - rightX;
         final double v3 = r * Math.sin(robotAngle) + rightX;
-        final double v4 = r * Math.cos(robotAngle) - rightX;
-	    sleep(distance/power*100);
+        final double v4 = -r * Math.cos(robotAngle) - rightX;
+
+		frontLeft.setPower(v1);
+		frontRight.setPower(v2);
+		backLeft.setPower(v3);
+		backRight.setPower(v4);
+	    sleep((long)(distance/power*100));
+
+		frontLeft.setPower(0);
+		frontRight.setPower(0);
+		backLeft.setPower(0);
+		backRight.setPower(0);
     }
 	
-	void boolean hammer(){
+	void hammer(){
 		hammer.setPosition(.3);
 		if(color.blue()>.3){
 			move(180,3,.3);
 		} else if (color.red()>.3){
 			move(0,3,.3);
 		}
-		hammer.setPosition(.9)
+		hammer.setPosition(.9);
 	}
     @Override
     public void runOpMode() throws InterruptedException {
