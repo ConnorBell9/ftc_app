@@ -45,7 +45,7 @@ public class MechByrd extends OpMode{
 	final double travelY = 6;
 	final double countsPerInchY = 1440/3;//1440 is the # of pulses 3 is the perimeter
 
-	double positionIZ;
+	double positionIZ=-200;
 	double positionIY;
 
 	boolean grab = true;
@@ -92,7 +92,7 @@ public class MechByrd extends OpMode{
 	    forkY.setTargetPosition(0);
 	    forkY.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-		idolZ.setTargetPosition(360);
+		idolZ.setTargetPosition(0);
 		idolZ.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 		
 	    armL.setPosition(.4);

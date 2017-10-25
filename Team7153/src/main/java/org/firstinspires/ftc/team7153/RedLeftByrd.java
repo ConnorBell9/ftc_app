@@ -70,15 +70,15 @@ public class RedLeftByrd extends LinearOpMode {
 		}
 
 		final double v1 = r * Math.cos(robotAngle);
-		final double v2 = -r * Math.sin(robotAngle);
+		final double v2 = r * Math.sin(robotAngle);
 		final double v3 = r * Math.sin(robotAngle);
-		final double v4 = -r * Math.cos(robotAngle);
+		final double v4 = r * Math.cos(robotAngle);
 
 		frontLeft.setPower(v1);
 		frontRight.setPower(v2);
 		backLeft.setPower(v3);
 		backRight.setPower(v4);
-		sleep((long)(distance/power*100));
+		sleep((long)(distance/power*100)/2);
 		stop();
 	}
 
@@ -163,8 +163,8 @@ public class RedLeftByrd extends LinearOpMode {
 
 		gyro.resetZAxisIntegrator();
 
-		move(180,3,.4);
-		hammer();
-		move(0,12,.5);
+		move(90,12,.4);
+		//hammer();
+		//move(0,12,.5);
 	}
 }
