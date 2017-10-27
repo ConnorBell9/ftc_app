@@ -102,8 +102,8 @@ public class BellatorumAutoRight extends LinearOpMode {
 
 
         // Step 2:  Drive right for 3 seconds
-        robot.leftFrontMotor.setPower(FORWARD_SPEED);
-        robot.rightBackMotor.setPower(FORWARD_SPEED);
+        robot.leftBackMotor.setPower(FORWARD_SPEED);
+        robot.rightFrontMotor.setPower(FORWARD_SPEED);
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < 3.0)) {
             telemetry.addData("Path", "Leg 2: %2.5f S Elapsed", runtime.seconds());
@@ -123,8 +123,8 @@ public class BellatorumAutoRight extends LinearOpMode {
 
 
         // Step 4:  Drive Forward
-        robot.leftBackMotor.setPower(FORWARD_SPEED);
-        robot.rightFrontMotor.setPower(FORWARD_SPEED);
+        robot.leftFrontMotor.setPower(FORWARD_SPEED);
+        robot.rightBackMotor.setPower(FORWARD_SPEED);
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < 3.0)) {
             telemetry.addData("Path", "Leg 4: %2.5f S Elapsed", runtime.seconds());

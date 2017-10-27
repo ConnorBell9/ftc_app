@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.team7153;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -14,9 +14,6 @@ public class RelativeByrd extends OpMode{
 	DcMotor frontLeft; // Front Left Motor  // Runs in ? Direction //
 	DcMotor backRight; // Back Right Motor  // Runs in ? Direction //
 	DcMotor backLeft; // Back Left Motor   // Runs in ? Direction //
-	
-	frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-	backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
 	ModernRoboticsI2cGyro gyro; // Gyroscope Sensor //
 
@@ -30,6 +27,9 @@ public class RelativeByrd extends OpMode{
         frontLeft = hardwareMap.dcMotor.get("fl");
         backRight = hardwareMap.dcMotor.get("br");
         backLeft = hardwareMap.dcMotor.get("bl");
+	    
+	frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+	backRight.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     @Override

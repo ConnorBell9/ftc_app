@@ -5,15 +5,14 @@ package org.firstinspires.ftc.team11383;
  */
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp(name = "OmniTeleOp")
+@TeleOp(name = "OmniTeleOpTest")
 
-public class OmniTeleOp extends OpMode {
+public class OmniTeleOpTest extends OpMode {
     DcMotor frontleft; // Front Right Motor // Runs in Y Direction //
     DcMotor frontright; // Front Left Motor  // Runs in X Direction //
     DcMotor backright; // Back Right Motor  // Runs in X Direction //
@@ -47,12 +46,12 @@ public class OmniTeleOp extends OpMode {
         float u = gamepad2.left_stick_y;
         float v = gamepad2.right_stick_y;
 
-        frontleft.setPower(x+r);  // Set wheels equal to left stick //
+        frontleft.setPower(x-r);  // Set wheels equal to left stick //
         frontright.setPower(y+r);  // direction plus amount of turn, //
-        backright.setPower(r-x);  //   determined by right stick.   //
-        backleft.setPower(r-y);
-        reel.setPower(u*.3);
-        track.setPower(v*.2);
+        backright.setPower(-r-x);  //   determined by right stick.   //
+        backleft.setPower(-r-y);
+        reel.setPower(-u*.3);
+        track.setPower(-v*.2);
         
         if (gamepad2.x) {
             armleft.setPosition(-.5);
