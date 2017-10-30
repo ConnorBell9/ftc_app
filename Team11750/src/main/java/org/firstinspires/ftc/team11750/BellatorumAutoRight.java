@@ -34,11 +34,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
-
 /**
  * This file illustrates the concept of driving a path based on time.
- * It uses the common Pushbot hardware class to define the drive on the robot.
+ * It uses the Bellatorum hardware class to define the drive on the robot.
  * The code is structured as a LinearOpMode
  *
  * The code assumes that you do NOT have encoders on the wheels,
@@ -58,103 +56,58 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  */
 
 @Autonomous(name="Bellatorum: Auto Drive By Time", group="Bellatorum")
-@Disabled
 public class BellatorumAutoRight extends LinearOpMode {
 
     /* Declare OpMode members. */
-    HardwareBellatorum         robot   = new HardwareBellatorum();   // Use Bellatorum's hardware
-    private ElapsedTime     runtime = new ElapsedTime();
+    private HardwareBellatorum robot   = new HardwareBellatorum();   // Use Bellatorum's hardware
+    private ElapsedTime runtime = new ElapsedTime();
 
+    private void turn(double angle, double power) {
 
-    static final double FORWARD_POWER = 0.6;
-    static final double FEET_PER_SEC = 1;
-    static final double MOVE_START_SECS = 0.1;
-    static final double TURN_POWER    = 0.5;
-    static final double STRAIGHT =0.0;
-    static final double RIGHT = 90.0;
-    static final double LEFT = -90.0;
-    static final double BACK = 180.0;
-    static final double AROUND = 180.0;
-    static final double DEGREES_PER_SEC = 45.0;
-    static final double TURN_START_SECS = 0.1;
-    static final double LIFT_FEET_PER_SEC = 0.5;
-
-    void stopMoving() {
-        robot.leftBackMotor.setPower(0.0); // Stop
-        robot.rightFrontMotor.setPower(0.0);
-        robot.leftFrontMotor.setPower(0.0); // Stop
-        robot.rightBackMotor.setPower(0.0);
-    }
-
-    void turn(double angle, double power) {
-        double direction = 1.0; // The direction to turn
-
-        if (angle < 0) { // If the angle is negative
-            direction = -1; // Toggle the direction
-            angle *= -1; // Make the angle positive
-        }
-
-        // Set all motors to turn in direction at power
-        robot.rightBackMotor.setPower(power * direction);
-        robot.rightFrontMotor.setPower(power * direction);
-        robot.leftFrontMotor.setPower(power * direction);
-        robot.leftBackMotor.setPower(power * direction);
+        robot.startRotate(angle, power); // Start rotating in the angle direction at power
+        if (angle < 0) { angle *= -1; } // If the angle is negative make it positive
 
         // Turn long enough to make the angle
         runtime.reset();
-        while (runtime.seconds() < angle*DEGREES_PER_SEC/power + TURN_START_SECS) {
+        while (runtime.seconds() < angle*robot.DEGREES_PER_SEC/power + robot.TURN_START_SECS) {
             telemetry.addData("Turning: ", "%2.5f secs Elapsed", runtime.seconds());
             telemetry.update();
-            if (!opModeIsActive()) {stopMoving(); return;} // Stop and return
+            if (!opModeIsActive()) {robot.stopMoving(); return;} // Stop and return
         }
-        stopMoving();
+        robot.stopMoving();
     }
-    void turn (double angle) {turn(angle, TURN_POWER);} // Overload with default power
+    private void turn (double angle) {turn(angle, robot.TURN_POWER);} // Overload with default power
 
-    void startMovingInDirection(double angle, double power){
-        robot.rightFrontMotor.setPower(-power * Math.sin((Math.PI / 180) * angle));
-        robot.leftBackMotor.setPower(power * Math.sin((Math.PI / 180) * angle));
-        robot.leftFrontMotor.setPower(power * Math.cos((Math.PI / 180) * angle));
-        robot.rightBackMotor.setPower(-power * Math.cos((Math.PI / 180) * angle));
-    }
 
-    void move(double angle, double distance, double power){
-        startMovingInDirection(angle, power); // Start moving in the right direction
+    private void move(double angle, double distance, double power){
+        robot.startMovingInDirection(angle, power); // Start moving in the right direction
 
         // Run long enough to make the distance
         runtime.reset();
-        while (runtime.seconds() < distance*FEET_PER_SEC/power + MOVE_START_SECS) {
-            telemetry.addData("Moving: ", "%2.5f deg, %2.5f secs Elapsed", runtime.seconds());
+        while (runtime.seconds() < distance*robot.FEET_PER_SEC/power + robot.MOVE_START_SECS) {
+            telemetry.addData("Moving: ", "%2.5f deg, %2.5f secs Elapsed", angle, runtime.seconds());
             telemetry.update();
-            if (!opModeIsActive()) {stopMoving(); return;} // Stop and return
+            if (!opModeIsActive()) {robot.stopMoving(); return;} // Stop and return
         }
-        stopMoving();
+        robot.stopMoving();
     }
-    void move(double angle, double distance){ // Overload with default power
-        move(angle, distance, FORWARD_POWER);
+    private void move(double angle, double distance){ // Overload with default power
+        move(angle, distance, robot.FORWARD_POWER);
     }
 
-    void lift(double directionPower, double distance){
+    private void lift(double directionPower, double distance){
         robot.liftMotor.setPower(directionPower);
         if (directionPower<0)directionPower*=-1; // Make sure the power positive
         runtime.reset();
-        while (runtime.seconds() < distance * LIFT_FEET_PER_SEC/directionPower) {
+        while (runtime.seconds() < distance * robot.LIFT_FEET_PER_SEC/directionPower) {
             telemetry.addData("Lift", "Time: %2.5f secs Elapsed", runtime.seconds());
             telemetry.update();
-            if (!opModeIsActive()) {stopMoving(); return;} // Stop and return
+            if (!opModeIsActive()) {robot.stopMoving(); return;} // Stop and return
         }
         robot.liftMotor.setPower(0.0);
     }
-    void liftUp(double distance) { lift(robot.LIFT_UP_POWER, distance);}
-    void liftDown(double distance) { lift(robot.LIFT_DOWN_POWER, distance);}
-
-    void clamp(double angle){
-        robot.leftClamp.setPosition(robot.BACK_SERVO + angle/180);
-        robot.rightClamp.setPosition(robot.BACK_SERVO - angle/180);
-    }
-    void clampOpen() {clamp(0);} // Open the clamp
-    void clampClose() {clamp(60);} // Close the clamp
-
+    private void liftUp(double distance) { lift(robot.LIFT_UP_POWER, distance);}
+    private void liftDown(double distance) { lift(robot.LIFT_DOWN_POWER, distance);}
 
     @Override
     public void runOpMode() {
@@ -172,19 +125,16 @@ public class BellatorumAutoRight extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        // Step through each leg of the path, ensuring that the Auto mode has not been stopped along the way
+        robot.clampClose(); // Grab the glyph
+        liftUp(3/12); // Raise the lift 3 in
 
-        clampClose(); // Grab the glyph
+        move(robot.RIGHT, 3); // Move right 3 feet
+        turn(robot.AROUND); // Turn 180 degrees
+        move(robot.FORWARD, 2); // Move forward 2 feet
 
-        liftUp(0.5); // Raise the lift
+        robot.clampOpen(); // Drop the glyph
 
-        move(RIGHT, 3); // Move right 3 feet
-        turn(AROUND); // Turn 180 degrees
-        move(STRAIGHT, 2); // Move forward 2 feet
-
-        clampOpen(); // Drop the glyph
-
-        move(BACK, 2/12); // Back up 2 inches
+        move(robot.BACK, 2/12); // Back up 2 inches
 
         telemetry.addData("Path", "Complete");
         telemetry.update();

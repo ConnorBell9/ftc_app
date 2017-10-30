@@ -25,32 +25,47 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Servo channel:  Servo to move left clamp: "left_hand"
  * Servo channel:  Servo to move right clamp:"right_hand"
  */
-public class HardwareBellatorum
+class HardwareBellatorum
 {
     /* Public OpMode members. */
-    public DcMotor  leftFrontMotor   = null;
-    public DcMotor  rightFrontMotor  = null;
-    public DcMotor  leftBackMotor    = null;
-    public DcMotor  rightBackMotor   = null;
-    public DcMotor  liftMotor   = null;
-    public Servo    leftClamp   = null;
-    public Servo    rightClamp  = null;
+    DcMotor  leftFrontMotor   = null;
+    DcMotor  rightFrontMotor  = null;
+    DcMotor  leftBackMotor    = null;
+    DcMotor  rightBackMotor   = null;
+    DcMotor  liftMotor   = null;
+    Servo    leftClamp   = null;
+    Servo    rightClamp  = null;
 
-    public static final double BACK_SERVO      =  0.5;
-    public static final double LIFT_UP_POWER    =  0.45 ;
-    public static final double LIFT_DOWN_POWER  = -0.45 ;
+    final double CLAMP_LEFT_OPEN  =  0.5;
+    final double CLAMP_RIGHT_OPEN = 0.5;
+    final double CLAMP_LEFT_CLOSED  = 1.0;
+    final double CLAMP_RIGHT_CLOSED = 0.0;
+    final double LIFT_UP_POWER    =  0.45 ;
+    final double LIFT_DOWN_POWER  = -0.45 ;
+    final double FORWARD_POWER = 0.6;
+    final double FEET_PER_SEC = 1;
+    final double MOVE_START_SECS = 0.1;
+    final double TURN_POWER    = 0.5;
+    final double FORWARD =0.0;
+    final double RIGHT = 90.0;
+    final double LEFT = -90.0;
+    final double BACK = 180.0;
+    final double AROUND = 180.0;
+    final double DEGREES_PER_SEC = 45.0;
+    final double TURN_START_SECS = 0.1;
+    final double LIFT_FEET_PER_SEC = 0.5;
 
     /* local OpMode members. */
-    HardwareMap hwMap           =  null;
+    private HardwareMap hwMap           =  null;
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
-    public HardwareBellatorum(){
+    HardwareBellatorum(){
 
     }
 
     /* Initialize standard Hardware interfaces */
-    public void init(HardwareMap ahwMap) {
+    void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
         hwMap = ahwMap;
 
@@ -84,9 +99,49 @@ public class HardwareBellatorum
         // Define and initialize ALL installed servos.
         leftClamp = hwMap.servo.get("left_hand");
         rightClamp = hwMap.servo.get("right_hand");
-        leftClamp.setPosition(BACK_SERVO);
-        rightClamp.setPosition(BACK_SERVO);
+        leftClamp.setPosition(CLAMP_LEFT_OPEN);
+        rightClamp.setPosition(CLAMP_RIGHT_OPEN);
     }
+
+    // Stop the robot from moving
+    void stopMoving() {
+        leftBackMotor.setPower(0.0); // Stop
+        rightFrontMotor.setPower(0.0);
+        leftFrontMotor.setPower(0.0);
+        rightBackMotor.setPower(0.0);
+    }
+
+    // Start the robot turning in the angle direction at specified power
+    void startRotate(double angle, double power) {
+        double direction = 1.0; // The direction to turn
+
+        if (angle < 0) { // If the angle is negative
+            direction = -1; // Toggle the direction
+            angle *= -1; // Make the angle positive
+        }
+
+        // Set all motors to turn in direction at power
+        rightBackMotor.setPower(power * direction);
+        rightFrontMotor.setPower(power * direction);
+        leftFrontMotor.setPower(power * direction);
+        leftBackMotor.setPower(power * direction);
+    }
+
+    // Start the robot moving in the direction specified by angle (relative to the robot front)
+    void startMovingInDirection(double angle, double power){
+        rightFrontMotor.setPower(-power * Math.sin((Math.PI / 180) * angle));
+        leftBackMotor.setPower(power * Math.sin((Math.PI / 180) * angle));
+        leftFrontMotor.setPower(power * Math.cos((Math.PI / 180) * angle));
+        rightBackMotor.setPower(-power * Math.cos((Math.PI / 180) * angle));
+    }
+
+    // Set the clamp to the specified open angle
+    void clampOpen(double angle){
+        leftClamp.setPosition(CLAMP_LEFT_CLOSED - angle/2/180);
+        rightClamp.setPosition(CLAMP_RIGHT_CLOSED + angle/2/180);
+    }
+    void clampOpen() {clampOpen(180);} // Open the clamp all the way
+    void clampClose() {clampOpen(90);} // Close the clamp on a glyph
 
     /***
      *
@@ -112,6 +167,5 @@ public class HardwareBellatorum
         // Reset the cycle clock for the next pass.
         period.reset();
     }
-
 }
 
