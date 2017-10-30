@@ -34,7 +34,10 @@ public class OmniTeleOpTest extends OpMode {
         track = hardwareMap.dcMotor.get("track");
         armright = hardwareMap.servo.get("ar");
         armleft = hardwareMap.servo.get("al");
-        
+        track.setDirection(DcMotor.Direction.REVERSE);
+        reel.setDirection(DcMotor.Direction.REVERSE);
+
+
         armright.setPosition(0);
         armleft.setPosition(0);
     }
@@ -47,10 +50,10 @@ public class OmniTeleOpTest extends OpMode {
         float v = gamepad2.right_stick_y;
 
         frontleft.setPower(x-r);  // Set wheels equal to left stick //
-        frontright.setPower(y+r);  // direction plus amount of turn, //
+        frontright.setPower(y-r);  // direction plus amount of turn, //
         backright.setPower(-r-x);  //   determined by right stick.   //
         backleft.setPower(-r-y);
-        reel.setPower(-u*.3);
+        reel.setPower(u*.3);
         track.setPower(-v*.2);
         
         if (gamepad2.x) {
