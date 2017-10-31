@@ -55,7 +55,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Bellatorum: Auto Drive By Time", group="Bellatorum")
+@Autonomous(name="Bellatorum: Auto Right", group="Bellatorum")
 public class BellatorumAutoRight extends LinearOpMode {
 
     /* Declare OpMode members. */
