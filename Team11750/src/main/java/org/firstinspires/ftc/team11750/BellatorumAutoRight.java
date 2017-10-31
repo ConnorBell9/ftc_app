@@ -34,11 +34,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
-
 /**
  * This file illustrates the concept of driving a path based on time.
- * It uses the common Pushbot hardware class to define the drive on the robot.
+ * It uses the Bellatorum hardware class to define the drive on the robot.
  * The code is structured as a LinearOpMode
  *
  * The code assumes that you do NOT have encoders on the wheels,
@@ -58,16 +56,58 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  */
 
 @Autonomous(name="Bellatorum: Auto Drive By Time", group="Bellatorum")
-@Disabled
 public class BellatorumAutoRight extends LinearOpMode {
 
     /* Declare OpMode members. */
-    HardwareBellatorum         robot   = new HardwareBellatorum();   // Use Bellatorum's hardware
-    private ElapsedTime     runtime = new ElapsedTime();
+    private HardwareBellatorum robot   = new HardwareBellatorum();   // Use Bellatorum's hardware
+    private ElapsedTime runtime = new ElapsedTime();
+
+    private void turn(double angle, double power) {
+
+        robot.startRotate(angle, power); // Start rotating in the angle direction at power
+        if (angle < 0) { angle *= -1; } // If the angle is negative make it positive
+
+        // Turn long enough to make the angle
+        runtime.reset();
+        while (runtime.seconds() < angle*robot.DEGREES_PER_SEC/power + robot.TURN_START_SECS) {
+            telemetry.addData("Turning: ", "%2.5f secs Elapsed", runtime.seconds());
+            telemetry.update();
+            if (!opModeIsActive()) {robot.stopMoving(); return;} // Stop and return
+        }
+        robot.stopMoving();
+    }
+    private void turn (double angle) {turn(angle, robot.TURN_POWER);} // Overload with default power
 
 
-    static final double     FORWARD_SPEED = 0.6;
-    static final double     TURN_SPEED    = 0.5;
+    private void move(double angle, double distance, double power){
+        robot.startMovingInDirection(angle, power); // Start moving in the right direction
+
+        // Run long enough to make the distance
+        runtime.reset();
+        while (runtime.seconds() < distance*robot.FEET_PER_SEC/power + robot.MOVE_START_SECS) {
+            telemetry.addData("Moving: ", "%2.5f deg, %2.5f secs Elapsed", angle, runtime.seconds());
+            telemetry.update();
+            if (!opModeIsActive()) {robot.stopMoving(); return;} // Stop and return
+        }
+        robot.stopMoving();
+    }
+    private void move(double angle, double distance){ // Overload with default power
+        move(angle, distance, robot.FORWARD_POWER);
+    }
+
+    private void lift(double directionPower, double distance){
+        robot.liftMotor.setPower(directionPower);
+        if (directionPower<0)directionPower*=-1; // Make sure the power positive
+        runtime.reset();
+        while (runtime.seconds() < distance * robot.LIFT_FEET_PER_SEC/directionPower) {
+            telemetry.addData("Lift", "Time: %2.5f secs Elapsed", runtime.seconds());
+            telemetry.update();
+            if (!opModeIsActive()) {robot.stopMoving(); return;} // Stop and return
+        }
+        robot.liftMotor.setPower(0.0);
+    }
+    private void liftUp(double distance) { lift(robot.LIFT_UP_POWER, distance);}
+    private void liftDown(double distance) { lift(robot.LIFT_DOWN_POWER, distance);}
 
     @Override
     public void runOpMode() {
@@ -85,58 +125,16 @@ public class BellatorumAutoRight extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        // Step through each leg of the path, ensuring that the Auto mode has not been stopped along the way
+        robot.clampClose(); // Grab the glyph
+        liftUp(3/12); // Raise the lift 3 in
 
-        // Step 1:  Close clamp and raise lift
-        robot.leftClamp.setPosition(robot.BACK_SERVO + 0.25);
-        robot.rightClamp.setPosition(robot.BACK_SERVO - 0.25);
+        move(robot.RIGHT, 3); // Move right 3 feet
+        turn(robot.AROUND); // Turn 180 degrees
+        move(robot.FORWARD, 2); // Move forward 2 feet
 
-        // Step 1a: Raise the lift
-        robot.liftMotor.setPower(robot.LIFT_UP_POWER);
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 1.3)) {
-            telemetry.addData("Path", "Leg 1a: %2.5f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
-        robot.liftMotor.setPower(0.0);
+        robot.clampOpen(); // Drop the glyph
 
-
-        // Step 2:  Drive right for 3 seconds
-        robot.leftBackMotor.setPower(FORWARD_SPEED);
-        robot.rightFrontMotor.setPower(FORWARD_SPEED);
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 3.0)) {
-            telemetry.addData("Path", "Leg 2: %2.5f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
-
-        // Step 3:  Spin right
-        robot.leftFrontMotor.setPower(TURN_SPEED);
-        robot.rightBackMotor.setPower(-TURN_SPEED);
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 4.0)) {
-            telemetry.addData("Path", "Leg 3: %2.5f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
-        robot.leftFrontMotor.setPower(0.0); // Stop
-        robot.rightBackMotor.setPower(0.0);
-
-
-        // Step 4:  Drive Forward
-        robot.leftFrontMotor.setPower(FORWARD_SPEED);
-        robot.rightBackMotor.setPower(FORWARD_SPEED);
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 3.0)) {
-            telemetry.addData("Path", "Leg 4: %2.5f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
-
-
-        // Step 5:  Stop and close the claw.
-        robot.leftBackMotor.setPower(0.0); // Stop
-        robot.rightFrontMotor.setPower(0.0);
-        robot.leftClamp.setPosition(robot.BACK_SERVO); // Open the clamp
-        robot.rightClamp.setPosition(robot.BACK_SERVO);
+        move(robot.BACK, 2/12); // Back up 2 inches
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
