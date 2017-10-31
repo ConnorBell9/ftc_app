@@ -21,6 +21,7 @@ public class OmniTeleOpTest extends OpMode {
     DcMotor track; // slides and pinions //
     Servo armleft;
     Servo armright;
+    Servo color;
 
     ModernRoboticsI2cGyro gyro; // Gyroscope Sensor //
 
@@ -34,10 +35,11 @@ public class OmniTeleOpTest extends OpMode {
         track = hardwareMap.dcMotor.get("track");
         armright = hardwareMap.servo.get("ar");
         armleft = hardwareMap.servo.get("al");
+        color = hardwareMap.servo.get("c");
         track.setDirection(DcMotor.Direction.REVERSE);
         reel.setDirection(DcMotor.Direction.REVERSE);
 
-
+        color.setPosition(.5);
         armright.setPosition(0);
         armleft.setPosition(0);
     }
