@@ -25,7 +25,7 @@ public class MechByrd extends OpMode{
 	DcMotor idolZ;
 	DcMotor idolY;
 
-	
+
 	Servo armL;
 	Servo armR;
 	CRServo suckL;
@@ -34,7 +34,7 @@ public class MechByrd extends OpMode{
 	Servo plateL;
 	Servo plateR;
 	Servo grabber;
-	
+
 	ModernRoboticsI2cGyro gyro; // Gyroscope Sensor //
 	ModernRoboticsI2cColorSensor color;
 
@@ -65,28 +65,28 @@ public class MechByrd extends OpMode{
 	    frontLeft = hardwareMap.dcMotor.get("fl");
 	    backRight = hardwareMap.dcMotor.get("br");
 	    backLeft = hardwareMap.dcMotor.get("bl");
-	    
+
 	    forkX = hardwareMap.dcMotor.get("forkX");
 	    forkY = hardwareMap.dcMotor.get("forkY");
-	    
+
 	    idolZ = hardwareMap.dcMotor.get("idolZ");
 	    idolY = hardwareMap.dcMotor.get("idolY");
 
 	    forkY.setDirection(DcMotorSimple.Direction.REVERSE);
 	    frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
 	    backRight.setDirection(DcMotorSimple.Direction.REVERSE);
-		
+
 	    armL = hardwareMap.servo.get("armL");
 	    armR = hardwareMap.servo.get("armR");
 	    suckL = hardwareMap.crservo.get("suckL");
 	    suckR = hardwareMap.crservo.get("suckR");
-	    
+
 	    hammer = hardwareMap.servo.get("hammer");
 	    grabber = hardwareMap.servo.get("grabber");
-	    
+
 	    plateL = hardwareMap.servo.get("plateL");
 	    plateR = hardwareMap.servo.get("plateR");
-        
+
 	    forkX.setTargetPosition(0);
 	    forkX.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 	    forkY.setTargetPosition(0);
@@ -94,7 +94,7 @@ public class MechByrd extends OpMode{
 
 		idolZ.setTargetPosition(0);
 		idolZ.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-		
+
 	    armL.setPosition(.4);
 	    armR.setPosition(1);
 	    hammer.setPosition(.9);
@@ -119,7 +119,7 @@ public class MechByrd extends OpMode{
 	    frontRight.setPower(v2*maxSpeed);
 	    backLeft.setPower(v3*maxSpeed);
 	    backRight.setPower(v4*maxSpeed);
-         
+
 	    if(gamepad2.y && System.currentTimeMillis() > setTime+500){
 		    if(mode){mode=false;forkY.setMode(DcMotor.RunMode.RUN_TO_POSITION);forkX.setMode(DcMotor.RunMode.RUN_TO_POSITION);}else{mode=true;forkY.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);forkX.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);}
 			setTime = System.currentTimeMillis();
