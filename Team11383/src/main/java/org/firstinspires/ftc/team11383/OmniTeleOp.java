@@ -5,10 +5,9 @@ package org.firstinspires.ftc.team11383;
  */
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name = "OmniTeleOp")
@@ -22,6 +21,7 @@ public class OmniTeleOp extends OpMode {
     DcMotor track; // slides and pinions //
     Servo armleft;
     Servo armright;
+    Servo color;
 
     ModernRoboticsI2cGyro gyro; // Gyroscope Sensor //
 
@@ -35,7 +35,11 @@ public class OmniTeleOp extends OpMode {
         track = hardwareMap.dcMotor.get("track");
         armright = hardwareMap.servo.get("ar");
         armleft = hardwareMap.servo.get("al");
-        
+        color = hardwareMap.servo.get("c");
+        track.setDirection(DcMotor.Direction.REVERSE);
+        reel.setDirection(DcMotor.Direction.REVERSE);
+
+        color.setPosition(.5);
         armright.setPosition(0);
         armleft.setPosition(0);
     }
@@ -47,12 +51,12 @@ public class OmniTeleOp extends OpMode {
         float u = gamepad2.left_stick_y;
         float v = gamepad2.right_stick_y;
 
-        frontleft.setPower(x+r);  // Set wheels equal to left stick //
-        frontright.setPower(y+r);  // direction plus amount of turn, //
-        backright.setPower(r-x);  //   determined by right stick.   //
-        backleft.setPower(r-y);
+        frontleft.setPower(x-r);  // Set wheels equal to left stick //
+        frontright.setPower(y-r);  // direction plus amount of turn, //
+        backright.setPower(-r-x);  //   determined by right stick.   //
+        backleft.setPower(-r-y);
         reel.setPower(u*.3);
-        track.setPower(v*.2);
+        track.setPower(-v*.2);
         
         if (gamepad2.x) {
             armleft.setPosition(-.5);
