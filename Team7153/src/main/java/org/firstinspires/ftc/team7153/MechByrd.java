@@ -38,7 +38,7 @@ public class MechByrd extends OpMode{
 	ModernRoboticsI2cGyro gyro; // Gyroscope Sensor //
 	ModernRoboticsI2cColorSensor color;
 
-	double positionX;
+	double positionX = ((1440/(1.25*3.1415))*7);
 
 	boolean mode;
 	double positionY;
@@ -120,10 +120,10 @@ public class MechByrd extends OpMode{
 	    backLeft.setPower(v3*maxSpeed);
 	    backRight.setPower(v4*maxSpeed);
 
-	    if(gamepad2.y && System.currentTimeMillis() > setTime+500){
+	    /*if(gamepad2.y && System.currentTimeMillis() > setTime+500){
 		    if(mode){mode=false;forkY.setMode(DcMotor.RunMode.RUN_TO_POSITION);forkX.setMode(DcMotor.RunMode.RUN_TO_POSITION);}else{mode=true;forkY.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);forkX.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);}
 			setTime = System.currentTimeMillis();
-	    }
+	    }*/
 
 	    if(gamepad2.a && System.currentTimeMillis() > setTime+500){
 			if(grab){grab=false;}else{grab=true;}
@@ -181,20 +181,6 @@ public class MechByrd extends OpMode{
 			} else if(gamepad2.left_stick_y <- .1){
 				forkY.setPower(gamepad2.left_stick_y*.5);
 			} else {forkY.setPower(0);forkX.setPower(0);}
-		} else {
-			forkX.setPower(.5);
-			forkY.setPower(.5);
-			forkY.setTargetPosition((int)positionY);
-			forkX.setTargetPosition((int)positionX);
-			if(gamepad2.dpad_up && System.currentTimeMillis() > setTime+500 && positionY>-18*countsPerInchY && positionX > 0){
-				positionY-=travelY*countsPerInchY;
-				setTime=System.currentTimeMillis();
-				if(positionY>18*countsPerInchY){positionY=14*countsPerInchY;}
-			} else if(gamepad2.dpad_down && System.currentTimeMillis() > setTime+500 && positionY<0){
-				positionY+=travelY*countsPerInchY;
-				setTime=System.currentTimeMillis();
-			}
-
 			if(gamepad2.dpad_right){
 				positionX = ((1440/(1.25*3.1415))*7);//1440 is the # of pulses 1.25 is the diameter and 11 is the # of inches traveled
 			} else if(gamepad2.dpad_left){
@@ -210,12 +196,12 @@ public class MechByrd extends OpMode{
 		} else if (gamepad2.left_trigger>.1){
 			idolY.setPower(-.5*gamepad2.left_trigger);
 		} else {idolY.setPower(0);}
-		if(gamepad2.right_bumper && positionIZ < 1440 && System.currentTimeMillis() > setTime+100){
-			positionIZ+=36;
+		if(gamepad2.right_bumper && positionIZ < 1440 && System.currentTimeMillis() > setTime+10){
+			positionIZ+=3.6;
 			setTime = System.currentTimeMillis();
 			//idolY.setPower(-.4);
-		}else if(gamepad2.left_bumper && positionIZ > -1440 && System.currentTimeMillis() > setTime+100){
-			positionIZ-=36;
+		}else if(gamepad2.left_bumper && positionIZ > -1440 && System.currentTimeMillis() > setTime+10){
+			positionIZ-=3.6;
 			setTime = System.currentTimeMillis();
 			//idolY.setPower(.4);
 		} else {
