@@ -40,8 +40,8 @@ class HardwareBellatorum
     final double CLAMP_RIGHT_OPEN = 0.5;
     final double CLAMP_LEFT_CLOSED  = 1.0;
     final double CLAMP_RIGHT_CLOSED = 0.0;
-    final double LIFT_UP_POWER    =  0.45 ;
-    final double LIFT_DOWN_POWER  = -0.45 ;
+    final double LIFT_UP_POWER    =  0.25 ;
+    final double LIFT_DOWN_POWER  = -0.25 ;
     final double FORWARD_POWER = 0.6;
     final double FEET_PER_SEC = 1;
     final double MOVE_START_SECS = 0.1;
@@ -142,6 +142,13 @@ class HardwareBellatorum
     }
     void clampOpen() {clampOpen(180);} // Open the clamp all the way
     void clampClose() {clampOpen(90);} // Close the clamp on a glyph
+
+    void armPosition(double angle) {
+        leftClamp.setPosition(CLAMP_LEFT_CLOSED - angle/2/180);
+        rightClamp.setPosition(CLAMP_RIGHT_CLOSED + angle/2/180);
+    }
+    void armDown() {armPosition(-125);} // Drop the arm to the ground
+    void armUp() {armPosition(0);} // Raise the arm to the bot
 
     /***
      *

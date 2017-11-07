@@ -109,6 +109,7 @@ public class BellatorumAutoRight extends LinearOpMode {
     private void liftUp(double distance) { lift(robot.LIFT_UP_POWER, distance);}
     private void liftDown(double distance) { lift(robot.LIFT_DOWN_POWER, distance);}
 
+
     @Override
     public void runOpMode() {
 
