@@ -32,13 +32,14 @@ class HardwareFortissimus
     DcMotor  backleft    = null;
     DcMotor  backright   = null;
     DcMotor  reel   = null;
+    DcMotor  track  = null;
     Servo    armright   = null;
     Servo    armleft  = null;
 
-    final double armleftopen  =  0.5;
+    final double armleftopen  =  -0.5;
     final double armrightopen = 0.5;
-    final double armleftclosed  = 1.0;
-    final double armrightclosed = 0.0;
+    final double armleftclosed  = 0.5;
+    final double armrightclosed = -0.5;
     final double reelup    =  0.45 ;
     final double reeldown  = -0.45 ;
     final double forward = 0.6;
@@ -74,10 +75,13 @@ class HardwareFortissimus
         backleft    = hwMap.dcMotor.get("bl");
         backright   = hwMap.dcMotor.get("br");
         reel   = hwMap.dcMotor.get("reel");
+        track  = hwMap.dcMotor.get("track");
         frontright.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         frontleft.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         backleft.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         backright.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
+        track.setDirection(DcMotor.Direction.REVERSE);
+        reel.setDirection(DcMotor.Direction.REVERSE);
 
 
         // Set all motors to zero power
