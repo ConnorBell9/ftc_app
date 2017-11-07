@@ -54,7 +54,7 @@ public class RedLeftByrd extends LinearOpMode {
 
 	long setTime;
 
-	void move(double angle, double distance, double power) throws InterruptedException{
+	void move(double angle, double distance, double power) throws InterruptedException {
 		if (!opModeIsActive()) {
 			stopMoving();
 			return;
@@ -79,25 +79,24 @@ public class RedLeftByrd extends LinearOpMode {
 		backLeft.setPower(v3);
 		backRight.setPower(v4);
 		sleep((long)(distance/power*100)/2);
-		stop();
+		stopMoving();
 	}
 
-	void stopMoving(){
+	void stopMoving() throws InterruptedException {
 		frontLeft.setPower(0);
 		frontRight.setPower(0);
 		backLeft.setPower(0);
 		backRight.setPower(0);
 	}
 
-	int hammer(){
+	void hammer() throws InterruptedException {
 		hammer.setPosition(.3);
 		if(color.blue()>.3){
-			return 1;//move(180,3,.3);
+			move(180,3,.3);
 		} else if (color.red()>.3){
-			return 2;//move(0,3,.3);
+			move(0,3,.3);
 		}
 		hammer.setPosition(.9);
-		return 0;
 	}
 	@Override
 	public void runOpMode() throws InterruptedException {
@@ -164,7 +163,7 @@ public class RedLeftByrd extends LinearOpMode {
 		gyro.resetZAxisIntegrator();
 
 		move(90,12,.4);
-		//hammer();
-		//move(0,12,.5);
+		hammer();
+		move(0,12,.5);
 	}
 }
