@@ -109,7 +109,7 @@ public class RedLeftByrd extends LinearOpMode {
 		} else{telemetry.addData("Found Nothing! ",0);}
 		telemetry.update();
 		hammer.setPosition(.9);
-		sleep(500);
+		sleep(500);b
 	}*/
 	void hammer() throws InterruptedException {
 		sleep(100);
