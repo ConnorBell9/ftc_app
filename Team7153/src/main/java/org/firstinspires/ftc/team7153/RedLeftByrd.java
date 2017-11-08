@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name="RedLeftByrd")
-public class RedLeftByrd extends LinearOpMode {
+public class  RedLeftByrd extends LinearOpMode {
 	DcMotor frontRight; // Front Right Motor // Runs in ? Direction //
 	DcMotor frontLeft; // Front Left Motor  // Runs in ? Direction //
 	DcMotor backRight; // Back Right Motor  // Runs in ? Direction //
@@ -59,9 +59,9 @@ public class RedLeftByrd extends LinearOpMode {
 			stopMoving();
 			return;
 		}
-		double radGyro=(gyro.getHeading()*Math.PI)/180;
+		double radGyro=(gyro.getIntegratedZValue()*Math.PI)/180;
 		double r = power;
-		double robotAngle = angle*(Math.PI/180) - Math.PI / 4;
+		double robotAngle = angle*(Math.PI/180) - Math.PI / 4 - radGyro;
 
 		if(robotAngle>Math.PI){
 			robotAngle=Math.PI*-2+robotAngle;
@@ -80,6 +80,20 @@ public class RedLeftByrd extends LinearOpMode {
 		backRight.setPower(v4);
 		sleep((long)(distance/power*100)/2);
 		stopMoving();
+	}
+
+	void straighten(){
+		gyro.getIntegratedZValue();
+	}
+
+	void turn(double angle){
+		if(angle>180+gyro.getIntegratedZValue() || angle<gyro.getIntegratedZValue())//turn left - 90
+		while(gyro.getIntegratedZValue()<angle && angle>0){
+
+		}
+		while(gyro.getIntegratedZValue()>angle && angle<0){
+
+		}
 	}
 
 	void stopMoving() throws InterruptedException {
