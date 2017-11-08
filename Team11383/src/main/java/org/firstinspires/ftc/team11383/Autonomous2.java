@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 
 /**
  * Created by Walt on 11/06/17.
@@ -23,8 +24,33 @@ public class Autonomous2 extends LinearOpMode {
     Servo color;
 
     ModernRoboticsI2cGyro gyro; // Gyroscope Sensor //
-    ModernRoboticsI2cColorSensor c; // Color Sensor //
+    //ModernRoboticsI2cColorSensor c; // Color Sensor //
+    ColorSensor c; // Color Sensor //
 
+    boolean isRed() {
+        if (c.red() < c.blue()) {
+            return true;
+        }
+        return false;
+    }
+    void Jewels() throws InterruptedException {
+        if(!opModeIsActive())
+        {backleft.setPower(0); backright.setPower(0); frontright.setPower(0); frontleft.setPower(0);return;}{
+            if(isRed()){
+                color.setPosition(.8);
+                backright.setPower(-1); frontleft.setPower(1);
+                sleep(500);
+                backright.setPower(0); frontleft.setPower(0);
+                sleep(1000);
+                color.setPosition(.2);
+                sleep(500);
+                backright.setPower(-1); frontleft.setPower(1);
+                sleep(1100);
+                backright.setPower(0); frontleft.setPower(0);
+                sleep(1000);
+            }
+        }
+    }
     @Override
     public void runOpMode() {
 
@@ -47,9 +73,6 @@ public class Autonomous2 extends LinearOpMode {
         waitForStart();
 
         sleep(1000);
-       // backleft.setPower(-.1);
-        //frontright.setPower(.1);
-        //sleep(50);
         backleft.setPower(0);
         frontright.setPower(0);
         sleep(1000);
