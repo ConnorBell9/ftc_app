@@ -40,12 +40,34 @@ public class Autonomous2 extends LinearOpMode {
         track.setDirection(DcMotor.Direction.REVERSE);
         reel.setDirection(DcMotor.Direction.REVERSE);
 
-        color.setPosition(.5);
+        color.setPosition(.2);
+        armleft.setPosition(0);
+        armright.setPosition(0);
 
         waitForStart();
+
         sleep(1000);
+       // backleft.setPower(-.1);
+        //frontright.setPower(.1);
+        //sleep(50);
+        backleft.setPower(0);
+        frontright.setPower(0);
+        sleep(1000);
+        color.setPosition(1);
+        sleep(500);
         backright.setPower(-1);
         frontleft.setPower(1);
-        sleep(5000);
+        sleep(500);
+        backright.setPower(0);
+        frontleft.setPower(0);
+        sleep(1000);
+        color.setPosition(.2);
+        sleep(500);
+        backright.setPower(-1);
+        frontleft.setPower(1);
+        sleep(1100);
+        backright.setPower(0);
+        frontleft.setPower(0);
+        sleep(1000);
     }
 }
