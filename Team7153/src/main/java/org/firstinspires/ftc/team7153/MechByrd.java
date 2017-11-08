@@ -40,17 +40,16 @@ public class MechByrd extends OpMode{
 
 	double positionX = ((1440/(1.25*3.1415))*7);
 
-	boolean mode;
 	double positionY;
 	final double travelY = 6;
 	final double countsPerInchY = 1440/3;//1440 is the # of pulses 3 is the perimeter
 
-	double positionIZ=-200;
+	double positionIZ=+1200;
 	double positionIY;
 
 	boolean grab = true;
 	boolean succ;
-	boolean plate;
+	boolean plate = false;
 	boolean idolGrab;
 
 	long setTime;
@@ -89,8 +88,8 @@ public class MechByrd extends OpMode{
 
 	    forkX.setTargetPosition(0);
 	    forkX.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-	    forkY.setTargetPosition(0);
-	    forkY.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+	    forkX.setPower(.5);
+		forkY.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 		idolZ.setTargetPosition(0);
 		idolZ.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -100,8 +99,8 @@ public class MechByrd extends OpMode{
 	    hammer.setPosition(.9);
 		grabber.setPosition(0);
 
-		plateL.setPosition(0);
-		plateR.setPosition(1);
+		plateL.setPosition(1);
+		plateR.setPosition(0);
     }
 
     @Override
@@ -162,11 +161,11 @@ public class MechByrd extends OpMode{
 	    }
 
 	    if(plate){
-			plateL.setPosition(1);
-			plateR.setPosition(0);
-		} else {
 			plateL.setPosition(0);
 			plateR.setPosition(1);
+		} else {
+			plateL.setPosition(1);
+			plateR.setPosition(0);
 		}
 
 		if(idolGrab){
@@ -175,40 +174,38 @@ public class MechByrd extends OpMode{
 			grabber.setPosition(0);
 		}
 
-	    if(mode){
-			if(gamepad2.left_stick_y>.1){
-				forkY.setPower(gamepad2.left_stick_y);
-			} else if(gamepad2.left_stick_y <- .1){
-				forkY.setPower(gamepad2.left_stick_y*.5);
-			} else {forkY.setPower(0);forkX.setPower(0);}
-			if(gamepad2.dpad_right){
-				positionX = ((1440/(1.25*3.1415))*7);//1440 is the # of pulses 1.25 is the diameter and 11 is the # of inches traveled
-			} else if(gamepad2.dpad_left){
-				positionX = 0;
-			}
+		if(gamepad2.left_stick_y>.1) {
+			forkY.setPower(gamepad2.left_stick_y);
+		} else if(gamepad2.left_stick_y <- .1) {
+			forkY.setPower(gamepad2.left_stick_y * .5);
+		} else {forkY.setPower(0);}
+		if(gamepad2.dpad_right) {
+			positionX = ((1440 / (1.25 * 3.1415)) * 7);//1440 is the # of pulses 1.25 is the diameter and 11 is the # of inches traveled
+		} else if(gamepad2.dpad_left) {
+			positionX = 0;
 		}
 
 		idolZ.setPower(.5);
 		idolZ.setTargetPosition((int)positionIZ);
+		forkX.setTargetPosition((int)positionX);
 
 		if(gamepad2.right_trigger>.1 && positionIY<100000){
 			idolY.setPower(.5*gamepad2.right_trigger);
 		} else if (gamepad2.left_trigger>.1){
 			idolY.setPower(-.5*gamepad2.left_trigger);
 		} else {idolY.setPower(0);}
-		if(gamepad2.right_bumper && positionIZ < 1440 && System.currentTimeMillis() > setTime+10){
-			positionIZ+=3.6;
+		if(gamepad2.right_bumper && System.currentTimeMillis() > setTime+10){
+			positionIZ+=21.6;
 			setTime = System.currentTimeMillis();
 			//idolY.setPower(-.4);
-		}else if(gamepad2.left_bumper && positionIZ > -1440 && System.currentTimeMillis() > setTime+10){
-			positionIZ-=3.6;
+		}else if(gamepad2.left_bumper && System.currentTimeMillis() > setTime+10){
+			positionIZ-=21.6;
 			setTime = System.currentTimeMillis();
 			//idolY.setPower(.4);
 		} else {
 			//idolY.setPower(0);
 		}
 
-	    telemetry.addData("Mode is: ", mode);
 	    telemetry.addData("Grab is: ", grab);
 	    telemetry.addData("Broom is: ", succ);
 		telemetry.addData("Plate is: ", plate);
