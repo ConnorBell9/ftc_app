@@ -1,6 +1,8 @@
 //package org.firstinspires.ftc.robotcontroller.external.samples;
 package org.firstinspires.ftc.team11383;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -35,6 +37,9 @@ class HardwareFortissimus
     DcMotor  track  = null;
     Servo    armright   = null;
     Servo    armleft  = null;
+
+    ModernRoboticsI2cGyro gyro; // Gyroscope Sensor //
+    ModernRoboticsI2cColorSensor c; // Color Sensor //
 
     final double armleftopen  =  -0.5;
     final double armrightopen = 0.5;

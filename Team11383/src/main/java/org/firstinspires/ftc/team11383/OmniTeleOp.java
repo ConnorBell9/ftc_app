@@ -4,6 +4,7 @@ package org.firstinspires.ftc.team11383;
  * Created by Walt Morris on 9/25/17.
  */
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -24,6 +25,7 @@ public class OmniTeleOp extends OpMode {
     Servo color;
 
     ModernRoboticsI2cGyro gyro; // Gyroscope Sensor //
+    ModernRoboticsI2cColorSensor c; // Color Sensor //
 
     @Override
     public void init() {
@@ -35,7 +37,7 @@ public class OmniTeleOp extends OpMode {
         track = hardwareMap.dcMotor.get("track");
         armright = hardwareMap.servo.get("ar");
         armleft = hardwareMap.servo.get("al");
-        color = hardwareMap.servo.get("c");
+        color = hardwareMap.servo.get("ac");
         track.setDirection(DcMotor.Direction.REVERSE);
         reel.setDirection(DcMotor.Direction.REVERSE);
 
