@@ -38,6 +38,7 @@ public class Autonomous2 extends LinearOpMode {
         {backleft.setPower(0); backright.setPower(0); frontright.setPower(0); frontleft.setPower(0);return;}{
             if(isRed()){
                 color.setPosition(.8);
+                sleep(500);
                 backright.setPower(-1); frontleft.setPower(1);
                 sleep(500);
                 backright.setPower(0); frontleft.setPower(0);
@@ -48,6 +49,16 @@ public class Autonomous2 extends LinearOpMode {
                 sleep(1100);
                 backright.setPower(0); frontleft.setPower(0);
                 sleep(1000);
+            }
+            if (!isRed()) {
+                color.setPosition(.8);
+                sleep(500);
+                backright.setPower(1); frontleft.setPower(-1);
+                sleep(300);
+                color.setPosition(.2);
+                sleep(500);
+                backright.setPower(-1); frontleft.setPower(1);
+                sleep(1900);
             }
         }
     }
