@@ -11,8 +11,8 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 /**
  * Created by Walt on 11/06/17.
  */
-@Autonomous (name = "Autonomous2")
-public class Autonomous2 extends LinearOpMode {
+@Autonomous (name = "AutonomousRedLeft")
+public class AutonomousRedLeft extends LinearOpMode {
     DcMotor frontleft; // Front Right Motor // Runs in Y Direction //
     DcMotor frontright; // Front Left Motor  // Runs in X Direction //
     DcMotor backright; // Back Right Motor  // Runs in X Direction //
@@ -27,7 +27,7 @@ public class Autonomous2 extends LinearOpMode {
     //ModernRoboticsI2cColorSensor c; // Color Sensor //
     ColorSensor c; // Color Sensor //
 
-    boolean isRed() {
+    /*boolean isRed() {
         if (c.red() < c.blue()) {
             return true;
         }
@@ -61,7 +61,7 @@ public class Autonomous2 extends LinearOpMode {
                 sleep(1900);
             }
         }
-    }
+    }*/
     @Override
     public void runOpMode() {
 
