@@ -55,8 +55,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Bellatorum: Auto Right", group="Bellatorum")
-public class BellatorumAutoRight extends LinearOpMode {
+@Autonomous(name="Bellatorum: Red Right", group="Bellatorum")
+public class BellatorumAutoRedRight extends LinearOpMode {
 
     /* Declare OpMode members. */
     private HardwareBellatorum robot   = new HardwareBellatorum();   // Use Bellatorum's hardware
@@ -64,12 +64,13 @@ public class BellatorumAutoRight extends LinearOpMode {
 
     private void turn(double angle, double power) {
 
+        if (angle==0) return; // Return immediately for 0 degree turn
         robot.startRotate(angle, power); // Start rotating in the angle direction at power
         if (angle < 0) { angle *= -1; } // If the angle is negative make it positive
 
         // Turn long enough to make the angle
         runtime.reset();
-        while (runtime.seconds() < angle*robot.DEGREES_PER_SEC/power + robot.TURN_START_SECS) {
+        while (runtime.seconds() < angle/robot.DEGREES_PER_SEC/power + robot.TURN_START_SECS) {
             telemetry.addData("Turning: ", "%2.5f secs Elapsed", runtime.seconds());
             telemetry.update();
             if (!opModeIsActive()) {robot.stopMoving(); return;} // Stop and return
@@ -84,8 +85,9 @@ public class BellatorumAutoRight extends LinearOpMode {
 
         // Run long enough to make the distance
         runtime.reset();
-        while (runtime.seconds() < distance*robot.FEET_PER_SEC/power + robot.MOVE_START_SECS) {
-            telemetry.addData("Moving: ", "%2.5f deg, %2.5f secs Elapsed", angle, runtime.seconds());
+        while (runtime.seconds() < distance/robot.FEET_PER_SEC/power) {
+            telemetry.addData("Moving: ", "%2.5f deg, %2.5f ft, %2.5f secs Elapsed",
+                    angle, distance, runtime.seconds());
             telemetry.update();
             if (!opModeIsActive()) {robot.stopMoving(); return;} // Stop and return
         }
@@ -99,7 +101,7 @@ public class BellatorumAutoRight extends LinearOpMode {
         robot.liftMotor.setPower(directionPower);
         if (directionPower<0)directionPower*=-1; // Make sure the power positive
         runtime.reset();
-        while (runtime.seconds() < distance * robot.LIFT_FEET_PER_SEC/directionPower) {
+        while (runtime.seconds() < distance / robot.LIFT_FEET_PER_SEC/directionPower) {
             telemetry.addData("Lift", "Time: %2.5f secs Elapsed", runtime.seconds());
             telemetry.update();
             if (!opModeIsActive()) {robot.stopMoving(); return;} // Stop and return
@@ -109,6 +111,32 @@ public class BellatorumAutoRight extends LinearOpMode {
     private void liftUp(double distance) { lift(robot.LIFT_UP_POWER, distance);}
     private void liftDown(double distance) { lift(robot.LIFT_DOWN_POWER, distance);}
 
+    void displaceJewel(int color){
+        double turnAngle = 0;
+        robot.armDown(); // Drop the color sensor arm
+
+        runtime.reset();
+        while (runtime.seconds() < 1) {
+            telemetry.addData("Clear", robot.colorSensor.alpha());
+            telemetry.addData("Red  ", robot.colorSensor.red());
+            telemetry.addData("Green", robot.colorSensor.green());
+            telemetry.addData("Blue ", robot.colorSensor.blue());
+            telemetry.update();
+            if (!opModeIsActive()) {robot.stopMoving(); return;} // Stop and return
+        }
+        // Displace the blue color ball
+        if (robot.colorSensor.blue() >= 1) turnAngle += 20;
+        if (robot.colorSensor.red() >= 1) turnAngle -= 20;
+
+        // Turn the other way to displace thr
+        if(color == robot.COLOR_RED) turnAngle*=-1; // Turn the other way
+
+        turn(turnAngle); // Turn to knock off the jewel
+        robot.armUp();   // Raise the arm
+        turn(-turnAngle);// Turn back
+    }
+    void redTeamJewel(){ displaceJewel(robot.COLOR_BLUE);}
+    void blueTeamJewel() {displaceJewel(robot.COLOR_RED);}
 
     @Override
     public void runOpMode() {
@@ -127,15 +155,18 @@ public class BellatorumAutoRight extends LinearOpMode {
         waitForStart();
 
         robot.clampClose(); // Grab the glyph
-        liftUp(3/12); // Raise the lift 3 in
+        liftUp(1); // Raise the lift in ft
+
+        displaceJewel(robot.COLOR_BLUE); // Knock of the jewel of this color
 
         move(robot.RIGHT, 3); // Move right 3 feet
         turn(robot.AROUND); // Turn 180 degrees
-        move(robot.FORWARD, 2); // Move forward 2 feet
+        move(robot.FORWARD, 1); // Move forward 1 foot
 
         robot.clampOpen(); // Drop the glyph
+        move(robot.FORWARD, 0.5); // Move forward 6 inches
 
-        move(robot.BACK, 2/12); // Back up 2 inches
+        move(robot.BACK, 0.5); // Back up 6 inches
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
