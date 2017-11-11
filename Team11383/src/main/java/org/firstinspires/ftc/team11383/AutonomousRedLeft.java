@@ -22,6 +22,8 @@ public class AutonomousRedLeft extends LinearOpMode {
     Servo armleft;
     Servo armright;
     Servo color;
+    boolean COLOR_BLUE = true;
+    boolean COLOR_RED = false;
     //c = hardwareMap.colorSensor.get("c");
     ModernRoboticsI2cGyro gyro; // Gyroscope Sensor //
    // ModernRoboticsI2cColorSensor c; // Color Sensor //
@@ -69,15 +71,45 @@ public class AutonomousRedLeft extends LinearOpMode {
        }
        return false;
    }*/
+   void startRotate(double angle, double power) {
+       double direction = 1.0; // The direction to turn
 
+       if (angle < 0) { // If the angle is negative
+           direction = -1; // Toggle the direction
+           angle *= -1; // Make the angle positive
+       }
 
+       // Set all motors to turn in direction at power
+       frontright.setPower(power * direction);
+       frontleft.setPower(power * direction);
+       backright.setPower(power * direction);
+       backleft.setPower(power * direction);
+   }
 
+    void displaceJewel(boolean colorflag){
+        double turnAngle = 0;
+        color.setPosition(.8); // color sensor arm is down //
 
+        // Displace the blue color ball
+        if (c.blue() >= 1) turnAngle += 20;
+        if (c.red() >= 1) turnAngle -= 20;
+
+        // Turn the other way to displace thr
+        if(colorflag == COLOR_RED) turnAngle*=-1; // Turn the other way
+
+        startRotate(turnAngle, .2); // Turn to knock off the jewel
+        sleep(200);
+        startRotate(turnAngle, 0);
+        color.setPosition(.2);   // Raise the arm
+        startRotate(-turnAngle, .2);// Turn back
+        sleep(200);
+        startRotate(turnAngle,0);
+    }
+    void redTeamJewel(){ displaceJewel(COLOR_BLUE);}
+    void blueTeamJewel() {displaceJewel(COLOR_RED);}
 
     @Override
     public void runOpMode() {
-
-
 
         frontright = hardwareMap.dcMotor.get("fr");
         frontleft = hardwareMap.dcMotor.get("fl");
@@ -97,9 +129,9 @@ public class AutonomousRedLeft extends LinearOpMode {
         armleft.setPosition(-.5);
         armright.setPosition(.5);
 
-        c.red();
-        c.blue();
-        color.setPosition(.8);
+       // c.red();
+       // c.blue();
+        //color.setPosition(.8);
       //  if (c.red())=(true()
           //  (
           //          frontleft.setPower(1);
@@ -108,11 +140,11 @@ public class AutonomousRedLeft extends LinearOpMode {
            //     )
 
 
-        sleep(1000);
+       /* sleep(1000);
         backleft.setPower(0);
         frontright.setPower(0);
         sleep(1000);
-        /*color.setPosition(1);
+        color.setPosition(1);
         sleep(500);
         backright.setPower(-1);
         frontleft.setPower(1);
@@ -124,12 +156,13 @@ public class AutonomousRedLeft extends LinearOpMode {
         sleep(500);
         backright.setPower(-1);
         frontleft.setPower(1);
-        sleep(1100);*/
+        sleep(1100);
         frontleft.setPower(1);
         backright.setPower(-1);
         sleep(1300);
         backright.setPower(0);
         frontleft.setPower(0);
-        sleep(1000);
+        sleep(1000);*/
+       displaceJewel(COLOR_BLUE);
     }
 }
