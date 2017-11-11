@@ -54,6 +54,11 @@ public class  RedLeftByrd extends LinearOpMode {
 
 	long setTime;
 
+	boolean LEFT=false;
+	boolean RIGHT=true;
+
+	int z=0;
+
 	void move(double angle, double time, double power) throws InterruptedException {
 		if (!opModeIsActive()) {
 			stopMoving();
@@ -86,15 +91,43 @@ public class  RedLeftByrd extends LinearOpMode {
 		gyro.getIntegratedZValue();
 	}
 
-	void turn(double angle){
-		if(angle>180+gyro.getIntegratedZValue() || angle<gyro.getIntegratedZValue()) {//turn left - 90
+	void grab(boolean grab){
+		if(grab){
+			armL.setPosition(.4);
+			armR.setPosition(1);
+		} else {
+			armL.setPosition(.7);
+			armR.setPosition(.7);
+		}
+	}
+
+	void turn(double angle, double speed, boolean direction) throws InterruptedException {
+		if(direction){
+			angle-=90;
+			if(angle<0){angle=+360;}
+			while(gyro.getIntegratedZValue()>angle && opModeIsActive()){
+				frontLeft.setPower(speed);
+				frontRight.setPower(-speed);
+				backLeft.setPower(speed);
+				backRight.setPower(-speed);
+			}
+		} else {
+			while (gyro.getIntegratedZValue() < angle && opModeIsActive()) {
+				frontLeft.setPower(-speed);
+				frontRight.setPower(speed);
+				backLeft.setPower(-speed);
+				backRight.setPower(speed);
+			}
+			stopMoving();
+		}
+	/*	if(angle>180+gyro.getIntegratedZValue() || angle<gyro.getIntegratedZValue()) {//turn left - 90
 			while (gyro.getIntegratedZValue() < angle && angle > 0) {
 
 			}
 			while (gyro.getIntegratedZValue() > angle && angle < 0) {
 
 			}
-		}
+		}*/
 	}
 
 	void stopMoving() throws InterruptedException {
@@ -132,24 +165,60 @@ public class  RedLeftByrd extends LinearOpMode {
 		color.enableLed(true);
 		sleep(1000);
 		setTime=System.currentTimeMillis();
-		while(color.blue()==color.red() && System.currentTimeMillis()<setTime+3000){
-			frontLeft.setPower(-.1);
-			frontRight.setPower(-.1);
-			backLeft.setPower(-.1);
-			backRight.setPower(-.1);
+		while(color.blue()==color.red() && System.currentTimeMillis()<setTime+1000 && opModeIsActive()){
+			frontLeft.setPower(-.07);
+			frontRight.setPower(-.07);
+			backLeft.setPower(-.07);
+			backRight.setPower(-.07);
 		}
 		stopMoving();
-		if(color.blue()>color.red()){
+		sleep(1000);
+		do {
+			z+=1;
+			sleep(100);
+		} while(color.blue()==color.red() && z<10);
+		if(color.blue()<color.red()){
 			double temp=color.blue();
 			telemetry.addData("Found Blue! ", temp);
-			move(180,1000,.6);
-			move(0,1000,.6);
-		} else if (color.blue()<color.red()){
+			//move(180,500,.7);
+			frontLeft.setPower(.5);
+			frontRight.setPower(-.5);
+			backLeft.setPower(.5);
+			backRight.setPower(-.5);
+			sleep(100);
+			stopMoving();
+			hammer.setPosition(.9);
+			sleep(1000);
+			//move(0,500,.7);
+			frontLeft.setPower(-.5);
+			frontRight.setPower(.5);
+			backLeft.setPower(-.5);
+			backRight.setPower(.5);
+			sleep(100);
+			stopMoving();
+		} else if (color.blue()>color.red()){
 			double temp=color.red();
 			telemetry.addData("Found Red! ", temp);
-			move(0,1000,.6);
-			move(180,1000,.6);
-		} else{telemetry.addData("Found Nothing! ",0);}
+			frontLeft.setPower(-.5);
+			frontRight.setPower(.5);
+			backLeft.setPower(-.5);
+			backRight.setPower(.5);
+			sleep(200);
+			stopMoving();
+			hammer.setPosition(.9);
+			sleep(1000);
+			//move(0,500,.7);
+			frontLeft.setPower(.5);
+			frontRight.setPower(-.5);
+			backLeft.setPower(.5);
+			backRight.setPower(-.5);
+			sleep(200);
+			stopMoving();
+		} else{
+			telemetry.addData("Found Nothing! ",0);
+			telemetry.addData("Blue:", color.blue());
+			telemetry.addData("Red:", color.red());
+		}
 		telemetry.update();
 		color.enableLed(false);
 		hammer.setPosition(.9);
@@ -218,21 +287,30 @@ public class  RedLeftByrd extends LinearOpMode {
 		waitForStart();
 
 		gyro.resetZAxisIntegrator();
+		if(!isStopRequested()) {
+			/*while(true && opModeIsActive()){
+				color.enableLed(true);
+				hammer.setPosition(.3);
+				telemetry.addData("Color Red", color.red());
+				telemetry.addData("Color Blue", color.blue());
+				telemetry.update();
+			}*/
+			grab(true);
+			hammer();
+			move(90, 500, .2);
+			move(0, 3000, 1);
+			turn(200,.5,LEFT);
+			move(270,2000,.6);
+			grab(false);
+			move(90,750,.3);
+			stopMoving();
 
-		hammer();
-		move(90,1000,.3);
-		move(0,5000, 1);
-		//move(90,12,1);
-		stopMoving();
-		while(!isStopRequested()){
-			color.enableLed(true);
-			hammer.setPosition(.3);
-			telemetry.addData("Red",color.red());
-			telemetry.addData("Blue",color.blue());
-			telemetry.update();
+
 		}
 	}
 }
+
+
 
 //turn concept code
 /*
