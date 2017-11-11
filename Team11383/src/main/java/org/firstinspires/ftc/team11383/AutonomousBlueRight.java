@@ -76,17 +76,19 @@ public class AutonomousBlueRight extends LinearOpMode {
         track.setDirection(DcMotor.Direction.REVERSE);
         reel.setDirection(DcMotor.Direction.REVERSE);
 
-        color.setPosition(.2);
-        armleft.setPosition(0);
-        armright.setPosition(0);
+
 
         waitForStart();
+
+        color.setPosition(.2);
+        armleft.setPosition(-.5);
+        armright.setPosition(.5);
 
         sleep(1000);
         backleft.setPower(0);
         frontright.setPower(0);
         sleep(1000);
-        color.setPosition(1);
+        /*color.setPosition(1);
         sleep(500);
         backright.setPower(1);
         frontleft.setPower(-1);
@@ -98,7 +100,10 @@ public class AutonomousBlueRight extends LinearOpMode {
         sleep(500);
         backright.setPower(1);
         frontleft.setPower(-1);
-        sleep(1100);
+        sleep(1100);*/
+        frontleft.setPower(-1);
+        backright.setPower(1);
+        sleep(1300);
         backright.setPower(0);
         frontleft.setPower(0);
         sleep(1000);

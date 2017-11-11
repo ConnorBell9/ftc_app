@@ -22,18 +22,19 @@ public class AutonomousRedLeft extends LinearOpMode {
     Servo armleft;
     Servo armright;
     Servo color;
-
+    //c = hardwareMap.colorSensor.get("c");
     ModernRoboticsI2cGyro gyro; // Gyroscope Sensor //
-    //ModernRoboticsI2cColorSensor c; // Color Sensor //
-    ColorSensor c; // Color Sensor //
+   // ModernRoboticsI2cColorSensor c; // Color Sensor //
+    ColorSensor c; // Color Sensor //{
 
-    /*boolean isRed() {
+
+   /*boolean isRed() {
         if (c.red() < c.blue()) {
             return true;
         }
         return false;
     }
-    void Jewels() throws InterruptedException {
+      /*void Jewels() throws InterruptedException {
         if(!opModeIsActive())
         {backleft.setPower(0); backright.setPower(0); frontright.setPower(0); frontleft.setPower(0);return;}{
             if(isRed()){
@@ -62,8 +63,21 @@ public class AutonomousRedLeft extends LinearOpMode {
             }
         }
     }*/
+   /*boolean isRed(){
+       if (c.red() < (c.blue())){
+           return true;
+       }
+       return false;
+   }*/
+
+
+
+
+
     @Override
     public void runOpMode() {
+
+
 
         frontright = hardwareMap.dcMotor.get("fr");
         frontleft = hardwareMap.dcMotor.get("fl");
@@ -76,18 +90,30 @@ public class AutonomousRedLeft extends LinearOpMode {
         color = hardwareMap.servo.get("ac");
         track.setDirection(DcMotor.Direction.REVERSE);
         reel.setDirection(DcMotor.Direction.REVERSE);
-
-        color.setPosition(.2);
-        armleft.setPosition(0);
-        armright.setPosition(0);
+        c = hardwareMap.colorSensor.get("c");
 
         waitForStart();
+        color.setPosition(.2);
+        armleft.setPosition(-.5);
+        armright.setPosition(.5);
+
+        c.red();
+        c.blue();
+        color.setPosition(.8);
+      //  if (c.red())=(true()
+          //  (
+          //          frontleft.setPower(1);
+           // backright.setPower(-1);
+
+           //     )
+
+
 
         sleep(1000);
         backleft.setPower(0);
         frontright.setPower(0);
         sleep(1000);
-        color.setPosition(1);
+        /*color.setPosition(1);
         sleep(500);
         backright.setPower(-1);
         frontleft.setPower(1);
@@ -99,7 +125,10 @@ public class AutonomousRedLeft extends LinearOpMode {
         sleep(500);
         backright.setPower(-1);
         frontleft.setPower(1);
-        sleep(1100);
+        sleep(1100);*/
+        frontleft.setPower(1);
+        backright.setPower(-1);
+        sleep(1300);
         backright.setPower(0);
         frontleft.setPower(0);
         sleep(1000);

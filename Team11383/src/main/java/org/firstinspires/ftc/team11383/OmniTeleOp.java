@@ -41,9 +41,9 @@ public class OmniTeleOp extends OpMode {
         track.setDirection(DcMotor.Direction.REVERSE);
         reel.setDirection(DcMotor.Direction.REVERSE);
 
-        color.setPosition(.5);
-        armright.setPosition(0);
-        armleft.setPosition(0);
+        color.setPosition(.2);
+        armright.setPosition(.5);
+        armleft.setPosition(-.5);
     }
     @Override
     public void loop() {
@@ -58,15 +58,15 @@ public class OmniTeleOp extends OpMode {
         backright.setPower(-r-x);  //   determined by right stick.   //
         backleft.setPower(-r-y);
         reel.setPower(u*.3);
-        track.setPower(-v*.2);
+        track.setPower(v*.3);
         
         if (gamepad2.x) {
             armleft.setPosition(-.5);
             armright.setPosition(.5);
         }
         else if (gamepad2.b) {
-            armleft.setPosition(.5);
-            armright.setPosition(-.5);
+            armleft.setPosition(.4);
+            armright.setPosition(-.4);
         }
         
     }
