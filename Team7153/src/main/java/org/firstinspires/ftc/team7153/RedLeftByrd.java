@@ -87,12 +87,13 @@ public class  RedLeftByrd extends LinearOpMode {
 	}
 
 	void turn(double angle){
-		if(angle>180+gyro.getIntegratedZValue() || angle<gyro.getIntegratedZValue())//turn left - 90
-		while(gyro.getIntegratedZValue()<angle && angle>0){
+		if(angle>180+gyro.getIntegratedZValue() || angle<gyro.getIntegratedZValue()) {//turn left - 90
+			while (gyro.getIntegratedZValue() < angle && angle > 0) {
 
-		}
-		while(gyro.getIntegratedZValue()>angle && angle<0){
+			}
+			while (gyro.getIntegratedZValue() > angle && angle < 0) {
 
+			}
 		}
 	}
 
@@ -232,3 +233,22 @@ public class  RedLeftByrd extends LinearOpMode {
 		}
 	}
 }
+
+//turn concept code
+/*
+	double Oangle=0;
+	double Ogyro=0;
+        while(Oangle<=360){
+				double gyro=Math.sin((Ogyro+180)*Math.PI/180);
+				double angle=Math.sin((Oangle+180)*(Math.PI/180));
+				if(gyro<=Math.sin((Math.asin(angle))+Math.PI/90) && gyro>=Math.sin((Math.asin(angle))-Math.PI/90)){
+				System.out.println("Go straight");
+				}else if(gyro-angle<0){
+		System.out.println("Turn Right");
+		}else{
+		System.out.println("Turn Left");
+		}
+		System.out.println(Oangle);
+		Oangle+=1;
+		}
+		*/
