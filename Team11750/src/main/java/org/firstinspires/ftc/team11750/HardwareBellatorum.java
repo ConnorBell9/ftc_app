@@ -39,8 +39,8 @@ class HardwareBellatorum
     Servo    colorArm = null;
     ColorSensor colorSensor;
 
-    final double CLAMP_LEFT_OPEN  =  0.5;
-    final double CLAMP_RIGHT_OPEN = 0.5;
+    final double CLAMP_LEFT_OPEN  =  0.4;
+    final double CLAMP_RIGHT_OPEN = 0.7;
     final double CLAMP_LEFT_CLOSED  = 1.0;
     final double CLAMP_RIGHT_CLOSED = 0.0;
     final double LIFT_UP_POWER    =  0.25 ;
@@ -55,7 +55,7 @@ class HardwareBellatorum
     final double LEFT = -90.0;
     final double BACK = 180.0;
     final double AROUND = 180.0;
-    final double DEGREES_PER_SEC = 670.0;
+    final double DEGREES_PER_SEC = 335+.0;
     final double TURN_START_SECS = 0.2;
     final double ARM_UP = 0.25;
     final double ARM_DOWN = 115;
@@ -153,7 +153,7 @@ class HardwareBellatorum
         rightClamp.setPosition(CLAMP_RIGHT_CLOSED + angle/2/180);
     }
     void clampOpen() {clampOpen(180);} // Open the clamp all the way
-    void clampClose() {clampOpen(45);} // Close the clamp on a glyph
+    void clampClose() {clampOpen(30);} // Close the clamp on a glyph
 
     // Set the color arm to the specified down angle from 0 degrees straight up, 100 degrees down
     void armPosition(double angle) {
