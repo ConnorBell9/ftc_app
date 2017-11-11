@@ -54,7 +54,7 @@ public class  RedLeftByrd extends LinearOpMode {
 
 	long setTime;
 
-	void move(double angle, double distance, double power) throws InterruptedException {
+	void move(double angle, double time, double power) throws InterruptedException {
 		if (!opModeIsActive()) {
 			stopMoving();
 			return;
@@ -78,7 +78,7 @@ public class  RedLeftByrd extends LinearOpMode {
 		frontRight.setPower(v2);
 		backLeft.setPower(v3);
 		backRight.setPower(v4);
-		sleep((long)(distance/power*100)/2);
+		sleep((long)time);
 		stopMoving();
 	}
 
@@ -101,16 +101,58 @@ public class  RedLeftByrd extends LinearOpMode {
 		frontRight.setPower(0);
 		backLeft.setPower(0);
 		backRight.setPower(0);
+		sleep(500);
 	}
 
-	void hammer() throws InterruptedException {
-		hammer.setPosition(.3);
+	/*void hammer() throws InterruptedException {
+		sleep(100);
+		hammer.setPosition(0);
+		sleep(500);
+		setTime = System.currentTimeMillis();
+		while(color.blue()<.3 || color.red()<.3 || System.currentTimeMillis()<3000+setTime){}
 		if(color.blue()>.3){
-			move(180,3,.3);
+			double temp=color.blue();
+			telemetry.addData("Found Blue! ", temp);
+			move(180,6,.6);
+			move(0,6,.6);
 		} else if (color.red()>.3){
-			move(0,3,.3);
-		}
+			double temp=color.red();
+			telemetry.addData("Found Red! ", temp);
+			move(0,6,.6);
+			move(180,6,.6);
+		} else{telemetry.addData("Found Nothing! ",0);}
+		telemetry.update();
 		hammer.setPosition(.9);
+		sleep(500);b
+	}*/
+	void hammer() throws InterruptedException {
+		sleep(100);
+		hammer.setPosition(0.1);
+		color.enableLed(true);
+		sleep(1000);
+		setTime=System.currentTimeMillis();
+		while(color.blue()==color.red() && System.currentTimeMillis()<setTime+3000){
+			frontLeft.setPower(-.1);
+			frontRight.setPower(-.1);
+			backLeft.setPower(-.1);
+			backRight.setPower(-.1);
+		}
+		stopMoving();
+		if(color.blue()>color.red()){
+			double temp=color.blue();
+			telemetry.addData("Found Blue! ", temp);
+			move(180,1000,.6);
+			move(0,1000,.6);
+		} else if (color.blue()<color.red()){
+			double temp=color.red();
+			telemetry.addData("Found Red! ", temp);
+			move(0,1000,.6);
+			move(180,1000,.6);
+		} else{telemetry.addData("Found Nothing! ",0);}
+		telemetry.update();
+		color.enableLed(false);
+		hammer.setPosition(.9);
+		sleep(500);
 	}
 	@Override
 	public void runOpMode() throws InterruptedException {
@@ -155,8 +197,8 @@ public class  RedLeftByrd extends LinearOpMode {
 		hammer.setPosition(.9);
 		grabber.setPosition(.5);
 
-		plateL.setPosition(0);
-		plateR.setPosition(1);
+		plateL.setPosition(1);
+		plateR.setPosition(0);
 
 		telemetry.addData(">", "Gyro Calibrating. Do Not move!");
 		telemetry.update();
@@ -176,8 +218,17 @@ public class  RedLeftByrd extends LinearOpMode {
 
 		gyro.resetZAxisIntegrator();
 
-		move(90,12,.4);
 		hammer();
-		move(0,12,.5);
+		move(90,1000,.3);
+		move(0,5000, 1);
+		//move(90,12,1);
+		stopMoving();
+		while(!isStopRequested()){
+			color.enableLed(true);
+			hammer.setPosition(.3);
+			telemetry.addData("Red",color.red());
+			telemetry.addData("Blue",color.blue());
+			telemetry.update();
+		}
 	}
 }
