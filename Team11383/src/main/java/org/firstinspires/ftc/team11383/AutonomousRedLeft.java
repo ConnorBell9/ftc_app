@@ -108,7 +108,6 @@ public class AutonomousRedLeft extends LinearOpMode {
            //     )
 
 
-
         sleep(1000);
         backleft.setPower(0);
         frontright.setPower(0);
