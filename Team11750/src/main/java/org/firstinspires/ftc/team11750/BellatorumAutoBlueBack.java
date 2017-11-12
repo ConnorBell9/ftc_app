@@ -154,14 +154,15 @@ public class BellatorumAutoBlueBack extends LinearOpMode {
         waitForStart();
 
         robot.clampClose(); // Grab the glyph
+        sleep(1000); // Wait one second
         liftUp(1); // Raise the lift in ft
 
         displaceJewel(robot.COLOR_RED); // Knock of the jewel of this color
 
-        move(robot.LEFT, 2); // Move left 2 feet
-        move(robot.FORWARD, 1.5); // Move forward 18 inches
+        move(robot.LEFT, 2.5); // Move left 2.5 feet
+        move(robot.FORWARD, 1.5); // Move forward 1.5 feet
         turn(robot.LEFT); // Turn 90 degrees
-        move(robot.FORWARD, 1); // Move forward 1 foot
+        move(robot.FORWARD, 0.8); // Move forward 0.8 feet
 
 
         robot.clampOpen(); // Drop the glyph

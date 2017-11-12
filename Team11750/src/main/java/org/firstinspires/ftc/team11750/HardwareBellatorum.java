@@ -55,7 +55,7 @@ class HardwareBellatorum
     final double LEFT = -90.0;
     final double BACK = 180.0;
     final double AROUND = 180.0;
-    final double DEGREES_PER_SEC = 335+.0;
+    final double DEGREES_PER_SEC = 340+.0;
     final double TURN_START_SECS = 0.2;
     final double ARM_UP = 0.25;
     final double ARM_DOWN = 115;
@@ -106,10 +106,10 @@ class HardwareBellatorum
         // Define and initialize ALL installed servos.
         leftClamp = hwMap.servo.get("left_hand");
         rightClamp = hwMap.servo.get("right_hand");
-        leftClamp.setPosition(CLAMP_LEFT_OPEN);
-        rightClamp.setPosition(CLAMP_RIGHT_OPEN);
+        leftClamp.setPosition(0.2);
+        rightClamp.setPosition(0.8);
         colorArm = hwMap.servo.get("color_arm");
-        colorArm.setPosition(ARM_UP);
+        colorArm.setPosition(-0.25);
 
         // get a reference to our colorSensor
         colorSensor = hwMap.get(ColorSensor.class, "sensor_color");

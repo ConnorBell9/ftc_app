@@ -154,6 +154,7 @@ public class BellatorumAutoBlueFront extends LinearOpMode {
         waitForStart();
 
         robot.clampClose(); // Grab the glyph
+        sleep(1000); // Wait one second
         liftUp(1); // Raise the lift in ft
 
         displaceJewel(robot.COLOR_RED); // Knock of the jewel of this color
