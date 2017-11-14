@@ -71,6 +71,22 @@ public class AutonomousRedLeft extends LinearOpMode {
        }
        return false;
    }*/
+   void turnright(double power){
+    double direction = 1;
+    frontleft.setPower(power);
+    backright.setPower(power);
+    frontright.setPower(power);
+    backleft.setPower(power);
+   }
+
+   void turnleft(double power){
+       double direction = 1;
+       frontright.setPower(-1*power);
+       backright.setPower(-1*power);
+       frontleft.setPower(-1*power);
+       backleft.setPower(-1*power);
+   }
+
    void startRotate(double angle, double power) {
        double direction = 1.0; // The direction to turn
 
@@ -93,10 +109,23 @@ public class AutonomousRedLeft extends LinearOpMode {
         // Displace the blue color ball
         if (c.blue() >= 1) turnAngle += 20;
         if (c.red() >= 1) turnAngle -= 20;
+        //if (c.blue() >=1) frontleft.setPower(.2);
+       //backright.setPower(.2);
+        //if (c.red() >= 1) frontleft.setPower(-.2);
+        //backright.setPower(-.2);
+
 
         // Turn the other way to displace thr
         if(colorflag == COLOR_RED) turnAngle*=-1; // Turn the other way
-
+        //non-gyroscope
+        /*turnleft(.2);
+        sleep(200);
+        turnleft(0);
+        color.setPosition(.2);
+        turnright(.2);
+        sleep(200);
+        turnright(0);*/
+        //gyroscope
         startRotate(turnAngle, .2); // Turn to knock off the jewel
         sleep(200);
         startRotate(turnAngle, 0);
@@ -128,7 +157,7 @@ public class AutonomousRedLeft extends LinearOpMode {
         color.setPosition(.2);
         armleft.setPosition(-.5);
         armright.setPosition(.5);
-
+        c.enableLed(true);
        // c.red();
        // c.blue();
         //color.setPosition(.8);
