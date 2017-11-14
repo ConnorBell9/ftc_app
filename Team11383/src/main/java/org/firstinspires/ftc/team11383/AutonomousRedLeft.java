@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * Created by Walt on 11/06/17.
@@ -29,7 +30,8 @@ public class AutonomousRedLeft extends LinearOpMode {
    // ModernRoboticsI2cColorSensor c; // Color Sensor //
     ColorSensor c; // Color Sensor //{
 
-
+    private HardwareFortissimus2 robot   = new HardwareFortissimus2();   // Use Bellatorum's hardware
+    private ElapsedTime runtime = new ElapsedTime();
    /*boolean isRed() {
         if (c.red() < c.blue()) {
             return true;
@@ -101,6 +103,23 @@ public class AutonomousRedLeft extends LinearOpMode {
        backright.setPower(power * direction);
        backleft.setPower(power * direction);
    }
+
+    private void move(double angle, double distance, double power){
+        robot.startMovingInDirection(angle, power); // Start moving in the right direction
+
+        // Run long enough to make the distance
+        runtime.reset();
+        while (runtime.seconds() < distance/robot.FEET_PER_SEC/power) {
+            telemetry.addData("Moving: ", "%2.5f deg, %2.5f ft, %2.5f secs Elapsed",
+                    angle, distance, runtime.seconds());
+            telemetry.update();
+            if (!opModeIsActive()) {robot.stopMoving(); return;} // Stop and return
+        }
+        robot.stopMoving();
+    }
+    private void move(double angle, double distance){ // Overload with default power
+        move(angle, distance, robot.FORWARD_POWER);
+    }
 
     void displaceJewel(boolean colorflag){
         double turnAngle = 0;

@@ -32,20 +32,21 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 class HardwareFortissimus2
 {
     /* Public OpMode members. */
-    DcMotor  leftFrontMotor   = null;
-    DcMotor  rightFrontMotor  = null;
-    DcMotor  leftBackMotor    = null;
-    DcMotor  rightBackMotor   = null;
-    DcMotor  liftMotor   = null;
-    Servo    leftClamp   = null;
-    Servo    rightClamp  = null;
-    Servo    colorArm = null;
-    ColorSensor colorSensor;
+    DcMotor  leftFrontMotor   = null; // runs in x direction //
+    DcMotor  rightFrontMotor  = null; // runs in y direction //
+    DcMotor  leftBackMotor    = null; // runs in y  direction //
+    DcMotor  rightBackMotor   = null; // runs in y direction //
+    DcMotor  reel   = null;
+    DcMotor track = null;
+    Servo    armleft   = null;
+    Servo    armright  = null;
+    Servo    color = null;
+    ColorSensor c;
 
-    final double CLAMP_LEFT_OPEN  =  0.4;
-    final double CLAMP_RIGHT_OPEN = 0.7;
-    final double CLAMP_LEFT_CLOSED  = 1.0;
-    final double CLAMP_RIGHT_CLOSED = 0.0;
+    final double ARM_LEFT_OPEN  =  0.4;
+    final double ARM_RIGHT_OPEN = 0.7;
+    final double ARM_LEFT_CLOSED  = 1.0;
+    final double ARM_RIGHT_CLOSED = 0.0;
     final double LIFT_UP_POWER    =  0.25 ;
     final double LIFT_DOWN_POWER  = -0.25 ;
     final double LIFT_FEET_PER_SEC = 5;
@@ -84,7 +85,8 @@ class HardwareFortissimus2
         rightFrontMotor  = hwMap.dcMotor.get("right_front_drive");
         leftBackMotor    = hwMap.dcMotor.get("left_back_drive");
         rightBackMotor   = hwMap.dcMotor.get("right_back_drive");
-        liftMotor    = hwMap.dcMotor.get("lift_arm");
+        track   = hwMap.dcMotor.get("track");
+        reel    = hwMap.dcMotor.get("reel");
         leftFrontMotor.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         leftBackMotor.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
@@ -96,7 +98,7 @@ class HardwareFortissimus2
         rightFrontMotor.setPower(0);
         leftBackMotor.setPower(0);
         rightBackMotor.setPower(0);
-        liftMotor.setPower(0);
+        reel.setPower(0);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
@@ -104,18 +106,18 @@ class HardwareFortissimus2
         rightFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        reel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Define and initialize ALL installed servos.
-        leftClamp = hwMap.servo.get("left_hand");
-        rightClamp = hwMap.servo.get("right_hand");
-        leftClamp.setPosition(CLAMP_LEFT_OPEN);
-        rightClamp.setPosition(CLAMP_RIGHT_OPEN);
-        colorArm = hwMap.servo.get("color_arm");
-        colorArm.setPosition(ARM_UP);
+        armleft = hwMap.servo.get("al");
+        armright = hwMap.servo.get("ar");
+        armleft.setPosition(ARM_LEFT_OPEN);
+        armright.setPosition(ARM_RIGHT_OPEN);
+        color = hwMap.servo.get("ac");
+        color.setPosition(ARM_UP);
 
         // get a reference to our colorSensor
-        colorSensor = hwMap.get(ColorSensor.class, "sensor_color");
+        c = hwMap.get(ColorSensor.class, "c");
     }
 
     // Stop the robot from moving
@@ -152,15 +154,15 @@ class HardwareFortissimus2
 
     // Set the clamp to the specified open angle
     void clampOpen(double angle){
-        leftClamp.setPosition(CLAMP_LEFT_CLOSED - angle/2/180);
-        rightClamp.setPosition(CLAMP_RIGHT_CLOSED + angle/2/180);
+        armleft.setPosition(ARM_LEFT_CLOSED - angle/2/180);
+        armright.setPosition(ARM_RIGHT_CLOSED + angle/2/180);
     }
     void clampOpen() {clampOpen(180);} // Open the clamp all the way
     void clampClose() {clampOpen(30);} // Close the clamp on a glyph
 
     // Set the color arm to the specified down angle from 0 degrees straight up, 100 degrees down
     void armPosition(double angle) {
-        colorArm.setPosition(ARM_UP + angle/180);
+        color.setPosition(ARM_UP + angle/180);
     }
     void armDown() {armPosition(ARM_DOWN);} // Drop the arm to the ground
     void armUp() {armPosition(0);} // Raise the arm to the bot
