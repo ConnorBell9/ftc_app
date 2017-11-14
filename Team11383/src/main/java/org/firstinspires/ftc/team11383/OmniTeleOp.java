@@ -14,10 +14,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp(name = "OmniTeleOp")
 
 public class OmniTeleOp extends OpMode {
-    DcMotor frontleft; // Front Right Motor // Runs in Y Direction //
-    DcMotor frontright; // Front Left Motor  // Runs in X Direction //
-    DcMotor backright; // Back Right Motor  // Runs in X Direction //
-    DcMotor backleft; // Back Left Motor   // Runs in Y Direction //
+    DcMotor rightFrontMotor; // Front Right Motor // Runs in Y Direction //
+    DcMotor leftFrontMotor; // Front Left Motor  // Runs in X Direction //
+    DcMotor rightBackMotor; // Back Right Motor  // Runs in X Direction //
+    DcMotor leftBackMotor; // Back Left Motor   // Runs in Y Direction //
     DcMotor reel; // reel //
     DcMotor track; // slides and pinions //
     Servo armleft;
@@ -29,10 +29,10 @@ public class OmniTeleOp extends OpMode {
 
     @Override
     public void init() {
-        frontright = hardwareMap.dcMotor.get("fr");
-        frontleft = hardwareMap.dcMotor.get("fl");
-        backright = hardwareMap.dcMotor.get("br");
-        backleft = hardwareMap.dcMotor.get("bl");
+        rightFrontMotor = hardwareMap.dcMotor.get("fr");
+        leftFrontMotor = hardwareMap.dcMotor.get("fl");
+        rightBackMotor = hardwareMap.dcMotor.get("br");
+        leftBackMotor = hardwareMap.dcMotor.get("bl");
         reel = hardwareMap.dcMotor.get("reel");
         track = hardwareMap.dcMotor.get("track");
         armright = hardwareMap.servo.get("ar");
@@ -53,10 +53,10 @@ public class OmniTeleOp extends OpMode {
         float u = gamepad2.left_stick_y;
         float v = gamepad2.right_stick_y;
 
-        frontleft.setPower(x*.75-r*.75);  // Set wheels equal to left stick //
-        frontright.setPower(y*.75-r*.75);  // direction plus amount of turn, //
-        backright.setPower(-r*.75-x*.75);  //   determined by right stick.   //
-        backleft.setPower(-r*.75-y*.75);
+        leftFrontMotor.setPower(x*.75+r*.75);  // Set wheels equal to left stick //
+        rightFrontMotor.setPower(y*.75+r*.75);  // direction plus amount of turn, //
+        rightBackMotor.setPower(r*.75-x*.75);  //   determined by right stick.   //
+        leftBackMotor.setPower(r*.75-y*.75);
         reel.setPower(u*.3);
         track.setPower(v*.3);
         
