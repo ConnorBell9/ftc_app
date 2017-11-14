@@ -30,7 +30,6 @@
 package org.firstinspires.ftc.team11750;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -55,8 +54,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Bellatorum: Red Right", group="Bellatorum")
-public class BellatorumAutoRedRight extends LinearOpMode {
+public class BellatorumAuto extends LinearOpMode {
 
     /* Declare OpMode members. */
     private HardwareBellatorum robot   = new HardwareBellatorum();   // Use Bellatorum's hardware
@@ -77,8 +75,7 @@ public class BellatorumAutoRedRight extends LinearOpMode {
         }
         robot.stopMoving();
     }
-    private void turn (double angle) {turn(angle, robot.TURN_POWER);} // Overload with default power
-
+    void turn(double angle) {turn(angle, robot.TURN_POWER);} // Overload with default power
 
     private void move(double angle, double distance, double power){
         robot.startMovingInDirection(angle, power); // Start moving in the right direction
@@ -93,11 +90,12 @@ public class BellatorumAutoRedRight extends LinearOpMode {
         }
         robot.stopMoving();
     }
-    private void move(double angle, double distance){ // Overload with default power
+    void move(double angle, double distance){ // Overload with default power
         move(angle, distance, robot.FORWARD_POWER);
     }
 
     private void lift(double directionPower, double distance){
+        if(!robot.clampInstalled) return;
         robot.liftMotor.setPower(directionPower);
         if (directionPower<0)directionPower*=-1; // Make sure the power positive
         runtime.reset();
@@ -108,8 +106,8 @@ public class BellatorumAutoRedRight extends LinearOpMode {
         }
         robot.liftMotor.setPower(0.0);
     }
-    private void liftUp(double distance) { lift(robot.LIFT_UP_POWER, distance);}
-    private void liftDown(double distance) { lift(robot.LIFT_DOWN_POWER, distance);}
+    void liftUp(double distance) { lift(robot.LIFT_UP_POWER, distance);}
+    void liftDown(double distance) { lift(robot.LIFT_DOWN_POWER, distance);}
 
     void displaceJewel(int color){
         double turnAngle = 0;
@@ -135,12 +133,11 @@ public class BellatorumAutoRedRight extends LinearOpMode {
         robot.armUp();   // Raise the arm
         turn(-turnAngle);// Turn back
     }
-    void redTeamJewel(){ displaceJewel(robot.COLOR_BLUE);}
-    void blueTeamJewel() {displaceJewel(robot.COLOR_RED);}
+    void redTeamDisplaceJewel(){ displaceJewel(robot.COLOR_BLUE);}
+    void blueTeamDisplaceJewel() {displaceJewel(robot.COLOR_RED);}
 
     @Override
     public void runOpMode() {
-
         /*
          * Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
@@ -148,28 +145,10 @@ public class BellatorumAutoRedRight extends LinearOpMode {
         robot.init(hardwareMap);
 
         // Send telemetry message to signify robot waiting;
-        telemetry.addData("Status", "Ready to run");    //
+        telemetry.addData("Status", "This is a template Autonomous. Override");    //
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-
-        robot.clampClose(); // Grab the glyph
-        liftUp(1); // Raise the lift in ft
-
-        displaceJewel(robot.COLOR_BLUE); // Knock of the jewel of this color
-
-        move(robot.RIGHT, 3); // Move right 3 feet
-        turn(robot.AROUND); // Turn 180 degrees
-        move(robot.FORWARD, 1); // Move forward 1 foot
-
-        robot.clampOpen(); // Drop the glyph
-        move(robot.FORWARD, 0.5); // Move forward 6 inches
-
-        move(robot.BACK, 0.5); // Back up 6 inches
-
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
-        sleep(1000);
     }
 }
