@@ -53,10 +53,10 @@ public class OmniTeleOp extends OpMode {
         float u = gamepad2.left_stick_y;
         float v = gamepad2.right_stick_y;
 
-        frontleft.setPower(x-r);  // Set wheels equal to left stick //
-        frontright.setPower(y-r);  // direction plus amount of turn, //
-        backright.setPower(-r-x);  //   determined by right stick.   //
-        backleft.setPower(-r-y);
+        frontleft.setPower(x*.75-r*.75);  // Set wheels equal to left stick //
+        frontright.setPower(y*.75-r*.75);  // direction plus amount of turn, //
+        backright.setPower(-r*.75-x*.75);  //   determined by right stick.   //
+        backleft.setPower(-r*.75-y*.75);
         reel.setPower(u*.3);
         track.setPower(v*.3);
         
