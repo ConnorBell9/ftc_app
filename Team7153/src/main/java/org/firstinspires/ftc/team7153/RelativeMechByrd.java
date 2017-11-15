@@ -29,7 +29,8 @@ public class RelativeMechByrd extends OpMode{
 	Servo armR;
 	CRServo suckL;
 	CRServo suckR;
-	Servo hammer;
+	Servo hammerX;
+	CRServo hammerY;
 	Servo plateL;
 	Servo plateR;
 	Servo grabber;
@@ -79,7 +80,8 @@ public class RelativeMechByrd extends OpMode{
 	    suckL = hardwareMap.crservo.get("suckL");
 	    suckR = hardwareMap.crservo.get("suckR");
 
-	    hammer = hardwareMap.servo.get("hammerY");
+	    hammerY = hardwareMap.crservo.get("hammerY");
+	    hammerX = hardwareMap.servo.get("hammerX");
 	    grabber = hardwareMap.servo.get("grabber");
 
 	    plateL = hardwareMap.servo.get("plateL");
@@ -95,7 +97,7 @@ public class RelativeMechByrd extends OpMode{
 
 	    armL.setPosition(.4);
 	    armR.setPosition(1);
-	    hammer.setPosition(.9);
+	    hammerY.setPower(.9);
 		grabber.setPosition(0);
 
 		plateL.setPosition(1);
