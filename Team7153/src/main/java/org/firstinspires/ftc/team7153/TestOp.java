@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 
-@TeleOp(name="TestOp")
+@TeleOp(name="TestOp" , group = "Archaic")
 public class TestOp extends OpMode{
 
 	DcMotor frontRight; // Front Right Motor // Runs in ? Direction //
@@ -51,6 +51,7 @@ public class TestOp extends OpMode{
 	boolean succ;
 	boolean plate = false;
 	boolean idolGrab;
+	boolean mode=false;
 
 	long setTime;
 
@@ -112,28 +113,36 @@ public class TestOp extends OpMode{
 
     @Override
     public void loop() {
-	    double maxSpeed = 1;//Defines what fraction of speed the robot will run atb
-		double radGyro = (gyro.getHeading() * Math.PI) / 180;
-	    double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
-	    double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4 - radGyro;
-	    double rightX = gamepad1.right_stick_x;
-	    final double v1 = r * Math.cos(robotAngle) + rightX;
-	    final double v2 = r * Math.sin(robotAngle) - rightX;
-	    final double v3 = r * Math.sin(robotAngle) + rightX;
-	    final double v4 = r * Math.cos(robotAngle) - rightX;
+    	if(!mode) {
+			double maxSpeed = 1;//Defines what fraction of speed the robot will run atb
+			double radGyro = (gyro.getHeading() * Math.PI) / 180;
+			double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
+			double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4 - radGyro;
+			double rightX = gamepad1.right_stick_x;
+			final double v1 = r * Math.cos(robotAngle) + rightX;
+			final double v2 = r * Math.sin(robotAngle) - rightX;
+			final double v3 = r * Math.sin(robotAngle) + rightX;
+			final double v4 = r * Math.cos(robotAngle) - rightX;
 
-	    frontLeft.setPower(v1*maxSpeed);
-	    frontRight.setPower(v2*maxSpeed);
-	    backLeft.setPower(v3*maxSpeed);
-	    backRight.setPower(v4*maxSpeed);
+			frontLeft.setPower(v1 * maxSpeed);
+			frontRight.setPower(v2 * maxSpeed);
+			backLeft.setPower(v3 * maxSpeed);
+			backRight.setPower(v4 * maxSpeed);
+		} else {
+			frontLeft.setPower(0);
+			frontRight.setPower(0);
+			backLeft.setPower(0);
+			backRight.setPower(0);
+			hammerX.setPosition(gamepad1.left_stick_x);
+			hammerY.setPower(gamepad1.left_stick_y);
+			telemetry.addData("HammerX is at : ", hammerX.getPosition());
+			telemetry.addData("HammerY is at : ", hammerY.getPower());
+			telemetry.update();
+
+		}
 
 	    if(gamepad2.a && System.currentTimeMillis() > setTime+500){
 			if(grab){grab=false;}else{grab=true;}
-			setTime = System.currentTimeMillis();
-	    }
-
-	    if(gamepad1.a && System.currentTimeMillis() > setTime+500){
-			if(succ){succ=false;}else{succ=true;}
 			setTime = System.currentTimeMillis();
 	    }
 
@@ -147,13 +156,10 @@ public class TestOp extends OpMode{
 			setTime = System.currentTimeMillis();
 		}
 
-	    if(succ){
-		    suckL.setPower(1);
-		    suckR.setPower(0);
-	    } else {
-		    suckL.setPower(.5);
-		    suckR.setPower(.5);
-	    }
+		if(gamepad1.y && System.currentTimeMillis() > setTime+500){
+			if(mode){mode=false;}else{mode=true;}
+			setTime = System.currentTimeMillis();
+		}
 
 	    if(grab){
 		    armL.setPosition(.4);
@@ -205,6 +211,7 @@ public class TestOp extends OpMode{
 			setTime = System.currentTimeMillis();
 		}
 
+		/*telemetry.addData("Mode is: ", mode);
 	    telemetry.addData("Grab is: ", grab);
 	    telemetry.addData("Broom is: ", succ);
 		telemetry.addData("Plate is: ", plate);
@@ -216,13 +223,10 @@ public class TestOp extends OpMode{
 		telemetry.addData("idolY Running at: ", idolY.getCurrentPosition());
 		telemetry.addData("idolZ Running to: ", positionIZ);
 		telemetry.addData("idolZ Running at: ", idolZ.getCurrentPosition());
-	    telemetry.addData("frontLeft", v1);
-	    telemetry.addData("frontRight", v2);
-	    telemetry.addData("backLeft", v3);
-	    telemetry.addData("backRight", v4);
 	    telemetry.addData("Gyro", gyro);
 		telemetry.addData("Color Blue: ", color.blue());
 		telemetry.addData("Color Red: ", color.red());
 	    telemetry.update();
+	    */
     }
 }

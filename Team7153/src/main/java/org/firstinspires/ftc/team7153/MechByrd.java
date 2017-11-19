@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
 
-@TeleOp(name="MechByrd")
+@TeleOp(name="MechByrd" , group = "Archaic")
 public class MechByrd extends OpMode{
 
 	DcMotor frontRight; // Front Right Motor // Runs in ? Direction //

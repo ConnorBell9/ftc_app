@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@Autonomous(name="RedLeftByrd")
+@Autonomous(name="RedLeftByrd" , group = "Archaic")
 public class  RedLeftByrd extends LinearOpMode {
 	DcMotor frontRight; // Front Right Motor // Runs in ? Direction //
 	DcMotor frontLeft; // Front Left Motor  // Runs in ? Direction //

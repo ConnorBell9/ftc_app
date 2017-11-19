@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 
-@TeleOp(name="RelativeMechByrd")
+@TeleOp(name="RelativeMechByrd" , group = "Archaic")
 public class RelativeMechByrd extends OpMode{
 
 	DcMotor frontRight; // Front Right Motor // Runs in ? Direction //
@@ -97,15 +97,18 @@ public class RelativeMechByrd extends OpMode{
 
 	    armL.setPosition(.4);
 	    armR.setPosition(1);
-	    hammerY.setPower(.9);
+	    hammerY.setPower(-1);//-.4 is even out
+		hammerX.setPosition(.6);
 		grabber.setPosition(0);
 
 		plateL.setPosition(1);
 		plateR.setPosition(0);
 
-		telemetry.addData(">", "Gyro Calibrating. Do Not move!");
-		telemetry.update();
 		gyro.calibrate();
+		while(gyro.isCalibrating()) {
+			telemetry.addData(">", "Gyro Calibrating. Do Not move!");
+			telemetry.update();
+		}
 		telemetry.addData(">", "Gyro Calibrated.  Press Start.");
 		telemetry.update();
     }

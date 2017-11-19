@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="BlueRightByrd")
+@Autonomous(name="BlueRightByrd" , group = "Archaic")
 public class BlueRightByrd extends LinearOpMode {
 	DcMotor frontRight; // Front Right Motor // Runs in ? Direction //
 	DcMotor frontLeft; // Front Left Motor  // Runs in ? Direction //
