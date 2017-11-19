@@ -55,8 +55,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Bellatorum: Red Right", group="Bellatorum")
-public class BellatorumAutoRedRight extends LinearOpMode {
+@Autonomous(name="Bellatorum: Red Front", group="Bellatorum")
+public class BellatorumAutoRedFront extends LinearOpMode {
 
     /* Declare OpMode members. */
     private HardwareBellatorum robot   = new HardwareBellatorum();   // Use Bellatorum's hardware
@@ -155,6 +155,7 @@ public class BellatorumAutoRedRight extends LinearOpMode {
         waitForStart();
 
         robot.clampClose(); // Grab the glyph
+        sleep(1000); // Wait one second
         liftUp(1); // Raise the lift in ft
 
         displaceJewel(robot.COLOR_BLUE); // Knock of the jewel of this color

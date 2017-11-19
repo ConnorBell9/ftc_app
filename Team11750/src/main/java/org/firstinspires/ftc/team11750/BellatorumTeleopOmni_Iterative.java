@@ -115,7 +115,7 @@ public class BellatorumTeleopOmni_Iterative extends OpMode{
             clampOffset -= CLAMP_SPEED;
 
         // Move both servos to new position.  Assume servos are mirror image of each other.
-        clampOffset = Range.clip(clampOffset, -0.5, 0.5);
+        clampOffset = Range.clip(clampOffset, -0.75, 0.75);
         robot.leftClamp.setPosition(robot.CLAMP_LEFT_OPEN + clampOffset);
         robot.rightClamp.setPosition(robot.CLAMP_RIGHT_OPEN - clampOffset);
 
