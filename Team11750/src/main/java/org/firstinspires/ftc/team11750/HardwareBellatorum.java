@@ -157,7 +157,7 @@ class HardwareBellatorum
         rightClamp.setPosition(CLAMP_RIGHT_CLOSED + angle/2/180);
     }
     void clampOpen() {clampOpen(180);} // Open the clamp all the way
-    void clampClose() {clampOpen(30);} // Close the clamp on a glyph */
+    void clampClose() {clampOpen(30);} // Close the clamp on a glyph
 
     // Set the color arm to the specified down angle from 0 degrees straight up, 100 degrees down
     void armPosition(double angle) {
