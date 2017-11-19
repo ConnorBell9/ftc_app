@@ -60,8 +60,8 @@ public class BellatorumTeleopOmni_Iterative extends OpMode{
     /* Declare OpMode members. */
     HardwareBellatorum robot       = new HardwareBellatorum(); // use the class created to define a Pushbot's hardware
                                                          // could also use HardwarePushbotMatrix class.
-    double          clawOffset  = 0.0 ;                  // Servo mid position
-    final double    CLAW_SPEED  = 0.02 ;                 // sets rate to move servo
+    double          clampOffset  = 0.0 ;                  // Servo mid position
+    final double    CLAMP_SPEED  = 0.02 ;                 // sets rate to move servo
 
 
     /*
@@ -108,28 +108,27 @@ public class BellatorumTeleopOmni_Iterative extends OpMode{
         robot.rightBackMotor.setPower(r-x);
         robot.leftBackMotor.setPower(r-y);
 
-        /*
-        // Use gamepad left & right Bumpers to open and close the claw
-        if (gamepad1.right_bumper)
-            clawOffset += CLAW_SPEED;
-        else if (gamepad1.left_bumper)
-            clawOffset -= CLAW_SPEED;
+        // Use gamepad left & right Bumpers to open and close the clamp
+        if (gamepad2.right_bumper)
+            clampOffset += CLAMP_SPEED;
+        else if (gamepad2.left_bumper)
+            clampOffset -= CLAMP_SPEED;
 
         // Move both servos to new position.  Assume servos are mirror image of each other.
-        clawOffset = Range.clip(clawOffset, -0.5, 0.5);
-        robot.leftClaw.setPosition(robot.MID_SERVO + clawOffset);
-        robot.rightClaw.setPosition(robot.MID_SERVO - clawOffset);
+        clampOffset = Range.clip(clampOffset, -0.5, 0.5);
+        robot.leftClamp.setPosition(robot.CLAMP_LEFT_OPEN + clampOffset);
+        robot.rightClamp.setPosition(robot.CLAMP_RIGHT_OPEN - clampOffset);
 
-        // Use gamepad buttons to move the arm up (Y) and down (A)
-        if (gamepad1.y)
-            robot.armMotor.setPower(robot.ARM_UP_POWER);
-        else if (gamepad1.a)
-            robot.armMotor.setPower(robot.ARM_DOWN_POWER);
+        // Use gamepad buttons to move the lift up (Y) and down (A)
+        if (gamepad2.a)
+            robot.liftMotor.setPower(robot.LIFT_UP_POWER);
+        else if (gamepad2.y)
+            robot.liftMotor.setPower(robot.LIFT_DOWN_POWER);
         else
-            robot.armMotor.setPower(0.0);
-*/
+            robot.liftMotor.setPower(0.0);
+
         // Send telemetry message to signify robot running;
-        //telemetry.addData("claw",  "Offset = %.2f", clawOffset);
+        telemetry.addData("clamp",  "Offset = %.2f", clampOffset);
         telemetry.addData("left.x,y",  "%.2f, %.2f", x, y);
         telemetry.addData("right.rotation", "%.2f", r);
     }

@@ -1,7 +1,9 @@
 //package org.firstinspires.ftc.robotcontroller.external.samples;
 package org.firstinspires.ftc.team11750;
 
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -24,32 +26,53 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Servo channel:  Servo to move left clamp: "left_hand"
  * Servo channel:  Servo to move right clamp:"right_hand"
  */
-public class HardwareBellatorum
+class HardwareBellatorum
 {
     /* Public OpMode members. */
-    public DcMotor  leftFrontMotor   = null;
-    public DcMotor  rightFrontMotor  = null;
-    public DcMotor  leftBackMotor    = null;
-    public DcMotor  rightBackMotor   = null;
-    public DcMotor  liftMotor   = null;
-    public Servo    leftClamp   = null;
-    public Servo    rightClamp  = null;
+    DcMotor  leftFrontMotor   = null;
+    DcMotor  rightFrontMotor  = null;
+    DcMotor  leftBackMotor    = null;
+    DcMotor  rightBackMotor   = null;
+    DcMotor  liftMotor   = null;
+    Servo    leftClamp   = null;
+    Servo    rightClamp  = null;
+    Servo    colorArm = null;
+    ColorSensor colorSensor;
 
-    public static final double BACK_SERVO      =  0.0;
-    public static final double LIFT_UP_POWER    =  0.45 ;
-    public static final double LIFT_DOWN_POWER  = -0.45 ;
+    final double CLAMP_LEFT_OPEN  =  0.5;
+    final double CLAMP_RIGHT_OPEN = 0.5;
+    final double CLAMP_LEFT_CLOSED  = 1.0;
+    final double CLAMP_RIGHT_CLOSED = 0.0;
+    final double LIFT_UP_POWER    =  0.25 ;
+    final double LIFT_DOWN_POWER  = -0.25 ;
+    final double LIFT_FEET_PER_SEC = 5;
+    final double FORWARD_POWER = 0.6;
+    final double FEET_PER_SEC = 4;
+    final double MOVE_START_SECS = 0.1;
+    final double TURN_POWER    = 0.1;
+    final double FORWARD =0.0;
+    final double RIGHT = 90.0;
+    final double LEFT = -90.0;
+    final double BACK = 180.0;
+    final double AROUND = 180.0;
+    final double DEGREES_PER_SEC = 670.0;
+    final double TURN_START_SECS = 0.2;
+    final double ARM_UP = 0.25;
+    final double ARM_DOWN = 115;
+    final int COLOR_RED = 1;
+    final int COLOR_BLUE = 2;
 
     /* local OpMode members. */
-    HardwareMap hwMap           =  null;
+    private HardwareMap hwMap           =  null;
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
-    public HardwareBellatorum(){
+    HardwareBellatorum(){
 
     }
 
     /* Initialize standard Hardware interfaces */
-    public void init(HardwareMap ahwMap) {
+    void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
         hwMap = ahwMap;
 
@@ -59,9 +82,9 @@ public class HardwareBellatorum
         leftBackMotor    = hwMap.dcMotor.get("left_back_drive");
         rightBackMotor   = hwMap.dcMotor.get("right_back_drive");
         liftMotor    = hwMap.dcMotor.get("lift_arm");
-        leftFrontMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
+        leftFrontMotor.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
-        leftBackMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
+        leftBackMotor.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         rightBackMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
 
 
@@ -83,9 +106,61 @@ public class HardwareBellatorum
         // Define and initialize ALL installed servos.
         leftClamp = hwMap.servo.get("left_hand");
         rightClamp = hwMap.servo.get("right_hand");
-        leftClamp.setPosition(BACK_SERVO);
-        rightClamp.setPosition(BACK_SERVO);
+        leftClamp.setPosition(CLAMP_LEFT_OPEN);
+        rightClamp.setPosition(CLAMP_RIGHT_OPEN);
+        colorArm = hwMap.servo.get("color_arm");
+        colorArm.setPosition(ARM_UP);
+
+        // get a reference to our colorSensor
+        colorSensor = hwMap.get(ColorSensor.class, "sensor_color");
     }
+
+    // Stop the robot from moving
+    void stopMoving() {
+        leftBackMotor.setPower(0.0); // Stop
+        rightFrontMotor.setPower(0.0);
+        leftFrontMotor.setPower(0.0);
+        rightBackMotor.setPower(0.0);
+    }
+
+    // Start the robot turning in the angle direction at specified power
+    void startRotate(double angle, double power) {
+        double direction = 1.0; // The direction to turn
+
+        if (angle < 0) { // If the angle is negative
+            direction = -1; // Toggle the direction
+            angle *= -1; // Make the angle positive
+        }
+
+        // Set all motors to turn in direction at power
+        rightBackMotor.setPower(power * direction);
+        rightFrontMotor.setPower(power * direction);
+        leftFrontMotor.setPower(power * direction);
+        leftBackMotor.setPower(power * direction);
+    }
+
+    // Start the robot moving in the direction specified by angle (relative to the robot front)
+    void startMovingInDirection(double angle, double power){
+        rightFrontMotor.setPower(-power * Math.cos((Math.PI / 180) * angle));
+        leftBackMotor.setPower(power * Math.cos((Math.PI / 180) * angle));
+        leftFrontMotor.setPower(power * Math.sin((Math.PI / 180) * angle));
+        rightBackMotor.setPower(-power * Math.sin((Math.PI / 180) * angle));
+    }
+
+    // Set the clamp to the specified open angle
+    void clampOpen(double angle){
+        leftClamp.setPosition(CLAMP_LEFT_CLOSED - angle/2/180);
+        rightClamp.setPosition(CLAMP_RIGHT_CLOSED + angle/2/180);
+    }
+    void clampOpen() {clampOpen(180);} // Open the clamp all the way
+    void clampClose() {clampOpen(45);} // Close the clamp on a glyph
+
+    // Set the color arm to the specified down angle from 0 degrees straight up, 100 degrees down
+    void armPosition(double angle) {
+        colorArm.setPosition(ARM_UP + angle/180);
+    }
+    void armDown() {armPosition(ARM_DOWN);} // Drop the arm to the ground
+    void armUp() {armPosition(0);} // Raise the arm to the bot
 
     /***
      *

@@ -18,7 +18,8 @@ public class OmniTeleOp extends OpMode {
     DcMotor frontright; // Front Left Motor  // Runs in X Direction //
     DcMotor backright; // Back Right Motor  // Runs in X Direction //
     DcMotor backleft; // Back Left Motor   // Runs in Y Direction //
-    DcMotor arm; // arm //
+    DcMotor reel; // reel //
+    DcMotor track; // slides and pinions //
     Servo armleft;
     Servo armright;
 
@@ -30,7 +31,13 @@ public class OmniTeleOp extends OpMode {
         frontleft = hardwareMap.dcMotor.get("fl");
         backright = hardwareMap.dcMotor.get("br");
         backleft = hardwareMap.dcMotor.get("bl");
-        arm = hardwareMap.dcMotor.get("arm");
+        reel = hardwareMap.dcMotor.get("reel");
+        track = hardwareMap.dcMotor.get("track");
+        armright = hardwareMap.servo.get("ar");
+        armleft = hardwareMap.servo.get("al");
+        
+        armright.setPosition(0);
+        armleft.setPosition(0);
     }
     @Override
     public void loop() {
@@ -38,11 +45,23 @@ public class OmniTeleOp extends OpMode {
         float y = gamepad1.left_stick_y;
         float r = gamepad1.right_stick_x;
         float u = gamepad2.left_stick_y;
+        float v = gamepad2.right_stick_y;
 
         frontleft.setPower(x+r);  // Set wheels equal to left stick //
         frontright.setPower(y+r);  // direction plus amount of turn, //
         backright.setPower(r-x);  //   determined by right stick.   //
         backleft.setPower(r-y);
-        arm.setPower(u*.2);
+        reel.setPower(u*.3);
+        track.setPower(v*.2);
+        
+        if (gamepad2.x) {
+            armleft.setPosition(-.5);
+            armright.setPosition(.5);
+        }
+        else if (gamepad2.b) {
+            armleft.setPosition(.5);
+            armright.setPosition(-.5);
+        }
+        
     }
 }
