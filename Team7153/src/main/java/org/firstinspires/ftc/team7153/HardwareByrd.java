@@ -33,6 +33,7 @@ import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
@@ -99,7 +100,7 @@ public class HardwareByrd
     public static final double  RIGHT_CLAMP_OPEN  = .7;
 
     public static boolean       IS_HAMMER     = false;
-    public static final double  HAMMER_DOWN   = -.4;
+    public static final double  HAMMER_DOWN   = -.2;
     public static final double  HAMMER_UP     = -1;
     public static final double  HAMMER_LEFT   = .8;
     public static final double  HAMMER_RIGHT  = .4;
@@ -120,6 +121,11 @@ public class HardwareByrd
 
     public static final boolean RED = true;
     public static final boolean BLUE = true;
+
+    public static final double MOVE_BACKWARDS = 270;
+    public static final double MOVE_FORWARDS  = 90;
+    public static final double MOVE_LEFT      = 180;
+    public static final double MOVE_RIGHT     = 0;
 
 
     /* local OpMode members. */
@@ -150,7 +156,7 @@ public class HardwareByrd
 
         frontRight.setDirection(DcMotor.Direction.REVERSE);
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
-        backRight.setDirection(DcMotor.Direction.FORWARD);
+        backRight.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.FORWARD);
         forkX.setDirection(DcMotor.Direction.FORWARD);
         forkY.setDirection(DcMotor.Direction.REVERSE);

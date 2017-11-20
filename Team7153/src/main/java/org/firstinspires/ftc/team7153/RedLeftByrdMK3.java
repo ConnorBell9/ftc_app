@@ -8,7 +8,7 @@ import static org.firstinspires.ftc.team7153.HardwareByrd.*;
 @Autonomous(name="RedLeftByrdMK3" , group = "New")
 public class RedLeftByrdMK3 extends LinearOpMode {
 	private HardwareByrd robot = new HardwareByrd();
-	private double imaginaryAngle=0;
+	private double imaginaryAngle=90;
 
 	private void move(double angle, double time, double power) throws InterruptedException {
 		if (!opModeIsActive()) {
@@ -33,26 +33,58 @@ public class RedLeftByrdMK3 extends LinearOpMode {
 		robot.frontRight.setPower(v2);
 		robot.backLeft.setPower(v3);
 		robot.backRight.setPower(v4);
+		telemetry.addData("Function: ", "Move");
+		telemetry.addData("FrontLeft:  ", robot.frontLeft.getPower());
+		telemetry.addData("FrontRight: ", robot.frontRight.getPower());
+		telemetry.addData("BackLeft:   ", robot.backLeft.getPower());
+		telemetry.addData("BackRight:  ", robot.backRight.getPower());
+		telemetry.addData("Moving at Angle: ", angle);
+		telemetry.addData("Moving for Time: ", time);
+		telemetry.addData("Moving at Speed: ", power);
+		telemetry.update();
+		sleep((long) time);
+		stopMoving();
+		straighten();
+	}
+
+	private void moveWithoutStopping(double angle, double power) throws InterruptedException {
+		if (!opModeIsActive()) {
+			stopMoving();
+			return;
+		}
+		double radGyro = (robot.gyro.getIntegratedZValue() * Math.PI) / 180;
+		double robotAngle = angle * (Math.PI / 180) - Math.PI / 4 - radGyro;
+
+		if (robotAngle > Math.PI) {
+			robotAngle = Math.PI * -2 + robotAngle;
+		} else if (robotAngle < -Math.PI) {
+			robotAngle = Math.PI * 2 + robotAngle;
+		}
+
+		final double v1 = power * Math.cos(robotAngle);
+		final double v2 = power * Math.sin(robotAngle);
+		final double v3 = power * Math.sin(robotAngle);
+		final double v4 = power * Math.cos(robotAngle);
+
+		robot.frontLeft.setPower(v1);
+		robot.frontRight.setPower(v2);
+		robot.backLeft.setPower(v3);
+		robot.backRight.setPower(v4);
+		telemetry.addData("Function: ", "MoveWithoutStopping");
+		telemetry.addData("FrontLeft:  ", robot.frontLeft.getPower());
+		telemetry.addData("FrontRight: ", robot.frontRight.getPower());
+		telemetry.addData("BackLeft:   ", robot.backLeft.getPower());
+		telemetry.addData("BackRight:  ", robot.backRight.getPower());
+		telemetry.addData("Moving at Angle: ", angle);
+		telemetry.addData("Moving at Speed: ", power);
+		telemetry.update();
 		sleep((long) time);
 		stopMoving();
 		straighten();
 	}
 
 	private void straighten() throws InterruptedException {
-		while (robot.gyro.getIntegratedZValue() < imaginaryAngle - 2 || robot.gyro.getIntegratedZValue() > imaginaryAngle + 2 && opModeIsActive()) {
-			if (robot.gyro.getIntegratedZValue() < -imaginaryAngle) {
-				robot.frontLeft.setPower(.2);
-				robot.frontRight.setPower(-.2);
-				robot.backLeft.setPower(.2);
-				robot.backRight.setPower(-.2);
-			} else if (robot.gyro.getIntegratedZValue() > -.2) {
-				robot.frontLeft.setPower(-.2);
-				robot.frontRight.setPower(.2);
-				robot.backLeft.setPower(-.2);
-				robot.backRight.setPower(.2);
-			}
-		}
-		stopMoving();
+		turn(imaginaryAngle,.2);
 	}
 
 	private void grab(boolean grab) {
@@ -74,9 +106,9 @@ public class RedLeftByrdMK3 extends LinearOpMode {
 	}
 
 	private void turn(double angle, double speed) throws InterruptedException {
-		angle -= 90;
 		imaginaryAngle = angle;
-		while (robot.gyro.getIntegratedZValue() < angle - 2 || robot.gyro.getIntegratedZValue() > angle + 2 && opModeIsActive()) {
+		angle -= 90;
+		while (robot.gyro.getIntegratedZValue() < angle - 2 || robot.gyro.getIntegratedZValue() > angle + 2 && !isStopRequested()) {
 			if (robot.gyro.getIntegratedZValue() < -angle) {
 				robot.frontLeft.setPower(speed);
 				robot.frontRight.setPower(-speed);
@@ -88,6 +120,11 @@ public class RedLeftByrdMK3 extends LinearOpMode {
 				robot.backLeft.setPower(-speed);
 				robot.backRight.setPower(speed);
 			}
+			telemetry.addData("Function: ", "Turn");
+			telemetry.addData("Current Angle: ", robot.gyro.getIntegratedZValue());
+			telemetry.addData("Target Angle:  ", angle);
+			telemetry.addData("Current Speed: ", speed);
+			telemetry.update();
 		}
 		stopMoving();
 		straighten();
@@ -102,15 +139,14 @@ public class RedLeftByrdMK3 extends LinearOpMode {
 	}
 
 	private void hammer(boolean colorRemaining) throws InterruptedException {
+		telemetry.addData("Function: ", "Hammer");
+		telemetry.update();
 		robot.color.enableLed(true);
 		robot.hammerY.setPower(HAMMER_DOWN);
 		sleep(1000);
 		resetTimer();
-		while (robot.color.blue() == robot.color.red() && System.currentTimeMillis() < INPUT_TIMER + 1000 && opModeIsActive()) {
-			robot.frontLeft.setPower(-.07);
-			robot.frontRight.setPower(-.07);
-			robot.backLeft.setPower(-.07);
-			robot.backRight.setPower(-.07);
+		while (robot.color.blue() == robot.color.red() && System.currentTimeMillis() < INPUT_TIMER + 1000 && !isStopRequested()) {
+			moveWithoutStopping(MOVE_BACKWARDS,.07);
 		}
 		sleep(500);
 		stopMoving();
@@ -121,7 +157,6 @@ public class RedLeftByrdMK3 extends LinearOpMode {
 		while(robot.color.red()<robot.color.blue()){
 			if(colorRemaining==RED){putt(RIGHT);} else {putt(LEFT);}
 		}
-
 		robot.color.enableLed(false);
 		sleep(500);
 	}
@@ -130,45 +165,65 @@ public class RedLeftByrdMK3 extends LinearOpMode {
 		if(direction == RIGHT){
 			robot.hammerX.setPosition(HAMMER_RIGHT);
 			resetTimer();
-			while(robot.hammerX.getPosition()!=HAMMER_RIGHT && INPUT_TIMER+2000<System.currentTimeMillis()) {
+			while(robot.color.blue()!=robot.color.red()) {
 				telemetry.addData("Hammer Position: ", robot.hammerX.getPosition());
 				telemetry.addData("Hammer Target Position: ", HAMMER_RIGHT);
 				telemetry.addData("Time Left: ", INPUT_TIMER+2000-System.currentTimeMillis());
 				telemetry.update();
 			}
-			robot.hammerX.setPosition(HAMMER_CENTER);
-			sleep(1000);
 		} else {
 			robot.hammerX.setPosition(HAMMER_LEFT);
 			resetTimer();
-			while(robot.hammerX.getPosition()!=HAMMER_LEFT && INPUT_TIMER+2000<System.currentTimeMillis()) {
+			while(robot.color.blue()!=robot.color.red()) {
 				telemetry.addData("Hammer Position: ", robot.hammerX.getPosition());
 				telemetry.addData("Hammer Target Position: ", HAMMER_LEFT);
 				telemetry.addData("Time Left: ", INPUT_TIMER+2000-System.currentTimeMillis());
 				telemetry.update();
 			}
-			robot.hammerX.setPosition(HAMMER_CENTER);
-			sleep(1000);
 		}
+		robot.hammerX.setPosition(HAMMER_CENTER);
+		sleep(1000);
 	}
 
-	private void vuCubby(double direction) throws InterruptedException{
+	private void vuCubby(boolean direction, int target) throws InterruptedException{
 		robot.color.enableLed(true);
-
-		resetTimer();
-		while(robot.color.blue()+robot.color.red()< 100){
-			move(180,10,.7);
+		for(target-=1;target>0;){
+			robot.hammerX.setPosition(HAMMER_CENTER);
+			robot.hammerY.setPower(HAMMER_DOWN);
+			moveToCubby(direction);
+			if(direction){
+				robot.hammerX.setPosition(HAMMER_RIGHT);
+			} else {
+				robot.hammerX.setPosition(HAMMER_LEFT);
+			}
+			robot.hammerY.setPower(HAMMER_UP);
+			sleep(250);
+			stopMoving();
 		}
 	}
 
 	private void insert(double direction) throws InterruptedException{
-		turn(270,.5);
-		move(270,1000,.2);
+		turn(direction,.5);
+		move(direction,1000,.2);
 		grab(false);
 		forkX(false);
-		move(270,200,.2);
-		move(90,500,.2);
-		turn(90,.5);
+		move(direction,200,.2);
+		direction-=180;
+		if(direction<0){direction+=360;}
+		move(direction,500,.2);
+		turn(direction,.5);
+	}
+
+	private void moveToCubby(boolean direction) throws InterruptedException {
+		resetTimer();
+		while(robot.color.blue()+robot.color.red()< 100 && INPUT_TIMER+1000>System.currentTimeMillis()){
+			if(direction){
+				moveWithoutStopping(MOVE_RIGHT,.7);
+			} else {
+				moveWithoutStopping(MOVE_LEFT, .7);
+			}
+			stopMoving();
+		}
 	}
 
 	private void resetTimer(){
@@ -210,9 +265,9 @@ public class RedLeftByrdMK3 extends LinearOpMode {
 			grab(true);
 			forkX(true);
 			hammer(RED);
-			dismount(0);
-			vuCubby(0);
-			insert(0);
+			//dismount(0);
+			vuCubby(RIGHT,2);
+			insert(MOVE_RIGHT);
 		}
 	}
 }
