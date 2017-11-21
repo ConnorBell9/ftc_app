@@ -15,6 +15,7 @@ public class RedLeftByrdMK3 extends LinearOpMode {
 			stopMoving();
 			return;
 		}
+		straighten();
 		double radGyro = (robot.gyro.getIntegratedZValue() * Math.PI) / 180;
 		double robotAngle = angle * (Math.PI / 180) - Math.PI / 4 - radGyro;
 
@@ -44,7 +45,6 @@ public class RedLeftByrdMK3 extends LinearOpMode {
 		telemetry.update();
 		sleep((long) time);
 		stopMoving();
-		straighten();
 	}
 
 	private void moveWithoutStopping(double angle, double power) throws InterruptedException {
@@ -78,13 +78,10 @@ public class RedLeftByrdMK3 extends LinearOpMode {
 		telemetry.addData("Moving at Angle: ", angle);
 		telemetry.addData("Moving at Speed: ", power);
 		telemetry.update();
-		sleep((long) time);
-		stopMoving();
-		straighten();
 	}
 
 	private void straighten() throws InterruptedException {
-		turn(imaginaryAngle,.2);
+		turn(imaginaryAngle,.4);
 	}
 
 	private void grab(boolean grab) {
@@ -107,7 +104,7 @@ public class RedLeftByrdMK3 extends LinearOpMode {
 
 	private void turn(double angle, double speed) throws InterruptedException {
 		imaginaryAngle = angle;
-		angle -= 90;
+		angle += -90 + robot.gyro.getIntegratedZValue();
 		while (robot.gyro.getIntegratedZValue() < angle - 2 || robot.gyro.getIntegratedZValue() > angle + 2 && !isStopRequested()) {
 			if (robot.gyro.getIntegratedZValue() < -angle) {
 				robot.frontLeft.setPower(speed);
@@ -127,7 +124,6 @@ public class RedLeftByrdMK3 extends LinearOpMode {
 			telemetry.update();
 		}
 		stopMoving();
-		straighten();
 	}
 
 	private void stopMoving() throws InterruptedException {
@@ -145,60 +141,74 @@ public class RedLeftByrdMK3 extends LinearOpMode {
 		robot.hammerY.setPower(HAMMER_DOWN);
 		sleep(1000);
 		resetTimer();
+		scan();
 		while (robot.color.blue() == robot.color.red() && System.currentTimeMillis() < INPUT_TIMER + 1000 && !isStopRequested()) {
-			moveWithoutStopping(MOVE_BACKWARDS,.07);
+			moveWithoutStopping(MOVE_BACKWARDS,.08);
 		}
-		sleep(500);
 		stopMoving();
+		telemetry.addData("Function: ", "Hammer");
+		telemetry.update();
 		sleep(1000);
-		while(robot.color.red()>robot.color.blue()){
-			if(colorRemaining==RED){putt(LEFT);}  else {putt(RIGHT);}
-		}
-		while(robot.color.red()<robot.color.blue()){
+		scan();
+		if(robot.color.red()>robot.color.blue()){
+			telemetry.addData("Color Red: ", robot.color.red());
+			telemetry.addData("Color Blue: ", robot.color.blue());
+			telemetry.update();
+			if(colorRemaining==RED){putt(LEFT);} else {putt(RIGHT);}
+		} else if (robot.color.red()<robot.color.blue()){
+			telemetry.addData("Color Red: ", robot.color.red());
+			telemetry.addData("Color Blue: ", robot.color.blue());
+			telemetry.update();
 			if(colorRemaining==RED){putt(RIGHT);} else {putt(LEFT);}
 		}
 		robot.color.enableLed(false);
 		sleep(500);
 	}
 
-	private void putt(boolean direction){
-		if(direction == RIGHT){
-			robot.hammerX.setPosition(HAMMER_RIGHT);
-			resetTimer();
-			while(robot.color.blue()!=robot.color.red()) {
-				telemetry.addData("Hammer Position: ", robot.hammerX.getPosition());
-				telemetry.addData("Hammer Target Position: ", HAMMER_RIGHT);
-				telemetry.addData("Time Left: ", INPUT_TIMER+2000-System.currentTimeMillis());
-				telemetry.update();
-			}
-		} else {
-			robot.hammerX.setPosition(HAMMER_LEFT);
-			resetTimer();
-			while(robot.color.blue()!=robot.color.red()) {
-				telemetry.addData("Hammer Position: ", robot.hammerX.getPosition());
-				telemetry.addData("Hammer Target Position: ", HAMMER_LEFT);
-				telemetry.addData("Time Left: ", INPUT_TIMER+2000-System.currentTimeMillis());
-				telemetry.update();
-			}
+	private void scan(){
+		for(double angle=HAMMER_CENTER; robot.color.red()==robot.color.blue() && angle+1<HAMMER_LEFT && !isStopRequested(); angle+=.1){
+			telemetry.addData("Function: ", "Scan");
+			telemetry.addData("Angle:    ", angle);
+			robot.hammerX.setPosition(angle);
+			sleep(1000);
 		}
+		if(robot.hammerX.getPosition()+1>=HAMMER_LEFT){robot.hammerX.setPosition(HAMMER_CENTER);}
+	}
+
+	private void putt(boolean direction){
+		telemetry.addData("Function: ", "Putt");
+		telemetry.update();
+		if(direction == RIGHT){
+			telemetry.addData("Hammer Position: ", "Right");
+			telemetry.update();
+			robot.hammerX.setPosition(HAMMER_RIGHT);
+			sleep(2000);
+		} else {
+			telemetry.addData("Hammer Position: ", "Left");
+			telemetry.update();
+			robot.hammerX.setPosition(HAMMER_LEFT);
+			sleep(2000);
+		}
+		robot.hammerY.setPower(HAMMER_UP);
 		robot.hammerX.setPosition(HAMMER_CENTER);
 		sleep(1000);
 	}
 
 	private void vuCubby(boolean direction, int target) throws InterruptedException{
 		robot.color.enableLed(true);
-		for(target-=1;target>0;){
+		for(target+=2; target>0 && !isStopRequested(); target=-1){
 			robot.hammerX.setPosition(HAMMER_CENTER);
 			robot.hammerY.setPower(HAMMER_DOWN);
 			moveToCubby(direction);
 			if(direction){
-				robot.hammerX.setPosition(HAMMER_RIGHT);
-			} else {
 				robot.hammerX.setPosition(HAMMER_LEFT);
+			} else {
+				robot.hammerX.setPosition(HAMMER_RIGHT);
 			}
 			robot.hammerY.setPower(HAMMER_UP);
 			sleep(250);
 			stopMoving();
+			sleep(1000);
 		}
 	}
 
@@ -215,15 +225,16 @@ public class RedLeftByrdMK3 extends LinearOpMode {
 	}
 
 	private void moveToCubby(boolean direction) throws InterruptedException {
+		straighten();
 		resetTimer();
-		while(robot.color.blue()+robot.color.red()< 100 && INPUT_TIMER+1000>System.currentTimeMillis()){
+		while(robot.color.blue()+robot.color.red()< 10 && INPUT_TIMER+5000>System.currentTimeMillis()){
 			if(direction){
-				moveWithoutStopping(MOVE_RIGHT,.7);
+				moveWithoutStopping(MOVE_RIGHT,.5);
 			} else {
-				moveWithoutStopping(MOVE_LEFT, .7);
+				moveWithoutStopping(MOVE_LEFT, .5);
 			}
-			stopMoving();
 		}
+		stopMoving();
 	}
 
 	private void resetTimer(){
@@ -264,10 +275,18 @@ public class RedLeftByrdMK3 extends LinearOpMode {
 		if (!isStopRequested()) {
 			grab(true);
 			forkX(true);
-			hammer(RED);
+			turn(MOVE_FORWARDS,.2);
+			turn(MOVE_LEFT,.2);
+			turn(MOVE_BACKWARDS,.2);
+			turn(MOVE_RIGHT,.2);
+			turn(MOVE_FORWARDS,.2);
+			sleep(5000);
+			straighten();
+			//hammer(RED);
+			//move(MOVE_RIGHT,1000,.5);
 			//dismount(0);
-			vuCubby(RIGHT,2);
-			insert(MOVE_RIGHT);
+			//vuCubby(RIGHT,2);
+			//insert(MOVE_RIGHT);
 		}
 	}
 }
