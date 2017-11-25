@@ -67,8 +67,6 @@ class HardwareBellatorum
     final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                 (WHEEL_DIAMETER_INCHES * 3.1415);
-    final double     DRIVE_SPEED             = 0.6;
-    final double     TURN_SPEED              = 0.5;
 
     /* local OpMode members. */
     private HardwareMap hwMap           =  null;
@@ -89,35 +87,21 @@ class HardwareBellatorum
         rightFrontMotor  = hwMap.dcMotor.get("right_front_drive");
         leftBackMotor    = hwMap.dcMotor.get("left_back_drive");
         rightBackMotor   = hwMap.dcMotor.get("right_back_drive");
-        if (clampInstalled) liftMotor    = hwMap.dcMotor.get("lift_arm");
         leftFrontMotor.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         leftBackMotor.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         rightBackMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
 
-
         // Set all motors to zero power
-        leftFrontMotor.setPower(0);
-        rightFrontMotor.setPower(0);
-        leftBackMotor.setPower(0);
-        rightBackMotor.setPower(0);
-        if (clampInstalled) liftMotor.setPower(0);
-
-        // Reset all encoders
-        leftFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        // Set all motors to run with encoders.
-        leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        if (clampInstalled) liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        stopMoving();
+        resetEncoders();
 
         // Define and initialize ALL installed servos.
         if (clampInstalled) {
+            liftMotor    = hwMap.dcMotor.get("lift_arm");
+            liftMotor.setPower(0);
+            liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
             leftClamp = hwMap.servo.get("left_hand");
             rightClamp = hwMap.servo.get("right_hand");
             leftClamp.setPosition(0.2);
@@ -136,6 +120,26 @@ class HardwareBellatorum
         rightFrontMotor.setPower(0.0);
         leftFrontMotor.setPower(0.0);
         rightBackMotor.setPower(0.0);
+
+        setupEncoders(); // Turn off RUN_TO_POSITION
+    }
+
+    // Reset encoders
+    void resetEncoders() {
+        // Reset all encoders
+        leftFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
+    // Setup encoders and turn off RUN_TO_POSITION
+    void setupEncoders(){
+        // Set all motors to run with encoders.
+        leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     // Start the robot turning in the angle direction at specified power
@@ -156,6 +160,39 @@ class HardwareBellatorum
 
     // Start the robot moving in the direction specified by angle (relative to the robot front)
     void startMovingInDirection(double angle, double power){
+        rightFrontMotor.setPower(-power * Math.cos((Math.PI / 180) * angle));
+        leftBackMotor.setPower(power * Math.cos((Math.PI / 180) * angle));
+        leftFrontMotor.setPower(power * Math.sin((Math.PI / 180) * angle));
+        rightBackMotor.setPower(-power * Math.sin((Math.PI / 180) * angle));
+    }
+
+    // Start the robot moving in the direction specified by angle (relative to the robot front)
+    void startMovingEncoder(double angle, double distance, double power){
+        double leftFrontTarget = 0, leftBackTarget =0, rightFrontTarget = 0, rightBackTarget = 0;
+
+        // Determine new target positions
+        rightFrontTarget = rightFrontMotor.getCurrentPosition()
+                + (distance*Math.cos((Math.PI / 180) * angle)* 12*COUNTS_PER_INCH);
+        leftBackTarget = leftBackMotor.getCurrentPosition()
+                + (distance*Math.cos((Math.PI / 180) * angle)* 12*COUNTS_PER_INCH);
+        leftFrontTarget = leftFrontMotor.getCurrentPosition()
+                + (distance*Math.sin((Math.PI / 180) * angle)* 12*COUNTS_PER_INCH);
+        rightBackTarget = rightBackMotor.getCurrentPosition()
+                + (distance*Math.sin((Math.PI / 180) * angle)* 12*COUNTS_PER_INCH);
+
+        // Pass new positions to motor controller
+        rightFrontMotor.setTargetPosition((int)rightFrontTarget);
+        leftBackMotor.setTargetPosition((int)leftBackTarget);
+        leftFrontMotor.setTargetPosition((int)leftFrontTarget);
+        rightBackMotor.setTargetPosition((int)rightBackTarget);
+
+        // Turn On RUN_TO_POSITION
+        rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        // Start motion
         rightFrontMotor.setPower(-power * Math.cos((Math.PI / 180) * angle));
         leftBackMotor.setPower(power * Math.cos((Math.PI / 180) * angle));
         leftFrontMotor.setPower(power * Math.sin((Math.PI / 180) * angle));

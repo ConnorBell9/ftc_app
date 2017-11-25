@@ -38,18 +38,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * It uses the Bellatorum hardware class to define the drive on the robot.
  * The code is structured as a LinearOpMode
  *
- * The code REQUIRES that you DO have encoders on the wheels,
+ * The code REQUIRES that you have encoders on the wheels,
  *
- *  This code ALSO requires that the drive Motors have been configured such that a positive
- *  power command moves them forwards, and causes the encoders to count UP.
- *
- *   The desired path in this example is:
- *   - Drive forward for 48 inches
- *   - Spin right for 12 Inches
- *   - Drive Backwards for 24 inches
  *   - Stop and close the claw.
  *
- *  The code is written using a method called: encoderDrive(speed, leftInches, rightInches, timeoutS)
+ *  The code is written using a method called: startMovingEncoder
  *  that performs the actual movement.
  *  This methods assumes that each movement is relative to the last stopping place.
  *  There are other ways to perform encoder based moves, but this method is probably the simplest.
@@ -82,73 +75,12 @@ public class BellatorumAuto extends LinearOpMode {
     }
     void turn(double angle) {turn(angle, robot.TURN_POWER);} // Overload with default power
 
-    /*
-     *  Method to perform a relative move, based on encoder counts.
-     *  Encoders are not reset as the move is based on the current position.
-     *  Move will stop if any of three conditions occur:
-     *  1) Move gets to the desired position
-     *  2) Move runs out of time
-     *  3) Driver stops the opmode running.
-     */
-    public void encoderDrive(double speed,
-                             double leftInches, double rightInches,
-                             double timeoutS) {
-        int newLeftTarget;
-        int newRightTarget;
-
-        // Ensure that the opmode is still active
-        if (opModeIsActive()) {
-
-            // Determine new target position, and pass to motor controller
-            newLeftTarget = robot.leftBackMotor.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-            newRightTarget = robot.rightFrontMotor.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
-            robot.leftBackMotor.setTargetPosition(newLeftTarget);
-            robot.rightFrontMotor.setTargetPosition(newRightTarget);
-
-            // Turn On RUN_TO_POSITION
-            robot.leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            // reset the timeout time and start motion.
-            runtime.reset();
-            robot.leftBackMotor.setPower(Math.abs(speed));
-            robot.rightFrontMotor.setPower(Math.abs(speed));
-
-            // keep looping while we are still active, and there is time left, and both motors are running.
-            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-            // its target position, the motion will stop.  This is "safer" in the event that the robot will
-            // always end the motion as soon as possible.
-            // However, if you require that BOTH motors have finished their moves before the robot continues
-            // onto the next step, use (isBusy() || isBusy()) in the loop test.
-            while (opModeIsActive() &&
-                    (runtime.seconds() < timeoutS) &&
-                    (robot.leftBackMotor.isBusy() && robot.rightFrontMotor.isBusy())) {
-
-                // Display it for the driver.
-                telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  newRightTarget);
-                telemetry.addData("Path2",  "Running at %7d :%7d",
-                        robot.leftBackMotor.getCurrentPosition(),
-                        robot.rightFrontMotor.getCurrentPosition());
-                telemetry.update();
-            }
-
-            // Stop all motion;
-            robot.leftBackMotor.setPower(0);
-            robot.rightFrontMotor.setPower(0);
-
-            // Turn off RUN_TO_POSITION
-            robot.leftBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            //  sleep(250);   // optional pause after each move
-        }
-    }
     private void move(double angle, double distance, double power){
-        robot.startMovingInDirection(angle, power); // Start moving in the right direction
+        robot.startMovingEncoder(angle, distance, power); // Start moving in the right direction
 
-        // Run long enough to make the distance
+        // Run long enough to make the distance + 1 sec, then timeout
         runtime.reset();
-        while (runtime.seconds() < distance/robot.FEET_PER_SEC/power) {
+        while (runtime.seconds() < distance/robot.FEET_PER_SEC/power + 1) {
             telemetry.addData("Moving: ", "%2.5f deg, %2.5f ft, %2.5f secs Elapsed",
                     angle, distance, runtime.seconds());
             telemetry.update();
@@ -211,29 +143,10 @@ public class BellatorumAuto extends LinearOpMode {
         robot.init(hardwareMap);
 
         // Send telemetry message to signify robot waiting;
-        telemetry.addData("Status", "Resetting Encoders");    //
-        telemetry.update();
-
-        // Send telemetry message to indicate successful Encoder reset
-        telemetry.addData("Path0",  "Starting at %7d :%7d",
-                          robot.leftBackMotor.getCurrentPosition(),
-                          robot.rightFrontMotor.getCurrentPosition());
+        telemetry.addData("Status", "This is a template Autonomous. Override");    //
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-
-        // Step through each leg of the path,
-        // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        encoderDrive(DRIVE_SPEED,  48,  48, 5.0);  // S1: Forward 48 Inches with 5 Sec timeout
-        encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-        encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
-
-        robot.leftClamp.setPosition(0.0);            // S4: Stop and close the claw.
-        robot.rightClamp.setPosition(1.0);
-        sleep(1000);     // pause for servos to move
-
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
     }
 }
