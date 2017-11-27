@@ -127,6 +127,11 @@ public class HardwareByrd
     public static final double MOVE_LEFT      = 180;
     public static final double MOVE_RIGHT     = 0;
 
+    public static final double TURN_FORWARDS = 0;
+    public static final double TURN_LEFT     = 90;
+    public static final double TURN_RIGHT    = 270;
+    public static final double TURN_BACK     = 180;
+
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
