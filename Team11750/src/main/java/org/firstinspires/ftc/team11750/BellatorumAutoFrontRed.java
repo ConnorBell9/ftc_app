@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.team11750;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
 /**
  * This file illustrates the concept of driving a path based on time.
@@ -63,6 +64,9 @@ public class BellatorumAutoFrontRed extends BellatorumAuto {
          */
         robot.init(hardwareMap);
 
+        // Initialize the Vuforia capability
+        initVuforia();
+
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");
         if (!robot.clampInstalled) telemetry.addData("Status","### Clamp disabled ###");
@@ -75,14 +79,21 @@ public class BellatorumAutoFrontRed extends BellatorumAuto {
         sleep(1000); // Wait one second
         liftUp(1); // Raise the lift in ft
 
-        displaceJewel(robot.COLOR_BLUE); // Knock of the jewel of this color
+        // Get the RelicRecoverVuMark location
+        relicVuMark = getRelicRecoveryVuMark();
 
-        move(robot.RIGHT, 3); // Move right 3 feet
+        displaceJewel(robot.COLOR_BLUE); // Knock off the jewel of this color
+
+        // Move the robot according to the relic VuMark
+        double relicMove = 3.0; // Default is to move 3.0 feet
+        if (relicVuMark == RelicRecoveryVuMark.RIGHT) { relicMove -= 7.63 / 12; } // 7.63" shorter
+        if (relicVuMark == RelicRecoveryVuMark.LEFT) { relicMove += 7.63/12; } // 7.63" further
+        move(robot.RIGHT, relicMove); // Move forward relicMove feet
         turn(robot.AROUND); // Turn 180 degrees
-        move(robot.FORWARD, 1); // Move forward 1 foot
+        move(robot.FORWARD, 0.8); // Move forward 0.8 feet
 
         robot.clampOpen(); // Drop the glyph
-        move(robot.FORWARD, 0.5); // Move forward 6 inches
+        move(robot.FORWARD, 0.7); // Move forward 0.7 feet
 
         move(robot.BACK, 0.5); // Back up 6 inches
 
