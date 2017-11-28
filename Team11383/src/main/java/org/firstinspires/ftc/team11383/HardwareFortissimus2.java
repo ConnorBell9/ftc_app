@@ -75,6 +75,8 @@ class HardwareFortissimus2
 
     }
 
+
+
     /* Initialize standard Hardware interfaces */
     void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
