@@ -15,7 +15,7 @@ public class RedLeftByrdMK4 extends AutoByrd {
 		if (!isStopRequested()) {
 			grab(true);
 			forkX(true);
-			int cubby = Vuvalue(RIGHT);
+			int cubby = vuValue(RIGHT);
 			hammer(RED);
 			//move(MOVE_RIGHT,1000,.5);
 			dismount(0);
