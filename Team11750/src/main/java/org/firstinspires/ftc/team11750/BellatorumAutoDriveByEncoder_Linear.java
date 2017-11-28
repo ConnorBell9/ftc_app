@@ -65,6 +65,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  */
 
 @Autonomous(name="Bellatorum: Auto Drive By Encoder", group="Bellatorum")
+@Disabled
 public class BellatorumAutoDriveByEncoder_Linear extends LinearOpMode {
 
     /* Declare OpMode members. */
