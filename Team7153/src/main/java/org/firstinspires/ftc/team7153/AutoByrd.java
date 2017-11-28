@@ -1,14 +1,39 @@
 package org.firstinspires.ftc.team7153;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import static org.firstinspires.ftc.team7153.HardwareByrd.*;
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-@Autonomous(name="RedLeftByrdMK3" , group = "Archaic")
-public class RedLeftByrdMK3 extends LinearOpMode {
-	private HardwareByrd robot = new HardwareByrd();
+import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_CENTER;
+import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_DOWN;
+import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_LEFT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_RIGHT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_UP;
+import static org.firstinspires.ftc.team7153.HardwareByrd.INPUT_TIMER;
+import static org.firstinspires.ftc.team7153.HardwareByrd.LEFT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.LEFT_CLAMP_CLOSE;
+import static org.firstinspires.ftc.team7153.HardwareByrd.LEFT_CLAMP_OPEN;
+import static org.firstinspires.ftc.team7153.HardwareByrd.LIFT_X_IN;
+import static org.firstinspires.ftc.team7153.HardwareByrd.LIFT_X_OUT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.MOVE_BACKWARDS;
+import static org.firstinspires.ftc.team7153.HardwareByrd.MOVE_LEFT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.MOVE_RIGHT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.RED;
+import static org.firstinspires.ftc.team7153.HardwareByrd.RIGHT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.RIGHT_CLAMP_CLOSE;
+import static org.firstinspires.ftc.team7153.HardwareByrd.RIGHT_CLAMP_OPEN;
+
+
+public class AutoByrd extends LinearOpMode {
+	HardwareByrd robot = new HardwareByrd();
 	private double imaginaryAngle=0;
+	private VuforiaLocalizer vuforia;
+	private VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+	private VuforiaTrackable relicTemplate = relicTrackables.get(0);
 
 	private void move(double angle, double time, double power) throws InterruptedException {
 		if (!opModeIsActive()) {
@@ -84,7 +109,7 @@ public class RedLeftByrdMK3 extends LinearOpMode {
 		turn(imaginaryAngle,.4);
 	}
 
-	private void grab(boolean grab) {
+	void grab(boolean grab) {
 		if (grab) {
 			robot.armL.setPosition(LEFT_CLAMP_CLOSE);
 			robot.armR.setPosition(RIGHT_CLAMP_CLOSE);
@@ -94,7 +119,7 @@ public class RedLeftByrdMK3 extends LinearOpMode {
 		}
 	}
 
-	private void forkX(boolean mode) {
+	void forkX(boolean mode) {
 		if (mode) {
 			robot.forkX.setTargetPosition((int)LIFT_X_OUT);
 		} else {
@@ -150,7 +175,7 @@ public class RedLeftByrdMK3 extends LinearOpMode {
 		sleep(500);
 	}
 
-	private void hammer(boolean colorRemaining) throws InterruptedException {
+	void hammer(boolean colorRemaining) throws InterruptedException {
 		telemetry.addData("Function: ", "Hammer");
 		telemetry.update();
 		robot.color.enableLed(true);
@@ -204,7 +229,7 @@ public class RedLeftByrdMK3 extends LinearOpMode {
 		}
 	}
 
-	private void vuCubby(boolean direction, int target) throws InterruptedException{
+	void vuCubby(boolean direction, int target) throws InterruptedException{
 		robot.color.enableLed(true);
 		while(target>0){
 			robot.hammerX.setPosition(HAMMER_CENTER);
@@ -223,7 +248,7 @@ public class RedLeftByrdMK3 extends LinearOpMode {
 		}
 	}
 
-	private void insert(double direction) throws InterruptedException{
+	void insert(double direction) throws InterruptedException{
 		turn(direction,.5);
 		move(direction,1000,.2);
 		grab(false);
@@ -251,7 +276,7 @@ public class RedLeftByrdMK3 extends LinearOpMode {
 		INPUT_TIMER = System.currentTimeMillis();
 	}
 
-	private void dismount(double direction) throws InterruptedException {
+	void dismount(double direction) throws InterruptedException {
 		while(robot.gyro.rawX()<500 || robot.gyro.rawY()<500 || robot.gyro.rawX()>-500 || robot.gyro.rawY()>-500){
 			moveWithoutStopping(direction,1);
 		}
@@ -261,9 +286,27 @@ public class RedLeftByrdMK3 extends LinearOpMode {
 		stopMoving();
 	}
 
+	int Vuvalue(boolean direction){
+		RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+		if(vuMark != RelicRecoveryVuMark.UNKNOWN){
+			if(vuMark == RelicRecoveryVuMark.LEFT){
+				if(direction == RIGHT){return 1;} else{return 3;}
+			} else if(vuMark == RelicRecoveryVuMark.RIGHT){
+				if(direction == RIGHT){return 3;} else{return 1;}
+			} else {return 2;}
+		}
+		return 0;
+	}
+
 	@Override
 	public void runOpMode() throws InterruptedException {
 		robot.init(hardwareMap);
+
+		int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+		VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+		parameters.vuforiaLicenseKey = "ARK0G5D/////AAAAGTNyS/9bI0eKk0BiZlza4w8qOLSfAS/JLHbvWMY95VY7PgFNgH178LKZTQVDke1Eu9JzX/o9QWeyU5ottyCSuPaRr98YId9QUZtfX918roLvNx3n5bXekGlcKSoxgw+UcH3HN+c8V57B3fFhNMt0uyKEWNAXYmAx1OkvoFUSSurH82uzsGg+aBZ3nlVfj043RPXSDyiJO7uDZmwVH14LPjdhP92Qj6byGdICOqc5dxKG1rVFdNgAWJjYVWbz53K1qNWyO9fYgE0lIjwgNopM2GCFVR2ycS0JHx5UW3Bk2m47kDoFCFJP+A8fWxfLyrtgH02JOzNyHb0VoKv4ZDan5Czl7Wcs+ItJBby3qyEmPRkf";
+		parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+		this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
 		robot.color.enableLed(false);
 
@@ -280,16 +323,5 @@ public class RedLeftByrdMK3 extends LinearOpMode {
 		telemetry.update();
 
 		waitForStart();
-
-		robot.gyro.resetZAxisIntegrator();
-		if (!isStopRequested()) {
-			grab(true);
-			forkX(true);
-			hammer(RED);
-			//move(MOVE_RIGHT,1000,.5);
-			dismount(0);
-			vuCubby(RIGHT,3);
-			insert(MOVE_RIGHT);
-		}
 	}
 }

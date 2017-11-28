@@ -33,12 +33,9 @@ import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 /**
  * This is NOT an opmode.
  *
@@ -55,95 +52,95 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Servo channel:  Servo to open left claw:  "left_hand"
  * Servo channel:  Servo to open right claw: "right_hand"
  */
-public class HardwareByrd
+class HardwareByrd
 {
     /* Public OpMode members. */
-    public DcMotor  frontRight = null;
-    public DcMotor  frontLeft  = null;
-    public DcMotor  backRight  = null;
-    public DcMotor  backLeft   = null;
+    DcMotor  frontRight = null;
+    DcMotor  frontLeft  = null;
+    DcMotor  backRight  = null;
+    DcMotor  backLeft   = null;
 
-    public DcMotor  forkX      = null;
-    public DcMotor  forkY      = null;
+    DcMotor  forkX      = null;
+    DcMotor  forkY      = null;
 
-    public DcMotor  idolZ      = null;
-    public DcMotor  idolY      = null;
+    DcMotor  idolZ      = null;
+    DcMotor  idolY      = null;
 
-    public Servo    armL       = null;
-    public Servo    armR       = null;
+    Servo    armL       = null;
+    Servo    armR       = null;
 
-    public Servo    hammerX    = null;
-    public CRServo  hammerY    = null;
+    Servo    hammerX    = null;
+    CRServo  hammerY    = null;
 
-    public Servo    plate     = null;
+    Servo    plate     = null;
 
-    public Servo    grabber    = null;
+    Servo    grabber    = null;
 
     //public TouchSensor touchL  = null;
     //public TouchSensor touchR  = null;
 
-    public ModernRoboticsI2cGyro gyro         = null;
-    public ModernRoboticsI2cColorSensor color = null;
+    ModernRoboticsI2cGyro gyro         = null;
+    ModernRoboticsI2cColorSensor color = null;
 
-    public static final double LIFT_X_OUT = ((1440/(1.25*3.1415))*7);
-    public static final double LIFT_X_IN  = 0;
+    static final double LIFT_X_OUT = ((1440/(1.25*3.1415))*7);
+    static final double LIFT_X_IN  = 0;
 
-    public static final double IDOL_Z_START_POSITION = 600;
-    public static final double IDOL_Z_POSITION       = 0;
-    public static final int    IDOL_Z_DELTA_POSITION = 21;
-    public static final double IDOL_Y_POSITION       = 0;
+    static final double IDOL_Z_START_POSITION = 600;
+    static final double IDOL_Z_POSITION       = 0;
+    static final int    IDOL_Z_DELTA_POSITION = 21;
+    static final double IDOL_Y_POSITION       = 0;
 
-    public static boolean       IS_BLOCK_GRAB     = false;
-    public static final double  LEFT_CLAMP_CLOSE  = .4;
-    public static final double  RIGHT_CLAMP_CLOSE = 1;
-    public static final double  LEFT_CLAMP_OPEN   = .7;
-    public static final double  RIGHT_CLAMP_OPEN  = .7;
+    static boolean       IS_BLOCK_GRAB     = false;
+    static final double  LEFT_CLAMP_CLOSE  = .4;
+    static final double  RIGHT_CLAMP_CLOSE = 1;
+    static final double  LEFT_CLAMP_OPEN   = .7;
+    static final double  RIGHT_CLAMP_OPEN  = .7;
 
-    public static boolean       IS_HAMMER     = false;
-    public static final double  HAMMER_DOWN   = -.2;
-    public static final double  HAMMER_UP     = -1;
-    public static final double  HAMMER_LEFT   = .8;
-    public static final double  HAMMER_RIGHT  = .4;
-    public static final double  HAMMER_CENTER = .6;
+    static boolean       IS_HAMMER     = false;
+    static final double  HAMMER_DOWN   = -.2;
+    static final double  HAMMER_UP     = -1;
+    static final double  HAMMER_LEFT   = .8;
+    static final double  HAMMER_RIGHT  = .4;
+    static final double  HAMMER_CENTER = .6;
 
-    public static boolean       IS_PLATE        = false;
-    public static final double  PUSH_PLATE_DOWN = 0;
-    public static final double  PUSH_PLATE_UP   = 1;
+    static boolean       IS_PLATE        = false;
+    static final double  PUSH_PLATE_DOWN = 0;
+    static final double  PUSH_PLATE_UP   = 1;
 
-    public static boolean       IS_IDOL_GRAB      = false;
-    public static final double  IDOL_CLAMP_OPEN   = 0;
-    public static final double  IDOL_CLAMP_CLOSED = 1;
+    static boolean       IS_IDOL_GRAB      = false;
+    static final double  IDOL_CLAMP_OPEN   = 0;
+    static final double  IDOL_CLAMP_CLOSED = 1;
 
-    public static long INPUT_TIMER = 0;
+    static long INPUT_TIMER = 0;
 
-    public static final boolean LEFT  = false;
-    public static final boolean RIGHT = true;
+    static final boolean LEFT  = false;
+    static final boolean RIGHT = true;
 
-    public static final boolean RED = true;
-    public static final boolean BLUE = true;
+    static final boolean RED = true;
+    static final boolean BLUE = true;
 
-    public static final double MOVE_BACKWARDS = 270;
-    public static final double MOVE_FORWARDS  = 90;
-    public static final double MOVE_LEFT      = 180;
-    public static final double MOVE_RIGHT     = 0;
+    static final double MOVE_BACKWARDS = 270;
+    static final double MOVE_FORWARDS  = 90;
+    static final double MOVE_LEFT      = 180;
+    static final double MOVE_RIGHT     = 0;
 
-    public static final double TURN_FORWARDS = 0;
-    public static final double TURN_LEFT     = 90;
-    public static final double TURN_RIGHT    = 270;
-    public static final double TURN_BACK     = 180;
+    static final double TURN_FORWARDS = 0;
+    static final double TURN_LEFT     = 90;
+    static final double TURN_RIGHT    = 270;
+    static final double TURN_BACK     = 180;
 
 
     /* local OpMode members. */
-    HardwareMap hwMap           =  null;
+    private HardwareMap hwMap           =  null;
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
-    public HardwareByrd(){
+    HardwareByrd(){
 
     }
 
     /* Initialize standard Hardware interfaces */
-    public void init(HardwareMap ahwMap) {
+    void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
         hwMap = ahwMap;
 
@@ -214,6 +211,7 @@ public class HardwareByrd
         color = hwMap.get(ModernRoboticsI2cColorSensor.class, "color");
 
         color.enableLed(false);
+
     }
  }
 

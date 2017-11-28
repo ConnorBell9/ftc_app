@@ -3,10 +3,27 @@ package org.firstinspires.ftc.team7153;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import static org.firstinspires.ftc.team7153.HardwareByrd.*;
+import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_CENTER;
+import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_DOWN;
+import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_LEFT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_RIGHT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_UP;
+import static org.firstinspires.ftc.team7153.HardwareByrd.INPUT_TIMER;
+import static org.firstinspires.ftc.team7153.HardwareByrd.LEFT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.LEFT_CLAMP_CLOSE;
+import static org.firstinspires.ftc.team7153.HardwareByrd.LEFT_CLAMP_OPEN;
+import static org.firstinspires.ftc.team7153.HardwareByrd.LIFT_X_IN;
+import static org.firstinspires.ftc.team7153.HardwareByrd.LIFT_X_OUT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.MOVE_BACKWARDS;
+import static org.firstinspires.ftc.team7153.HardwareByrd.MOVE_LEFT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.MOVE_RIGHT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.RED;
+import static org.firstinspires.ftc.team7153.HardwareByrd.RIGHT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.RIGHT_CLAMP_CLOSE;
+import static org.firstinspires.ftc.team7153.HardwareByrd.RIGHT_CLAMP_OPEN;
 
-@Autonomous(name="RedLeftByrdMK3" , group = "Archaic")
-public class RedLeftByrdMK3 extends LinearOpMode {
+@Autonomous(name="ZeroByrd" , group = "Debug")
+public class ZeroByrd extends LinearOpMode {
 	private HardwareByrd robot = new HardwareByrd();
 	private double imaginaryAngle=0;
 
@@ -96,7 +113,7 @@ public class RedLeftByrdMK3 extends LinearOpMode {
 
 	private void forkX(boolean mode) {
 		if (mode) {
-			robot.forkX.setTargetPosition((int)LIFT_X_OUT);
+			robot.forkX.setTargetPosition(-(int)LIFT_X_OUT);
 		} else {
 			robot.forkX.setTargetPosition((int)LIFT_X_IN);
 		}
@@ -253,10 +270,10 @@ public class RedLeftByrdMK3 extends LinearOpMode {
 
 	private void dismount(double direction) throws InterruptedException {
 		while(robot.gyro.rawX()<500 || robot.gyro.rawY()<500 || robot.gyro.rawX()>-500 || robot.gyro.rawY()>-500){
-			moveWithoutStopping(direction,1);
+			move(direction, 10,1);
 		}
 		while(robot.gyro.rawX()<500 || robot.gyro.rawY()<500 || robot.gyro.rawX()>-500 || robot.gyro.rawY()>-500){
-			moveWithoutStopping(direction,1);
+			move(direction, 10,1);
 		}
 		stopMoving();
 	}
@@ -283,13 +300,7 @@ public class RedLeftByrdMK3 extends LinearOpMode {
 
 		robot.gyro.resetZAxisIntegrator();
 		if (!isStopRequested()) {
-			grab(true);
 			forkX(true);
-			hammer(RED);
-			//move(MOVE_RIGHT,1000,.5);
-			dismount(0);
-			vuCubby(RIGHT,3);
-			insert(MOVE_RIGHT);
 		}
 	}
 }
