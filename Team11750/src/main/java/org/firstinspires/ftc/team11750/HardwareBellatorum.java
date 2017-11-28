@@ -38,9 +38,10 @@ class HardwareBellatorum
     Servo    rightClamp  = null;
     Servo    colorArm = null;
     ColorSensor colorSensor;
+    boolean clampInstalled=true;
 
-    final double CLAMP_LEFT_OPEN  =  0.5;
-    final double CLAMP_RIGHT_OPEN = 0.5;
+    final double CLAMP_LEFT_OPEN  =  0.4;
+    final double CLAMP_RIGHT_OPEN = 0.7;
     final double CLAMP_LEFT_CLOSED  = 1.0;
     final double CLAMP_RIGHT_CLOSED = 0.0;
     final double LIFT_UP_POWER    =  0.25 ;
@@ -54,9 +55,9 @@ class HardwareBellatorum
     final double RIGHT = 90.0;
     final double LEFT = -90.0;
     final double BACK = 180.0;
-    final double AROUND = 180.0;
-    final double DEGREES_PER_SEC = 670.0;
-    final double TURN_START_SECS = 0.2;
+    final double AROUND = 137.5;
+    final double DEGREES_PER_SEC = 500;
+    final double TURN_START_SECS = 0;
     final double ARM_UP = 0.25;
     final double ARM_DOWN = 115;
     final int COLOR_RED = 1;
@@ -81,7 +82,7 @@ class HardwareBellatorum
         rightFrontMotor  = hwMap.dcMotor.get("right_front_drive");
         leftBackMotor    = hwMap.dcMotor.get("left_back_drive");
         rightBackMotor   = hwMap.dcMotor.get("right_back_drive");
-        liftMotor    = hwMap.dcMotor.get("lift_arm");
+        if (clampInstalled) liftMotor    = hwMap.dcMotor.get("lift_arm");
         leftFrontMotor.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         leftBackMotor.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
@@ -93,7 +94,7 @@ class HardwareBellatorum
         rightFrontMotor.setPower(0);
         leftBackMotor.setPower(0);
         rightBackMotor.setPower(0);
-        liftMotor.setPower(0);
+        if (clampInstalled) liftMotor.setPower(0);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
@@ -101,13 +102,15 @@ class HardwareBellatorum
         rightFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        if (clampInstalled) liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Define and initialize ALL installed servos.
-        leftClamp = hwMap.servo.get("left_hand");
-        rightClamp = hwMap.servo.get("right_hand");
-        leftClamp.setPosition(CLAMP_LEFT_OPEN);
-        rightClamp.setPosition(CLAMP_RIGHT_OPEN);
+        if (clampInstalled) {
+            leftClamp = hwMap.servo.get("left_hand");
+            rightClamp = hwMap.servo.get("right_hand");
+            leftClamp.setPosition(0.2);
+            rightClamp.setPosition(0.8);
+        }
         colorArm = hwMap.servo.get("color_arm");
         colorArm.setPosition(ARM_UP);
 
@@ -149,11 +152,12 @@ class HardwareBellatorum
 
     // Set the clamp to the specified open angle
     void clampOpen(double angle){
+        if (!clampInstalled) return;
         leftClamp.setPosition(CLAMP_LEFT_CLOSED - angle/2/180);
         rightClamp.setPosition(CLAMP_RIGHT_CLOSED + angle/2/180);
     }
     void clampOpen() {clampOpen(180);} // Open the clamp all the way
-    void clampClose() {clampOpen(45);} // Close the clamp on a glyph
+    void clampClose() {clampOpen(30);} // Close the clamp on a glyph
 
     // Set the color arm to the specified down angle from 0 degrees straight up, 100 degrees down
     void armPosition(double angle) {
