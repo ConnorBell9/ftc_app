@@ -29,11 +29,13 @@ import static org.firstinspires.ftc.team7153.HardwareByrd.RIGHT_CLAMP_OPEN;
 
 
 public class AutoByrd extends LinearOpMode {
-	HardwareByrd robot = new HardwareByrd();
-	private double imaginaryAngle=0;
-	private VuforiaLocalizer vuforia;
+	HardwareByrd robot = new HardwareByrd(); //Gets robot from HardwareByrd class
+	private double imaginaryAngle=0;         //Sets the robot's initial angle to 0
+	private VuforiaLocalizer vuforia;        //Stored instance of the vuforia engine
+	//These load the Relic Vuforia Marks for use
 	private VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
 	private VuforiaTrackable relicTemplate = relicTrackables.get(0);
+	//
 
 	private void move(double angle, double time, double power) throws InterruptedException {
 		if (!opModeIsActive()) {
@@ -146,24 +148,7 @@ public class AutoByrd extends LinearOpMode {
 			telemetry.addData("Target Angle:  ", angle);
 			telemetry.addData("Current Speed: ", speed);
 			telemetry.update();
-        }
-		/*while (robot.gyro.getIntegratedZValue() < angle - 2 || robot.gyro.getIntegratedZValue() > angle + 2 && !isStopRequested()) {
-		    if(robot.gyro.getIntegratedZValue()>-angle) {
-
             }
-			if (robot.gyro.getIntegratedZValue() < -angle) {
-				robot.frontLeft.setPower(speed);
-				robot.frontRight.setPower(-speed);
-				robot.backLeft.setPower(speed);
-				robot.backRight.setPower(-speed);
-			} else if (robot.gyro.getIntegratedZValue() > -angle) {
-				robot.frontLeft.setPower(-speed);
-				robot.frontRight.setPower(speed);
-				robot.backLeft.setPower(-speed);
-				robot.backRight.setPower(speed);
-			}
-		}
-		*/
 		stopMoving();
 	}
 
@@ -286,8 +271,9 @@ public class AutoByrd extends LinearOpMode {
 		stopMoving();
 	}
 
-	int Vuvalue(boolean direction){
+	int vuValue(boolean direction){
 		RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+        relicTrackables.activate();
 		if(vuMark != RelicRecoveryVuMark.UNKNOWN){
 			if(vuMark == RelicRecoveryVuMark.LEFT){
 				if(direction == RIGHT){return 1;} else{return 3;}
