@@ -121,11 +121,11 @@ public class InventumTeleopTank_Iterative extends OpMode{
         robot.leftClaw.setPosition(robot.MID_SERVO + clawOffset);
         robot.rightClaw.setPosition(robot.MID_SERVO - clawOffset);
 
-        // Use gamepad buttons to move the arm up (Y) and down (A)
+        // Use gamepad buttons to move the arm out (Y) and in (A)
         if (gamepad1.y)
-            robot.armMotor.setPower(robot.ARM_UP_POWER);
+            robot.armMotor.setPower(robot.ARM_OUT_POWER);
         else if (gamepad1.a)
-            robot.armMotor.setPower(robot.ARM_DOWN_POWER);
+            robot.armMotor.setPower(robot.ARM_IN_POWER);
         else
             robot.armMotor.setPower(0.0);
 
