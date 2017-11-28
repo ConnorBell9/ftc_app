@@ -50,9 +50,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 @Autonomous(name="Bellatorum: Front Blue", group="Bellatorum")
 public class BellatorumAutoFrontBlue extends BellatorumAuto {
 
-    /* Declare OpMode members. */
-    private HardwareBellatorum robot   = new HardwareBellatorum();   // Use Bellatorum's hardware
-
     @Override
     public void runOpMode() {
 
@@ -95,7 +92,7 @@ public class BellatorumAutoFrontBlue extends BellatorumAuto {
         robot.clampOpen(); // Drop the glyph
         move(robot.FORWARD, 0.7); // Move forward 0.7 feet
 
-        move(robot.BACK, 0.5); // Back up 6 inches
+        move(robot.BACK, 0.75); // Back up 9 inches
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
