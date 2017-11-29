@@ -146,7 +146,7 @@ public class BellatorumAuto extends LinearOpMode {
         return relicVuMark;
     }
 
-    private void turn(double angle, double power) {
+    void turn(double angle, double power) {
 
         if (angle==0) return; // Return immediately for 0 degree turn
         robot.startRotate(angle, power); // Start rotating in the angle direction at power
@@ -163,7 +163,7 @@ public class BellatorumAuto extends LinearOpMode {
     }
     void turn(double angle) {turn(angle, robot.TURN_POWER);} // Overload with default power
 
-    private void move(double angle, double distance, double power){
+    void move(double angle, double distance, double power){
         log("Start moving...");
         robot.startMovingInDirection(angle, power); // Start moving in the right direction
 
