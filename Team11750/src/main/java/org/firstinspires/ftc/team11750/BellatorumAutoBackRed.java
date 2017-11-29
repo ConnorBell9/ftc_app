@@ -30,8 +30,7 @@
 package org.firstinspires.ftc.team11750;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
 /**
  * This file illustrates the concept of driving a path based on time.
@@ -51,9 +50,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Autonomous(name="Bellatorum: Back Red", group="Bellatorum")
 public class BellatorumAutoBackRed extends BellatorumAuto {
 
-    /* Declare OpMode members. */
-    private HardwareBellatorum robot   = new HardwareBellatorum();   // Use Bellatorum's hardware
-
     @Override
     public void runOpMode() {
 
@@ -64,6 +60,9 @@ public class BellatorumAutoBackRed extends BellatorumAuto {
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
+
+        // Initialize the Vuforia capability
+        initVuforia();
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");
@@ -77,17 +76,26 @@ public class BellatorumAutoBackRed extends BellatorumAuto {
         sleep(1000); // Wait one second
         liftUp(1); // Raise the lift in ft
 
-        displaceJewel(robot.COLOR_BLUE); // Knock of the jewel of this color
+        // Get the RelicRecoverVuMark location
+        relicVuMark = getRelicRecoveryVuMark();
+
+        displaceJewel(robot.COLOR_BLUE); // Knock off the jewel of this color
 
         move(robot.RIGHT, 2.5); // Move right 2.5 feet
-        move(robot.FORWARD, 1.5); // Move forward 1.5 feet
+
+        // Move the robot according to the relic VuMark
+        double relicMove = 1.0; // Default is to move 1.0 feet
+        if (relicVuMark == RelicRecoveryVuMark.RIGHT) { relicMove -= 7.63 / 12; } // 7.63" shorter
+        if (relicVuMark == RelicRecoveryVuMark.LEFT) { relicMove += 7.63/12; } // 7.63" further
+        move(robot.FORWARD, relicMove); // Move forward relicMove feet
+
         turn(robot.RIGHT); // Turn 90 degrees
         move(robot.FORWARD, 0.8); // Move forward 0.8 feet
 
         robot.clampOpen(); // Drop the glyph
-        move(robot.FORWARD, 0.5); // Move forward 6 inches
+        move(robot.FORWARD, 0.7); // Move forward 0.7 feet
 
-        move(robot.BACK, 0.5); // Back up 6 inches
+        move(robot.BACK, 0.75); // Back up 9 inches
 
         telemetry.addData("Path", "Complete");
         telemetry.update();

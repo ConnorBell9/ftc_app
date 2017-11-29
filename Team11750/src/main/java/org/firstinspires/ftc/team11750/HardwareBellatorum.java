@@ -55,9 +55,9 @@ class HardwareBellatorum
     final double RIGHT = 90.0;
     final double LEFT = -90.0;
     final double BACK = 180.0;
-    final double AROUND = 180.0;
-    final double DEGREES_PER_SEC = 340+.0;
-    final double TURN_START_SECS = 0.2;
+    final double AROUND = 137.5;
+    final double DEGREES_PER_SEC = 500;
+    final double TURN_START_SECS = 0;
     final double ARM_UP = 0.25;
     final double ARM_DOWN = 115;
     final int COLOR_RED = 1;
@@ -108,7 +108,7 @@ class HardwareBellatorum
             rightClamp.setPosition(0.8);
         }
         colorArm = hwMap.servo.get("color_arm");
-        colorArm.setPosition(-0.25);
+        colorArm.setPosition(ARM_UP);
 
         // get a reference to our colorSensor
         colorSensor = hwMap.get(ColorSensor.class, "sensor_color");
