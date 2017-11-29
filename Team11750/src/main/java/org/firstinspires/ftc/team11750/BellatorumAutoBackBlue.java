@@ -53,8 +53,6 @@ public class BellatorumAutoBackBlue extends BellatorumAuto {
     @Override
     public void runOpMode() {
 
-        // Disable the clamp
-        robot.clampInstalled=false;
         /*
          * Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
@@ -85,7 +83,7 @@ public class BellatorumAutoBackBlue extends BellatorumAuto {
 
         // Move the robot according to the relic VuMark
         double relicMove = 1.0; // Default is to move 1.0 feet
-        if (relicVuMark == RelicRecoveryVuMark.LEFT) { relicMove -= 7.63 / 12; } // 7.63" shorter
+        if (relicVuMark == RelicRecoveryVuMark.LEFT) { relicMove -= 7.63/12; } // 7.63" shorter
         if (relicVuMark == RelicRecoveryVuMark.RIGHT) { relicMove += 7.63/12; } // 7.63" further
         move(robot.FORWARD, relicMove); // Move forward relicMove feet
 

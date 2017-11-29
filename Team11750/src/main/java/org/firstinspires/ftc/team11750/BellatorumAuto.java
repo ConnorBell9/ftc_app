@@ -31,6 +31,7 @@ package org.firstinspires.ftc.team11750;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -41,21 +42,19 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 /**
- * This file illustrates the concept of driving a path based on time.
+ * This file illustrates the concept of driving a path based on encoder counts.
  * It uses the Bellatorum hardware class to define the drive on the robot.
  * The code is structured as a LinearOpMode
  *
- * The code assumes that you do NOT have encoders on the wheels,
- *   otherwise you would use: PushbotAutoDriveByEncoder;
+ * The code REQUIRES that you have encoders on the wheels,
  *
- *   The desired path in this example is:
- *   - Drive forward for 3 seconds
- *   - Spin right for 1.3 seconds
- *   - Drive Backwards for 1 Second
  *   - Stop and close the claw.
  *
- *  The code is written in a simple form with no optimizations.
- *  However, there are several ways that this type of sequence could be streamlined,
+ *  The code is written using a method called: startMovingEncoder
+ *  that performs the actual movement.
+ *  This methods assumes that each movement is relative to the last stopping place.
+ *  There are other ways to perform encoder based moves, but this method is probably the simplest.
+ *  This code uses the RUN_TO_POSITION mode to enable the Motor controllers to generate the run profile
  *
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
@@ -155,7 +154,7 @@ public class BellatorumAuto extends LinearOpMode {
         // Turn long enough to make the angle
         runtime.reset();
         while (runtime.seconds() < angle/robot.DEGREES_PER_SEC/power + robot.TURN_START_SECS) {
-            telemetry.addData("Turning: ", "%2.5f secs Elapsed", runtime.seconds());
+            telemetry.addData("Turning: ", "%2.1f secs Elapsed", runtime.seconds());
             telemetry.update();
             if (!opModeIsActive()) {robot.stopMoving(); return;} // Stop and return
         }
@@ -165,18 +164,19 @@ public class BellatorumAuto extends LinearOpMode {
 
     void move(double angle, double distance, double power){
         log("Start moving...");
-        robot.startMovingInDirection(angle, power); // Start moving in the right direction
+        robot.startMovingEncoder(angle, distance, power); // Start moving in the right direction
 
-        // Run long enough to make the distance
+        // Run long enough to make the distance + 1 sec, then timeout
         runtime.reset();
-        while (runtime.seconds() < distance/robot.FEET_PER_SEC/power) {
-            telemetry.addData("Moving: ", "%2.5f deg, %2.5f ft, %2.5f secs Elapsed",
+        while (robot.motorsBusy() && runtime.seconds() < distance/robot.FEET_PER_SEC/power + 2) {
+            telemetry.addData("Moving: ", "%2.1f deg, %2.2f ft, %2.1f secs Elapsed",
                     angle, distance, runtime.seconds());
             telemetry.update();
             if (!opModeIsActive()) {robot.stopMoving(); return;} // Stop and return
         }
         log("Stop moving...");
         robot.stopMoving();
+        robot.setupEncoders();
     }
     void move(double angle, double distance){ // Overload with default power
         move(angle, distance, robot.FORWARD_POWER);
@@ -188,7 +188,7 @@ public class BellatorumAuto extends LinearOpMode {
         if (directionPower<0)directionPower*=-1; // Make sure the power positive
         runtime.reset();
         while (runtime.seconds() < distance / robot.LIFT_FEET_PER_SEC/directionPower) {
-            telemetry.addData("Lift", "Time: %2.5f secs Elapsed", runtime.seconds());
+            telemetry.addData("Lift", "Time: %2.3f secs Elapsed", runtime.seconds());
             telemetry.update();
             if (!opModeIsActive()) {robot.stopMoving(); return;} // Stop and return
         }
@@ -227,7 +227,8 @@ public class BellatorumAuto extends LinearOpMode {
     void redTeamDisplaceJewel(){ displaceJewel(robot.COLOR_BLUE);}
     void blueTeamDisplaceJewel() {displaceJewel(robot.COLOR_RED);}
 
-    @Override public void runOpMode() {
+    @Override
+    public void runOpMode() {
         /*
          * Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
