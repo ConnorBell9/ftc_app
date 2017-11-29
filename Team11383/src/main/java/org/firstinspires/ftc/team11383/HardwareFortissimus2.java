@@ -83,10 +83,10 @@ class HardwareFortissimus2
         hwMap = ahwMap;
 
         // Define and Initialize Motors
-        leftFrontMotor   = hwMap.dcMotor.get("left_front_drive");
-        rightFrontMotor  = hwMap.dcMotor.get("right_front_drive");
-        leftBackMotor    = hwMap.dcMotor.get("left_back_drive");
-        rightBackMotor   = hwMap.dcMotor.get("right_back_drive");
+        leftFrontMotor   = hwMap.dcMotor.get("fl");
+        rightFrontMotor  = hwMap.dcMotor.get("fr");
+        leftBackMotor    = hwMap.dcMotor.get("bl");
+        rightBackMotor   = hwMap.dcMotor.get("br");
         track   = hwMap.dcMotor.get("track");
         reel    = hwMap.dcMotor.get("reel");
         leftFrontMotor.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
