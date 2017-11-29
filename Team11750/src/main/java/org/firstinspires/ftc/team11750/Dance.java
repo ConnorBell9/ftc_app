@@ -54,8 +54,6 @@ public class Dance extends BellatorumAuto {
     @Override
     public void runOpMode() {
 
-        // Disable the clamp
-        robot.clampInstalled=false;
         /*
          * Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
@@ -70,6 +68,13 @@ public class Dance extends BellatorumAuto {
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+
+        // Do the box step
+        move(robot.RIGHT, 1);
+        move(robot.FORWARD, 1);
+        move(robot.LEFT, 1);
+        move(robot.BACK, 1);
+        sleep(1000);
 
         robot.armPosition(90);
         turn(180, 0.5); // Turn

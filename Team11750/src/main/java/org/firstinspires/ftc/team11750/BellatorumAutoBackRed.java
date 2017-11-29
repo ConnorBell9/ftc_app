@@ -53,8 +53,6 @@ public class BellatorumAutoBackRed extends BellatorumAuto {
     @Override
     public void runOpMode() {
 
-        // Disable the clamp
-        robot.clampInstalled=false;
         /*
          * Initialize the drive system variables.
          * The init() method of the hardware class does all the work here

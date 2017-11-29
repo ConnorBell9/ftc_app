@@ -31,6 +31,7 @@ package org.firstinspires.ftc.team11750;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -153,7 +154,7 @@ public class BellatorumAuto extends LinearOpMode {
         // Turn long enough to make the angle
         runtime.reset();
         while (runtime.seconds() < angle/robot.DEGREES_PER_SEC/power + robot.TURN_START_SECS) {
-            telemetry.addData("Turning: ", "%2.5f secs Elapsed", runtime.seconds());
+            telemetry.addData("Turning: ", "%2.1f secs Elapsed", runtime.seconds());
             telemetry.update();
             if (!opModeIsActive()) {robot.stopMoving(); return;} // Stop and return
         }
@@ -167,14 +168,15 @@ public class BellatorumAuto extends LinearOpMode {
 
         // Run long enough to make the distance + 1 sec, then timeout
         runtime.reset();
-        while (runtime.seconds() < distance/robot.FEET_PER_SEC/power + 1) {
-            telemetry.addData("Moving: ", "%2.5f deg, %2.5f ft, %2.5f secs Elapsed",
+        while (robot.motorsBusy() && runtime.seconds() < distance/robot.FEET_PER_SEC/power + 2) {
+            telemetry.addData("Moving: ", "%2.1f deg, %2.2f ft, %2.1f secs Elapsed",
                     angle, distance, runtime.seconds());
             telemetry.update();
             if (!opModeIsActive()) {robot.stopMoving(); return;} // Stop and return
         }
         log("Stop moving...");
         robot.stopMoving();
+        robot.setupEncoders();
     }
     void move(double angle, double distance){ // Overload with default power
         move(angle, distance, robot.FORWARD_POWER);
@@ -186,7 +188,7 @@ public class BellatorumAuto extends LinearOpMode {
         if (directionPower<0)directionPower*=-1; // Make sure the power positive
         runtime.reset();
         while (runtime.seconds() < distance / robot.LIFT_FEET_PER_SEC/directionPower) {
-            telemetry.addData("Lift", "Time: %2.5f secs Elapsed", runtime.seconds());
+            telemetry.addData("Lift", "Time: %2.3f secs Elapsed", runtime.seconds());
             telemetry.update();
             if (!opModeIsActive()) {robot.stopMoving(); return;} // Stop and return
         }

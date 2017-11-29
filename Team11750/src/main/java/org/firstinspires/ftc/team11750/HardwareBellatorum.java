@@ -38,7 +38,7 @@ class HardwareBellatorum
     Servo    rightClamp  = null;
     Servo    colorArm = null;
     ColorSensor colorSensor;
-    boolean clampInstalled=true;
+    boolean clampInstalled=false; // Set to false to run without clamp installed
 
     final double CLAMP_LEFT_OPEN  =  0.4;
     final double CLAMP_RIGHT_OPEN = 0.7;
@@ -63,7 +63,7 @@ class HardwareBellatorum
     final int COLOR_RED = 1;
     final int COLOR_BLUE = 2;
     final double     COUNTS_PER_MOTOR_REV    = 1120 ;    // eg: AndyMark NeverRest 40 Motor Encoder
-    final double     DRIVE_GEAR_REDUCTION    = 40.0 ;     // This is < 1.0 if geared UP
+    final double     DRIVE_GEAR_REDUCTION    = 1.0;      // This is < 1.0 if geared UP
     final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                 (WHEEL_DIAMETER_INCHES * 3.1415);
@@ -88,13 +88,14 @@ class HardwareBellatorum
         leftBackMotor    = hwMap.dcMotor.get("left_back_drive");
         rightBackMotor   = hwMap.dcMotor.get("right_back_drive");
         leftFrontMotor.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
-        rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
+        rightFrontMotor.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
         leftBackMotor.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
-        rightBackMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
+        rightBackMotor.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
 
         // Set all motors to zero power
         stopMoving();
         resetEncoders();
+        setupEncoders();
 
         // Define and initialize ALL installed servos.
         if (clampInstalled) {
@@ -152,18 +153,24 @@ class HardwareBellatorum
         }
 
         // Set all motors to turn in direction at power
-        rightBackMotor.setPower(power * direction);
-        rightFrontMotor.setPower(power * direction);
+        rightBackMotor.setPower(-power * direction);
+        rightFrontMotor.setPower(-power * direction);
         leftFrontMotor.setPower(power * direction);
         leftBackMotor.setPower(power * direction);
     }
 
     // Start the robot moving in the direction specified by angle (relative to the robot front)
     void startMovingInDirection(double angle, double power){
-        rightFrontMotor.setPower(-power * Math.cos((Math.PI / 180) * angle));
-        leftBackMotor.setPower(power * Math.cos((Math.PI / 180) * angle));
-        leftFrontMotor.setPower(power * Math.sin((Math.PI / 180) * angle));
-        rightBackMotor.setPower(-power * Math.sin((Math.PI / 180) * angle));
+        rightFrontMotor.setPower(Math.abs(power * Math.cos((Math.PI / 180) * angle)));
+        leftBackMotor.setPower(Math.abs(power * Math.cos((Math.PI / 180) * angle)));
+        leftFrontMotor.setPower(Math.abs(power * Math.sin((Math.PI / 180) * angle)));
+        rightBackMotor.setPower(Math.abs(power * Math.sin((Math.PI / 180) * angle)));
+    }
+
+    // Check if motors are still busy
+    boolean motorsBusy(){
+        return (rightFrontMotor.isBusy() || leftBackMotor.isBusy() || leftFrontMotor.isBusy()
+                || rightBackMotor.isBusy());
     }
 
     // Start the robot moving in the direction specified by angle (relative to the robot front)
@@ -193,10 +200,7 @@ class HardwareBellatorum
         rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Start motion
-        rightFrontMotor.setPower(-power * Math.cos((Math.PI / 180) * angle));
-        leftBackMotor.setPower(power * Math.cos((Math.PI / 180) * angle));
-        leftFrontMotor.setPower(power * Math.sin((Math.PI / 180) * angle));
-        rightBackMotor.setPower(-power * Math.sin((Math.PI / 180) * angle));
+        startMovingInDirection(angle, power);
     }
 
     // Set the clamp to the specified open angle
