@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import static org.firstinspires.ftc.team7153.HardwareByrd.*;
 
-@Autonomous(name="RedLeftByrdMK3" , group = "Archaic")
+@Autonomous(name="RedLeftByrdMK3")
 public class RedLeftByrdMK3 extends LinearOpMode {
 	private HardwareByrd robot = new HardwareByrd();
 	private double imaginaryAngle=0;

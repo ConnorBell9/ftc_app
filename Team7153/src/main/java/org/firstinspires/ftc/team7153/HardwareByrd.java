@@ -90,18 +90,19 @@ class HardwareByrd
     static final int    IDOL_Z_DELTA_POSITION = 21;
     static final double IDOL_Y_POSITION       = 0;
 
-    static boolean       IS_BLOCK_GRAB     = false;
+    static boolean       IS_BLOCK_GRAB     = true;
     static final double  LEFT_CLAMP_CLOSE  = .4;
     static final double  RIGHT_CLAMP_CLOSE = 1;
     static final double  LEFT_CLAMP_OPEN   = .7;
     static final double  RIGHT_CLAMP_OPEN  = .7;
 
-    static boolean       IS_HAMMER     = false;
-    static final double  HAMMER_DOWN   = -.2;
-    static final double  HAMMER_UP     = -1;
-    static final double  HAMMER_LEFT   = .8;
-    static final double  HAMMER_RIGHT  = .4;
-    static final double  HAMMER_CENTER = .6;
+    static boolean       IS_HAMMER      = false;
+    static boolean       IS_HAMMER_DOWN = false;
+    static final double  HAMMER_DOWN    = 0;
+    static final double  HAMMER_UP      = -1;
+    static final double  HAMMER_LEFT    = .8;
+    static final double  HAMMER_RIGHT   = .4;
+    static final double  HAMMER_CENTER  = .6;
 
     static boolean       IS_PLATE        = false;
     static final double  PUSH_PLATE_DOWN = 0;
@@ -170,9 +171,9 @@ class HardwareByrd
         frontLeft.setPower(0);
         backRight.setPower(0);
         backLeft.setPower(0);
-        forkX.setPower(1);
+        forkX.setPower(.3);
         forkY.setPower(0);
-        idolZ.setPower(1);
+        idolZ.setPower(.5);
         idolY.setPower(0);
 
         // Set all motors to run without encoders.

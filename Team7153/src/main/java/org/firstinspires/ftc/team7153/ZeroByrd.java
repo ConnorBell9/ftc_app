@@ -22,7 +22,7 @@ import static org.firstinspires.ftc.team7153.HardwareByrd.RIGHT;
 import static org.firstinspires.ftc.team7153.HardwareByrd.RIGHT_CLAMP_CLOSE;
 import static org.firstinspires.ftc.team7153.HardwareByrd.RIGHT_CLAMP_OPEN;
 
-@Autonomous(name="ZeroByrd" , group = "Debug")
+@Autonomous(name="ZeroByrd")
 public class ZeroByrd extends LinearOpMode {
 	private HardwareByrd robot = new HardwareByrd();
 	private double imaginaryAngle=0;

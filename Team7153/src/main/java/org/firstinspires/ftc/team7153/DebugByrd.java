@@ -2,10 +2,24 @@ package org.firstinspires.ftc.team7153;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import static org.firstinspires.ftc.team7153.HardwareByrd.*;
 
-@TeleOp(name="RelativeMechByrdMK2")
-public class RelativeMechByrdMK2 extends OpMode{
+import static org.firstinspires.ftc.team7153.HardwareByrd.IDOL_CLAMP_CLOSED;
+import static org.firstinspires.ftc.team7153.HardwareByrd.IDOL_CLAMP_OPEN;
+import static org.firstinspires.ftc.team7153.HardwareByrd.IDOL_Z_DELTA_POSITION;
+import static org.firstinspires.ftc.team7153.HardwareByrd.INPUT_TIMER;
+import static org.firstinspires.ftc.team7153.HardwareByrd.IS_BLOCK_GRAB;
+import static org.firstinspires.ftc.team7153.HardwareByrd.IS_HAMMER_DOWN;
+import static org.firstinspires.ftc.team7153.HardwareByrd.IS_IDOL_GRAB;
+import static org.firstinspires.ftc.team7153.HardwareByrd.IS_PLATE;
+import static org.firstinspires.ftc.team7153.HardwareByrd.LEFT_CLAMP_OPEN;
+import static org.firstinspires.ftc.team7153.HardwareByrd.LIFT_X_IN;
+import static org.firstinspires.ftc.team7153.HardwareByrd.LIFT_X_OUT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.PUSH_PLATE_DOWN;
+import static org.firstinspires.ftc.team7153.HardwareByrd.PUSH_PLATE_UP;
+import static org.firstinspires.ftc.team7153.HardwareByrd.RIGHT_CLAMP_OPEN;
+
+@TeleOp(name="DebugByrd")
+public class DebugByrd extends OpMode{
 	private HardwareByrd robot = new HardwareByrd();
     @Override
     public void init() {
@@ -36,7 +50,7 @@ public class RelativeMechByrdMK2 extends OpMode{
 		robot.backLeft.setPower(v3*maxSpeed);
 		robot.backRight.setPower(v4*maxSpeed);
 
-	    if(gamepad2.a && System.currentTimeMillis() > INPUT_TIMER+500){
+	    if(gamepad1.a && System.currentTimeMillis() > INPUT_TIMER+500){
 			IS_BLOCK_GRAB=!IS_BLOCK_GRAB;
 			INPUT_TIMER = System.currentTimeMillis();
 	    }
@@ -51,9 +65,19 @@ public class RelativeMechByrdMK2 extends OpMode{
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
+		if(gamepad1.y && System.currentTimeMillis() > INPUT_TIMER+500){
+			IS_HAMMER_DOWN=!IS_HAMMER_DOWN;
+			INPUT_TIMER = System.currentTimeMillis();
+		}
+
+		if(IS_HAMMER_DOWN){
+			robot.hammerX.setPosition(gamepad1.right_stick_x);
+			robot.hammerY.setPower(gamepad1.right_stick_y);
+		}
+
 	    if(IS_BLOCK_GRAB){
-		    robot.armL.setPosition(LEFT_CLAMP_CLOSE);
-			robot.armR.setPosition(RIGHT_CLAMP_CLOSE);
+		    robot.armL.setPosition(gamepad1.right_stick_y);
+			robot.armR.setPosition(gamepad1.left_stick_y);
 	    } else {
 			robot.armL.setPosition(LEFT_CLAMP_OPEN);
 			robot.armR.setPosition(RIGHT_CLAMP_OPEN);
@@ -77,11 +101,9 @@ public class RelativeMechByrdMK2 extends OpMode{
 			robot.forkY.setPower(gamepad2.left_stick_y * .5);
 		} else {robot.forkY.setPower(0);}
 		if(gamepad2.dpad_right) {
-			robot.forkX.setTargetPosition((int)LIFT_X_OUT);
-			IS_BLOCK_GRAB=false;
+			robot.forkX.setTargetPosition((int)LIFT_X_OUT);//1440 is the # of pulses 1.25 is the diameter and 11 is the # of inches traveled
 		} else if(gamepad2.dpad_left) {
 			robot.forkX.setTargetPosition((int)LIFT_X_IN);
-			IS_BLOCK_GRAB=false;
 		}
 
 		if(gamepad2.right_trigger>.1){
