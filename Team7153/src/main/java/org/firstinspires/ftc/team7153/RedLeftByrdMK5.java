@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.team7153;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_CENTER;
@@ -14,7 +15,6 @@ import static org.firstinspires.ftc.team7153.HardwareByrd.LEFT_CLAMP_OPEN;
 import static org.firstinspires.ftc.team7153.HardwareByrd.LIFT_X_IN;
 import static org.firstinspires.ftc.team7153.HardwareByrd.LIFT_X_OUT;
 import static org.firstinspires.ftc.team7153.HardwareByrd.MOVE_BACKWARDS;
-import static org.firstinspires.ftc.team7153.HardwareByrd.MOVE_FORWARDS;
 import static org.firstinspires.ftc.team7153.HardwareByrd.MOVE_LEFT;
 import static org.firstinspires.ftc.team7153.HardwareByrd.MOVE_RIGHT;
 import static org.firstinspires.ftc.team7153.HardwareByrd.RED;
@@ -22,16 +22,16 @@ import static org.firstinspires.ftc.team7153.HardwareByrd.RIGHT;
 import static org.firstinspires.ftc.team7153.HardwareByrd.RIGHT_CLAMP_CLOSE;
 import static org.firstinspires.ftc.team7153.HardwareByrd.RIGHT_CLAMP_OPEN;
 
-
-public class AutoByrd extends LinearOpMode {
-	HardwareByrd robot = new HardwareByrd(); //Gets robot from HardwareByrd class
+@Autonomous(name="RedLeftByrdMK5")
+public class RedLeftByrdMK5 extends LinearOpMode {
+	private HardwareByrd robot = new HardwareByrd();
 	private double imaginaryAngle=0;         //Sets the robot's initial angle to 0
 	/*private VuforiaLocalizer vuforia;        //Stored instance of the vuforia engine
 	//These load the Relic Vuforia Marks for use
 	private VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
 	private VuforiaTrackable relicTemplate = relicTrackables.get(0);*/
 	//
-	void dismount(double direction) throws InterruptedException {
+	private void dismount(double direction) throws InterruptedException {
 		//The robot first checks to see if there are no dramatic changes in the robot's orientation while moving consistantly in a preset direction
 		//After the first fall it will once again check to see if there is a dramatic change (at this point 2 wheels should be on the platform and two wheels off)
 		//After this the robot should be off of the platform
@@ -43,8 +43,8 @@ public class AutoByrd extends LinearOpMode {
 		}
 		stopMoving();
 	}
-	
-	void forkX(boolean mode) {
+
+	private void forkX(boolean mode) {
 		//If the arguement is true then the lift will go out otherwise the lift will return to its original orientation
 		if (mode) {
 			robot.forkX.setTargetPosition((int)LIFT_X_OUT);
@@ -52,8 +52,8 @@ public class AutoByrd extends LinearOpMode {
 			robot.forkX.setTargetPosition((int)LIFT_X_IN);
 		}
 	}
-	
-	void grab(boolean grab) {
+
+	private void grab(boolean grab) {
 		//If the arguement is true then the clamp will close otherwise the clamp will return to its original orientation
 		if (grab) {
 			robot.armL.setPosition(LEFT_CLAMP_CLOSE);
@@ -63,8 +63,8 @@ public class AutoByrd extends LinearOpMode {
 			robot.armR.setPosition(RIGHT_CLAMP_OPEN);
 		}
 	}
-	
-	void hammer(boolean colorRemaining) throws InterruptedException {
+
+	private void hammer(boolean colorRemaining) throws InterruptedException {
 		telemetry.addData("Function: ", "Hammer");
 		telemetry.update();
 		//Bring the hammer down and wait in order to get around the shakiness of the hammer
@@ -75,8 +75,8 @@ public class AutoByrd extends LinearOpMode {
 		scan();
 		//If the hammer still does not detect any color the robot will move closer to the jewels and the wall
 		resetTimer();
-		while (robot.color.blue() == robot.color.red() && System.currentTimeMillis() < INPUT_TIMER + 500) {
-			moveWithoutStopping(MOVE_BACKWARDS,.06);
+		while (robot.color.blue() == robot.color.red() && System.currentTimeMillis() < INPUT_TIMER + 1000) {
+			moveWithoutStopping(MOVE_BACKWARDS,.08);
 		}
 		stopMoving();
 		telemetry.addData("Function: ", "Hammer");
@@ -101,18 +101,17 @@ public class AutoByrd extends LinearOpMode {
 		robot.hammerY.setPower(HAMMER_UP);
 		robot.hammerX.setPosition(HAMMER_CENTER);
 		robot.color.enableLed(false);
-		move(MOVE_FORWARDS,500,.06);
 		sleep(1000);
 	}
-	
-	void insert(double direction) throws InterruptedException{
+
+	private void insert(double direction) throws InterruptedException{
 		//Turn towards the direction of the cryptobox
 		turn(direction,.5);
 		//Move towards the cryptobox
 		move(direction,1000,.2);
 		//Release the block
 		grab(false);
-		//forkX(false);
+		forkX(false);
 		//Push the block in further
 		move(direction,200,.2);
 		//Back up and turn around away from the cryptobox
@@ -121,8 +120,8 @@ public class AutoByrd extends LinearOpMode {
 		move(direction,500,.2);
 		turn(direction,.5);
 	}
-	
-	void move(double angle, double time, double power) throws InterruptedException {
+
+	private void move(double angle, double time, double power) throws InterruptedException {
 		if (!opModeIsActive()) {
 			stopMoving();
 			return;
@@ -162,21 +161,17 @@ public class AutoByrd extends LinearOpMode {
 		sleep((long) time);
 		stopMoving();
 	}
-	
+
 	private void moveToCubby(boolean direction) throws InterruptedException {
 		straighten();
-		//While the hammer is not detecting any color or the time-out hasn't occurred the robot will move towards a cubby slot
+		//While the hammer is not detecting any color or the time-out hasn't occured the robot will move towards a cubby slot
 		resetTimer();
-		while((robot.color.blue()+robot.color.red())< 10 && INPUT_TIMER+5000>System.currentTimeMillis()){
+		while(robot.color.blue()+robot.color.red()< 10 && INPUT_TIMER+5000>System.currentTimeMillis()){
 			if(direction){
-				moveWithoutStopping(MOVE_RIGHT,1);
+				moveWithoutStopping(MOVE_RIGHT,.5);
 			} else {
-				moveWithoutStopping(MOVE_LEFT, 1);
+				moveWithoutStopping(MOVE_LEFT, .5);
 			}
-			telemetry.addData("Color Blue: ", robot.color.blue());
-			telemetry.addData("Color Red:  ", robot.color.red());
-			telemetry.clear();
-			telemetry.update();
 		}
 	}
 
@@ -213,7 +208,7 @@ public class AutoByrd extends LinearOpMode {
 		telemetry.addData("Moving at Speed: ", power);
 		telemetry.update();
 	}
-	
+
 	private void putt(boolean direction){
 		telemetry.addData("Function: ", "Putt");
 		telemetry.update();
@@ -234,17 +229,17 @@ public class AutoByrd extends LinearOpMode {
 	private void resetTimer(){
 		INPUT_TIMER = System.currentTimeMillis();
 	}
-	
+
 	private void scan(){
 		//Set the hammer to move closer to the Jewel that the hammer can sense.
 		robot.hammerX.setPosition(HAMMER_CENTER-.1);
 		sleep(500);
 		//If no color is detected then it will reset the hammer to its original position.
 		if(robot.color.blue() == robot.color.red()){
-		robot.hammerX.setPosition(HAMMER_CENTER);
+			robot.hammerX.setPosition(HAMMER_CENTER);
 		}
 	}
-	
+
 	private void stopMoving() throws InterruptedException {
 		//Sets the power of all motors to zero and then waits for half a second
 		robot.frontLeft.setPower(0);
@@ -253,7 +248,7 @@ public class AutoByrd extends LinearOpMode {
 		robot.backRight.setPower(0);
 		sleep(500);
 	}
-	
+
 	private void straighten() throws InterruptedException {
 		//Inputs into the turn function the angle that the robot is supposed to be in
 		turn(imaginaryAngle,.4);
@@ -264,27 +259,27 @@ public class AutoByrd extends LinearOpMode {
 		imaginaryAngle = angle;
 		//While the angel is > the gyroscope+2 or < the gyroscope-2
 		while(angle > (robot.gyro.getHeading()+2)%360 || angle < robot.gyro.getHeading()-2){
-		    if((angle>robot.gyro.getHeading() && angle<robot.gyro.getHeading()+181) || (angle<robot.gyro.getHeading()-180)){
-                	robot.frontLeft.setPower(-speed);
-                	robot.frontRight.setPower(speed);
-                	robot.backLeft.setPower(-speed);
-                	robot.backRight.setPower(speed);
-		    } else {
-                	robot.frontLeft.setPower(speed);
-                	robot.frontRight.setPower(-speed);
-                	robot.backLeft.setPower(speed);
-                	robot.backRight.setPower(-speed);
-            }
+			if((angle>robot.gyro.getHeading() && angle<robot.gyro.getHeading()+181) || (angle<robot.gyro.getHeading()-180)){
+				robot.frontLeft.setPower(-speed);
+				robot.frontRight.setPower(speed);
+				robot.backLeft.setPower(-speed);
+				robot.backRight.setPower(speed);
+			} else {
+				robot.frontLeft.setPower(speed);
+				robot.frontRight.setPower(-speed);
+				robot.backLeft.setPower(speed);
+				robot.backRight.setPower(-speed);
+			}
 			telemetry.addData("Function: ", "Turn");
 			telemetry.addData("Current Angle: ", robot.gyro.getIntegratedZValue());
 			telemetry.addData("Target Angle:  ", angle);
 			telemetry.addData("Current Speed: ", speed);
 			telemetry.update();
-            }
+		}
 		stopMoving();
 	}
 
-	void vuCubby(boolean direction, int target) throws InterruptedException{
+	private void vuCubby(boolean direction, int target) throws InterruptedException{
 		robot.color.enableLed(true);
 		while(target>0){
 			robot.hammerX.setPosition(HAMMER_CENTER);
@@ -298,34 +293,42 @@ public class AutoByrd extends LinearOpMode {
 			robot.hammerY.setPower(HAMMER_UP);
 			sleep(250);
 			stopMoving();
-			sleep(2000);
+			sleep(1000);
 			target-=1;
 		}
 	}
 
-	/*int vuValue(boolean direction){
-		RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-        relicTrackables.activate();
-		if(vuMark != RelicRecoveryVuMark.UNKNOWN){
-			if(vuMark == RelicRecoveryVuMark.LEFT){
-				if(direction == RIGHT){return 1;} else{return 3;}
-			} else if(vuMark == RelicRecoveryVuMark.RIGHT){
-				if(direction == RIGHT){return 3;} else{return 1;}
-			} else {return 2;}
-		}
-		return 1;
-	}*/
 
 	@Override
 	public void runOpMode() throws InterruptedException {
 		robot.init(hardwareMap);
 
-		/*int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-		VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-		parameters.vuforiaLicenseKey = "ARK0G5D/////AAAAGTNyS/9bI0eKk0BiZlza4w8qOLSfAS/JLHbvWMY95VY7PgFNgH178LKZTQVDke1Eu9JzX/o9QWeyU5ottyCSuPaRr98YId9QUZtfX918roLvNx3n5bXekGlcKSoxgw+UcH3HN+c8V57B3fFhNMt0uyKEWNAXYmAx1OkvoFUSSurH82uzsGg+aBZ3nlVfj043RPXSDyiJO7uDZmwVH14LPjdhP92Qj6byGdICOqc5dxKG1rVFdNgAWJjYVWbz53K1qNWyO9fYgE0lIjwgNopM2GCFVR2ycS0JHx5UW3Bk2m47kDoFCFJP+A8fWxfLyrtgH02JOzNyHb0VoKv4ZDan5Czl7Wcs+ItJBby3qyEmPRkf";
-		parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-		this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);*/
+		telemetry.log().add("Gyro Calibrating. Do Not Move!");
+		robot.gyro.calibrate();
 
-		robot.color.enableLed(false);
+		while (!isStopRequested() && robot.gyro.isCalibrating())  {
+			telemetry.log().add("Gyro Calibrating. Do Not Move!");
+			telemetry.update();
+			sleep(50);
+		}
+
+		telemetry.log().clear(); telemetry.log().add("Gyro Calibrated. Press Start.");
+		telemetry.clear(); telemetry.update();
+
+		telemetry.addData(">", "Gyro Calibrated.  Press Start.");
+		telemetry.update();
+
+		waitForStart();
+		robot.gyro.resetZAxisIntegrator();
+		if (!isStopRequested()) {
+			grab(true);
+			//forkX(true);
+			//int cubby = vuValue(RIGHT);
+			hammer(RED);
+			//move(MOVE_RIGHT,1000,.5);
+			//dismount(0);
+			vuCubby(RIGHT, 2);
+			insert(MOVE_RIGHT);
+		}
 	}
 }

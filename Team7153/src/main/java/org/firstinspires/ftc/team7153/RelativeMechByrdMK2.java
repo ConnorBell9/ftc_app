@@ -11,12 +11,7 @@ public class RelativeMechByrdMK2 extends OpMode{
     public void init() {
 		robot.init(hardwareMap);
 		robot.gyro.calibrate();
-		while(robot.gyro.isCalibrating()) {
-			telemetry.addData(">", "Gyro Calibrating. Do Not move!");
-			telemetry.update();
-		}
-		telemetry.addData(">", "Gyro Calibrated.  Press Start.");
-		telemetry.update();
+		IS_BLOCK_GRAB=true;
     }
 
     @Override
@@ -78,10 +73,10 @@ public class RelativeMechByrdMK2 extends OpMode{
 		} else {robot.forkY.setPower(0);}
 		if(gamepad2.dpad_right) {
 			robot.forkX.setTargetPosition((int)LIFT_X_OUT);
-			IS_BLOCK_GRAB=false;
+			IS_BLOCK_GRAB=true;
 		} else if(gamepad2.dpad_left) {
 			robot.forkX.setTargetPosition((int)LIFT_X_IN);
-			IS_BLOCK_GRAB=false;
+			IS_BLOCK_GRAB=true;
 		}
 
 		if(gamepad2.right_trigger>.1){

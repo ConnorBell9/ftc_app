@@ -35,7 +35,6 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 /**
  * This is NOT an opmode.
  *
@@ -98,7 +97,7 @@ class HardwareByrd
 
     static boolean       IS_HAMMER      = false;
     static boolean       IS_HAMMER_DOWN = false;
-    static final double  HAMMER_DOWN    = 0;
+    static final double  HAMMER_DOWN    = .3;
     static final double  HAMMER_UP      = -1;
     static final double  HAMMER_LEFT    = .8;
     static final double  HAMMER_RIGHT   = .4;
@@ -133,7 +132,6 @@ class HardwareByrd
 
     /* local OpMode members. */
     private HardwareMap hwMap           =  null;
-    private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
     HardwareByrd(){

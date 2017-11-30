@@ -25,12 +25,6 @@ public class DebugByrd extends OpMode{
     public void init() {
 		robot.init(hardwareMap);
 		robot.gyro.calibrate();
-		while(robot.gyro.isCalibrating()) {
-			telemetry.addData(">", "Gyro Calibrating. Do Not move!");
-			telemetry.update();
-		}
-		telemetry.addData(">", "Gyro Calibrated.  Press Start.");
-		telemetry.update();
     }
 
     @Override
@@ -45,10 +39,10 @@ public class DebugByrd extends OpMode{
 	    final double v3 = r * Math.sin(robotAngle) + rightX;
 	    final double v4 = r * Math.cos(robotAngle) - rightX;
 
-	    robot.frontLeft.setPower(v1*maxSpeed);
+	    /*robot.frontLeft.setPower(v1*maxSpeed);
 		robot.frontRight.setPower(v2*maxSpeed);
 		robot.backLeft.setPower(v3*maxSpeed);
-		robot.backRight.setPower(v4*maxSpeed);
+		robot.backRight.setPower(v4*maxSpeed);*/
 
 	    if(gamepad1.a && System.currentTimeMillis() > INPUT_TIMER+500){
 			IS_BLOCK_GRAB=!IS_BLOCK_GRAB;
@@ -119,8 +113,10 @@ public class DebugByrd extends OpMode{
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
-	    telemetry.addData("Grab is: ", IS_BLOCK_GRAB);
-		telemetry.addData("Plate is: ", IS_PLATE);
+	    telemetry.addData("Grab is:   ", IS_BLOCK_GRAB);
+		telemetry.addData("Plate is:  ", IS_PLATE);
+		telemetry.addData("Hammer is: ", IS_HAMMER_DOWN);
+		telemetry.addData("Idol is:   ", IS_IDOL_GRAB);
 	    telemetry.addData("forkY Running to: ", robot.forkY.getTargetPosition());
 		telemetry.addData("forkY Running at: ", robot.forkY.getCurrentPosition());
 		telemetry.addData("forkX Running to: ", robot.forkX.getTargetPosition());
@@ -136,6 +132,8 @@ public class DebugByrd extends OpMode{
 	    telemetry.addData("Gyro", robot.gyro.getHeading());
 		telemetry.addData("Color Blue: ", robot.color.blue());
 		telemetry.addData("Color Red: ", robot.color.red());
+		telemetry.addData("GamePadY: ", gamepad1.right_stick_y);
+		telemetry.addData("GamePadX: ", gamepad1.right_stick_x);
 	    telemetry.update();
     }
 }

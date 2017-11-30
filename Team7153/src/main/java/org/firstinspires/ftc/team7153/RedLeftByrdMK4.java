@@ -11,14 +11,29 @@ public class RedLeftByrdMK4 extends AutoByrd {
 
 	@Override
 	public void runOpMode() throws InterruptedException {
-		//robot.gyro.resetZAxisIntegrator();
+		robot.init(hardwareMap);
+
+		telemetry.addData(">", "Gyro Calibrating. Do Not move!");
+		telemetry.update();
+		robot.gyro.calibrate();
+
+		while (!isStopRequested() && robot.gyro.isCalibrating()) {
+			Thread.sleep(50);
+			idle();
+		}
+
+		telemetry.addData(">", "Gyro Calibrated.  Press Start.");
+		telemetry.update();
+
+		waitForStart();
+		robot.gyro.resetZAxisIntegrator();
 		if (!isStopRequested()) {
 			grab(true);
 			forkX(true);
 			//int cubby = vuValue(RIGHT);
 			hammer(RED);
-			//move(MOVE_RIGHT,1000,.5);
-			dismount(0);
+			move(MOVE_RIGHT,1000,.5);
+			//dismount(0);
 			vuCubby(RIGHT, 2);
 			insert(MOVE_RIGHT);
 		}
