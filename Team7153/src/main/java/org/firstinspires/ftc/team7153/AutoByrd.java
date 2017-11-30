@@ -259,15 +259,15 @@ public class AutoByrd extends LinearOpMode {
 		//While the angel is > the gyroscope+2 or < the gyroscope-2
 		while(angle > (robot.gyro.getHeading()+2)%360 || angle < robot.gyro.getHeading()-2){
 		    if((angle>robot.gyro.getHeading() && angle<robot.gyro.getHeading()+181) || (angle<robot.gyro.getHeading()-180)){
-                robot.frontLeft.setPower(-speed);
-                robot.frontRight.setPower(speed);
-                robot.backLeft.setPower(-speed);
-                robot.backRight.setPower(speed);
-            } else {
-                robot.frontLeft.setPower(speed);
-                robot.frontRight.setPower(-speed);
-                robot.backLeft.setPower(speed);
-                robot.backRight.setPower(-speed);
+                	robot.frontLeft.setPower(-speed);
+                	robot.frontRight.setPower(speed);
+                	robot.backLeft.setPower(-speed);
+                	robot.backRight.setPower(speed);
+		    } else {
+                	robot.frontLeft.setPower(speed);
+                	robot.frontRight.setPower(-speed);
+                	robot.backLeft.setPower(speed);
+                	robot.backRight.setPower(-speed);
             }
 			telemetry.addData("Function: ", "Turn");
 			telemetry.addData("Current Angle: ", robot.gyro.getIntegratedZValue());
