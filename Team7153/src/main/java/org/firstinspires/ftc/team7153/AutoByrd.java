@@ -30,7 +30,80 @@ public class AutoByrd extends LinearOpMode {
 	private VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
 	private VuforiaTrackable relicTemplate = relicTrackables.get(0);*/
 	//
-
+	void dismount(double direction) throws InterruptedException {
+		while(robot.gyro.rawX()<500 || robot.gyro.rawY()<500 || robot.gyro.rawX()>-500 || robot.gyro.rawY()>-500){
+			moveWithoutStopping(direction,1);
+		}
+		while(robot.gyro.rawX()<500 || robot.gyro.rawY()<500 || robot.gyro.rawX()>-500 || robot.gyro.rawY()>-500){
+			moveWithoutStopping(direction,1);
+		}
+		stopMoving();
+	}
+	
+	void forkX(boolean mode) {
+		if (mode) {
+			robot.forkX.setTargetPosition((int)LIFT_X_OUT);
+		} else {
+			robot.forkX.setTargetPosition((int)LIFT_X_IN);
+		}
+	}
+	
+	void grab(boolean grab) {
+		if (grab) {
+			robot.armL.setPosition(LEFT_CLAMP_CLOSE);
+			robot.armR.setPosition(RIGHT_CLAMP_CLOSE);
+		} else {
+			robot.armL.setPosition(LEFT_CLAMP_OPEN);
+			robot.armR.setPosition(RIGHT_CLAMP_OPEN);
+		}
+	}
+	
+	void hammer(boolean colorRemaining) throws InterruptedException {
+		telemetry.addData("Function: ", "Hammer");
+		telemetry.update();
+		robot.color.enableLed(true);
+		robot.hammerY.setPower(HAMMER_DOWN);
+		sleep(1000);
+		resetTimer();
+		scan();
+		while (robot.color.blue() == robot.color.red() && System.currentTimeMillis() < INPUT_TIMER + 1000) {
+			moveWithoutStopping(MOVE_BACKWARDS,.08);
+		}
+		stopMoving();
+		telemetry.addData("Function: ", "Hammer");
+		telemetry.update();
+		sleep(1000);
+		scan();
+		if(robot.color.red()>robot.color.blue()){
+			telemetry.addData("Color Red: ", robot.color.red());
+			telemetry.addData("Color Blue: ", robot.color.blue());
+			telemetry.update();
+			if(colorRemaining==RED){putt(LEFT);} else {putt(RIGHT);}
+		} else if (robot.color.red()<robot.color.blue()){
+			telemetry.addData("Color Red: ", robot.color.red());
+			telemetry.addData("Color Blue: ", robot.color.blue());
+			telemetry.update();
+			if(colorRemaining==RED){putt(RIGHT);} else {putt(LEFT);}
+		}
+		robot.hammerY.setPower(HAMMER_UP);
+		robot.hammerX.setPosition(HAMMER_CENTER);
+		sleep(1000);
+		robot.color.enableLed(false);
+		sleep(500);
+	}
+	
+	void insert(double direction) throws InterruptedException{
+		turn(direction,.5);
+		move(direction,1000,.2);
+		grab(false);
+		forkX(false);
+		move(direction,200,.2);
+		direction-=180;
+		if(direction<0){direction+=360;}
+		move(direction,500,.2);
+		turn(direction,.5);
+	}
+	
 	private void move(double angle, double time, double power) throws InterruptedException {
 		if (!opModeIsActive()) {
 			stopMoving();
@@ -67,6 +140,18 @@ public class AutoByrd extends LinearOpMode {
 		sleep((long) time);
 		stopMoving();
 	}
+	
+	private void moveToCubby(boolean direction) throws InterruptedException {
+		straighten();
+		resetTimer();
+		while(robot.color.blue()+robot.color.red()< 10 && INPUT_TIMER+5000>System.currentTimeMillis()){
+			if(direction){
+				moveWithoutStopping(MOVE_RIGHT,.5);
+			} else {
+				moveWithoutStopping(MOVE_LEFT, .5);
+			}
+		}
+	}
 
 	private void moveWithoutStopping(double angle, double power) throws InterruptedException {
 		if (!opModeIsActive()) {
@@ -100,27 +185,41 @@ public class AutoByrd extends LinearOpMode {
 		telemetry.addData("Moving at Speed: ", power);
 		telemetry.update();
 	}
+	
+	private void putt(boolean direction){
+		telemetry.addData("Function: ", "Putt");
+		telemetry.update();
+		if(direction == RIGHT){
+			telemetry.addData("Hammer Position: ", "Right");
+			telemetry.update();
+			robot.hammerX.setPosition(HAMMER_RIGHT);
+			sleep(2000);
+		} else {
+			telemetry.addData("Hammer Position: ", "Left");
+			telemetry.update();
+			robot.hammerX.setPosition(HAMMER_LEFT);
+			sleep(2000);
+		}
+	}
 
+	private void resetTimer(){
+		INPUT_TIMER = System.currentTimeMillis();
+	}
+	
+	private void scan(){
+		robot.hammerX.setPosition(HAMMER_CENTER-.1);
+	}
+	
+	private void stopMoving() throws InterruptedException {
+		robot.frontLeft.setPower(0);
+		robot.frontRight.setPower(0);
+		robot.backLeft.setPower(0);
+		robot.backRight.setPower(0);
+		sleep(500);
+	}
+	
 	private void straighten() throws InterruptedException {
 		turn(imaginaryAngle,.4);
-	}
-
-	void grab(boolean grab) {
-		if (grab) {
-			robot.armL.setPosition(LEFT_CLAMP_CLOSE);
-			robot.armR.setPosition(RIGHT_CLAMP_CLOSE);
-		} else {
-			robot.armL.setPosition(LEFT_CLAMP_OPEN);
-			robot.armR.setPosition(RIGHT_CLAMP_OPEN);
-		}
-	}
-
-	void forkX(boolean mode) {
-		if (mode) {
-			robot.forkX.setTargetPosition((int)LIFT_X_OUT);
-		} else {
-			robot.forkX.setTargetPosition((int)LIFT_X_IN);
-		}
 	}
 
 	private void turn(double angle, double speed) throws InterruptedException {
@@ -146,68 +245,6 @@ public class AutoByrd extends LinearOpMode {
 		stopMoving();
 	}
 
-	private void stopMoving() throws InterruptedException {
-		robot.frontLeft.setPower(0);
-		robot.frontRight.setPower(0);
-		robot.backLeft.setPower(0);
-		robot.backRight.setPower(0);
-		sleep(500);
-	}
-
-	void hammer(boolean colorRemaining) throws InterruptedException {
-		telemetry.addData("Function: ", "Hammer");
-		telemetry.update();
-		robot.color.enableLed(true);
-		robot.hammerY.setPower(HAMMER_DOWN);
-		sleep(1000);
-		resetTimer();
-		scan();
-		while (robot.color.blue() == robot.color.red() && System.currentTimeMillis() < INPUT_TIMER + 1000) {
-			moveWithoutStopping(MOVE_BACKWARDS,.08);
-		}
-		stopMoving();
-		telemetry.addData("Function: ", "Hammer");
-		telemetry.update();
-		sleep(1000);
-		scan();
-		if(robot.color.red()>robot.color.blue()){
-			telemetry.addData("Color Red: ", robot.color.red());
-			telemetry.addData("Color Blue: ", robot.color.blue());
-			telemetry.update();
-			if(colorRemaining==RED){putt(LEFT);} else {putt(RIGHT);}
-		} else if (robot.color.red()<robot.color.blue()){
-			telemetry.addData("Color Red: ", robot.color.red());
-			telemetry.addData("Color Blue: ", robot.color.blue());
-			telemetry.update();
-			if(colorRemaining==RED){putt(RIGHT);} else {putt(LEFT);}
-		}
-		robot.hammerY.setPower(HAMMER_UP);
-		robot.hammerX.setPosition(HAMMER_CENTER);
-		sleep(1000);
-		robot.color.enableLed(false);
-		sleep(500);
-	}
-
-	private void scan(){
-		robot.hammerX.setPosition(HAMMER_CENTER-.1);
-	}
-
-	private void putt(boolean direction){
-		telemetry.addData("Function: ", "Putt");
-		telemetry.update();
-		if(direction == RIGHT){
-			telemetry.addData("Hammer Position: ", "Right");
-			telemetry.update();
-			robot.hammerX.setPosition(HAMMER_RIGHT);
-			sleep(2000);
-		} else {
-			telemetry.addData("Hammer Position: ", "Left");
-			telemetry.update();
-			robot.hammerX.setPosition(HAMMER_LEFT);
-			sleep(2000);
-		}
-	}
-
 	void vuCubby(boolean direction, int target) throws InterruptedException{
 		robot.color.enableLed(true);
 		while(target>0){
@@ -225,44 +262,6 @@ public class AutoByrd extends LinearOpMode {
 			sleep(1000);
 			target-=1;
 		}
-	}
-
-	void insert(double direction) throws InterruptedException{
-		turn(direction,.5);
-		move(direction,1000,.2);
-		grab(false);
-		forkX(false);
-		move(direction,200,.2);
-		direction-=180;
-		if(direction<0){direction+=360;}
-		move(direction,500,.2);
-		turn(direction,.5);
-	}
-
-	private void moveToCubby(boolean direction) throws InterruptedException {
-		straighten();
-		resetTimer();
-		while(robot.color.blue()+robot.color.red()< 10 && INPUT_TIMER+5000>System.currentTimeMillis()){
-			if(direction){
-				moveWithoutStopping(MOVE_RIGHT,.5);
-			} else {
-				moveWithoutStopping(MOVE_LEFT, .5);
-			}
-		}
-	}
-
-	private void resetTimer(){
-		INPUT_TIMER = System.currentTimeMillis();
-	}
-
-	void dismount(double direction) throws InterruptedException {
-		while(robot.gyro.rawX()<500 || robot.gyro.rawY()<500 || robot.gyro.rawX()>-500 || robot.gyro.rawY()>-500){
-			moveWithoutStopping(direction,1);
-		}
-		while(robot.gyro.rawX()<500 || robot.gyro.rawY()<500 || robot.gyro.rawX()>-500 || robot.gyro.rawY()>-500){
-			moveWithoutStopping(direction,1);
-		}
-		stopMoving();
 	}
 
 	/*int vuValue(boolean direction){
