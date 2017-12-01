@@ -98,11 +98,12 @@ public class AutoByrd extends LinearOpMode {
 			if(colorRemaining==RED){putt(RIGHT);} else {putt(LEFT);}
 		}
 		//Reset the hammer position to up and turn off the light
+		sleep(2000);
 		robot.hammerY.setPower(HAMMER_UP);
 		robot.hammerX.setPosition(HAMMER_CENTER);
 		robot.color.enableLed(false);
-		move(MOVE_FORWARDS,500,.06);
 		sleep(1000);
+		move(MOVE_FORWARDS,500,.06);
 	}
 	
 	void insert(double direction) throws InterruptedException{
@@ -167,9 +168,9 @@ public class AutoByrd extends LinearOpMode {
 		straighten();
 		//While the hammer is not detecting any color or the time-out hasn't occurred the robot will move towards a cubby slot
 		resetTimer();
-		while((robot.color.blue()+robot.color.red())< 10 && INPUT_TIMER+5000>System.currentTimeMillis()){
+		while((robot.color.blue() == robot.color.red()) && System.currentTimeMillis() < INPUT_TIMER + 5000){
 			if(direction){
-				moveWithoutStopping(MOVE_RIGHT,1);
+				moveWithoutStopping(MOVE_RIGHT, 1);
 			} else {
 				moveWithoutStopping(MOVE_LEFT, 1);
 			}
@@ -222,12 +223,10 @@ public class AutoByrd extends LinearOpMode {
 			telemetry.addData("Hammer Position: ", "Right");
 			telemetry.update();
 			robot.hammerX.setPosition(HAMMER_RIGHT);
-			sleep(2000);
 		} else {
 			telemetry.addData("Hammer Position: ", "Left");
 			telemetry.update();
 			robot.hammerX.setPosition(HAMMER_LEFT);
-			sleep(2000);
 		}
 	}
 
@@ -237,11 +236,13 @@ public class AutoByrd extends LinearOpMode {
 	
 	private void scan(){
 		//Set the hammer to move closer to the Jewel that the hammer can sense.
-		robot.hammerX.setPosition(HAMMER_CENTER-.1);
+		if(robot.color.blue() == robot.color.red()){
+			robot.hammerX.setPosition(HAMMER_CENTER-.1);
+		}
 		sleep(500);
 		//If no color is detected then it will reset the hammer to its original position.
 		if(robot.color.blue() == robot.color.red()){
-		robot.hammerX.setPosition(HAMMER_CENTER);
+			robot.hammerX.setPosition(HAMMER_CENTER);
 		}
 	}
 	
