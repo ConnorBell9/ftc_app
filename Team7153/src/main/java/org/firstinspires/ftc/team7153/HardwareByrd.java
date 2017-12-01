@@ -97,7 +97,8 @@ class HardwareByrd
 
     static boolean       IS_HAMMER      = false;
     static boolean       IS_HAMMER_DOWN = false;
-    static final double  HAMMER_DOWN    = .3;
+    static final double  HAMMER_DOWN    = .4;
+    static final double  HAMMER_MIDDLE  =  0;
     static final double  HAMMER_UP      = -1;
     static final double  HAMMER_LEFT    = .8;
     static final double  HAMMER_RIGHT   = .4;
@@ -169,7 +170,7 @@ class HardwareByrd
         frontLeft.setPower(0);
         backRight.setPower(0);
         backLeft.setPower(0);
-        forkX.setPower(.3);
+        forkX.setPower(.2);
         forkY.setPower(0);
         idolZ.setPower(.5);
         idolY.setPower(0);

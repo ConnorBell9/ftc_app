@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_CENTER;
 import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_DOWN;
 import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_LEFT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_MIDDLE;
 import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_RIGHT;
 import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_UP;
 import static org.firstinspires.ftc.team7153.HardwareByrd.INPUT_TIMER;
@@ -72,18 +73,18 @@ public class AutoByrd extends LinearOpMode {
 		robot.hammerY.setPower(HAMMER_DOWN);
 		sleep(1000);
 		//If the hammer does not detect any color the hammer will move closer to the jewel's potential position
-		scan();
+		//scan();
 		//If the hammer still does not detect any color the robot will move closer to the jewels and the wall
 		resetTimer();
 		while (robot.color.blue() == robot.color.red() && System.currentTimeMillis() < INPUT_TIMER + 500) {
-			moveWithoutStopping(MOVE_BACKWARDS,.06);
+			moveWithoutStopping(MOVE_BACKWARDS,.1);
 		}
 		stopMoving();
 		telemetry.addData("Function: ", "Hammer");
 		telemetry.update();
 		sleep(1000);
 		//If the hammer, by the will of God, still does not detect any color the hammer will move closer to the jewel's potential position
-		scan();
+		//scan();
 		//If the color red is greater than the color blue then if the arguement is red it will putt the blue ball off (Left) otherwise it will putt the red ball off (Right)
 		if(robot.color.red()>robot.color.blue()){
 			telemetry.addData("Color Red: ", robot.color.red());
@@ -103,7 +104,7 @@ public class AutoByrd extends LinearOpMode {
 		robot.hammerX.setPosition(HAMMER_CENTER);
 		robot.color.enableLed(false);
 		sleep(1000);
-		move(MOVE_FORWARDS,500,.06);
+		move(MOVE_FORWARDS,500,.1);
 	}
 	
 	void insert(double direction) throws InterruptedException{
@@ -260,7 +261,7 @@ public class AutoByrd extends LinearOpMode {
 		turn(imaginaryAngle,.4);
 	}
 
-	private void turn(double angle, double speed) throws InterruptedException {
+	void turn(double angle, double speed) throws InterruptedException {
 		//Sets the angle that the robot is supposed to be in to the angle arguement
 		imaginaryAngle = angle;
 		//While the angel is > the gyroscope+2 or < the gyroscope-2
@@ -287,9 +288,18 @@ public class AutoByrd extends LinearOpMode {
 
 	void vuCubby(boolean direction, int target) throws InterruptedException{
 		robot.color.enableLed(true);
+		robot.hammerX.setPosition(HAMMER_CENTER);
+		robot.hammerY.setPower(HAMMER_MIDDLE);
+		while (robot.color.blue() == robot.color.red()) {
+			moveWithoutStopping(MOVE_BACKWARDS,.1);
+			telemetry.addData("Color Blue: ", robot.color.blue());
+			telemetry.addData("Color Red:  ", robot.color.red());
+			telemetry.clear();
+			telemetry.update();
+		}
 		while(target>0){
 			robot.hammerX.setPosition(HAMMER_CENTER);
-			robot.hammerY.setPower(HAMMER_DOWN);
+			robot.hammerY.setPower(HAMMER_MIDDLE);
 			moveToCubby(direction);
 			if(direction){
 				robot.hammerX.setPosition(HAMMER_LEFT);

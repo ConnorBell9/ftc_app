@@ -25,6 +25,7 @@ public class DebugByrd extends OpMode{
     public void init() {
 		robot.init(hardwareMap);
 		robot.gyro.calibrate();
+		robot.color.enableLed(true);
     }
 
     @Override
