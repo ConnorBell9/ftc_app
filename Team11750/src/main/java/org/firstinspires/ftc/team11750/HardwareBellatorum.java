@@ -38,7 +38,7 @@ class HardwareBellatorum
     Servo    rightClamp  = null;
     Servo    colorArm = null;
     ColorSensor colorSensor;
-    boolean clampInstalled=false; // Set to false to run without clamp installed
+    boolean clampInstalled=true; // Set to false to run without clamp installed, true to run with
 
     final double CLAMP_LEFT_OPEN  =  0.4;
     final double CLAMP_RIGHT_OPEN = 0.7;

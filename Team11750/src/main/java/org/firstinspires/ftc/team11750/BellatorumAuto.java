@@ -80,7 +80,7 @@ public class BellatorumAuto extends LinearOpMode {
     static final double     TURN_SPEED              = 0.5;     // Nominal half speed for better accuracy.
 
     static final double     HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
-    static final double     P_TURN_COEFF            = 0.005;     // Larger is more responsive, but also less stable
+    static final double     P_TURN_COEFF            = 0.008;     // Larger is more responsive, but also less stable
     static final double     P_DRIVE_COEFF           = 0.15;     // Larger is more responsive, but also less stable
 
     /**
@@ -234,8 +234,8 @@ public class BellatorumAuto extends LinearOpMode {
             if (!opModeIsActive()) {robot.stopMoving(); return;} // Stop and return
         }
         // Displace the blue color ball
-        if (robot.colorSensor.blue() >= 1) turnAngle += 20;
-        if (robot.colorSensor.red() >= 1) turnAngle -= 20;
+        if (robot.colorSensor.blue() >= 1) turnAngle += 15;
+        if (robot.colorSensor.red() >= 1) turnAngle -= 15;
 
         // Turn the other way to displace thr
         if(color == robot.COLOR_RED) turnAngle*=-1; // Turn the other way
@@ -243,7 +243,7 @@ public class BellatorumAuto extends LinearOpMode {
         log("Displacing jewel...");
         turn(turnAngle); // Turn to knock off the jewel
         robot.armUp();   // Raise the arm
-        turn(-turnAngle);// Turn back
+        turn(0);// Turn back
         log("Jewel displaced!");
     }
     void redTeamDisplaceJewel(){ displaceJewel(robot.COLOR_BLUE);}
