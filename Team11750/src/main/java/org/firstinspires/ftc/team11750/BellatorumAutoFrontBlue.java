@@ -59,8 +59,7 @@ public class BellatorumAutoFrontBlue extends BellatorumAuto {
          */
         robot.init(hardwareMap);
 
-        // Initialize the Vuforia capability
-        initVuforia();
+        autonomousInit(); // Initialize the autonomous method
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");
@@ -69,6 +68,7 @@ public class BellatorumAutoFrontBlue extends BellatorumAuto {
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+        gyro.resetZAxisIntegrator(); // Reset the gyro
 
         robot.clampClose(); // Grab the glyph
         sleep(1000); // Wait one second

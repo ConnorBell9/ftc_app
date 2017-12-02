@@ -50,12 +50,12 @@ class HardwareBellatorum
     final double FORWARD_POWER = 0.6;
     final double FEET_PER_SEC = 4;
     final double MOVE_START_SECS = 0.1;
-    final double TURN_POWER    = 0.1;
+    final double TURN_POWER    = 1.0;
     final double FORWARD =0.0;
     final double RIGHT = 90.0;
     final double LEFT = -90.0;
     final double BACK = 180.0;
-    final double AROUND = 137.5;
+    final double AROUND = 180.0;
     final double DEGREES_PER_SEC = 500;
     final double TURN_START_SECS = 0;
     final double ARM_UP = 0.25;

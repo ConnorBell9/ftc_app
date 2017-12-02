@@ -29,10 +29,12 @@
 
 package org.firstinspires.ftc.team11750;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
@@ -65,6 +67,21 @@ public class BellatorumAuto extends LinearOpMode {
     /* Declare OpMode members. */
     HardwareBellatorum robot   = new HardwareBellatorum();   // Use Bellatorum's hardware
     private ElapsedTime runtime = new ElapsedTime();
+    ModernRoboticsI2cGyro   gyro    = null;                    // Additional Gyro device
+    static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
+    static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
+    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
+    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * 3.1415);
+
+    // These constants define the desired driving/control characteristics
+    // The can/should be tweaked to suite the specific robot drive train.
+    static final double     DRIVE_SPEED             = 0.7;     // Nominal speed for better accuracy.
+    static final double     TURN_SPEED              = 0.5;     // Nominal half speed for better accuracy.
+
+    static final double     HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
+    static final double     P_TURN_COEFF            = 0.005;     // Larger is more responsive, but also less stable
+    static final double     P_DRIVE_COEFF           = 0.15;     // Larger is more responsive, but also less stable
 
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
@@ -118,7 +135,7 @@ public class BellatorumAuto extends LinearOpMode {
 
         // Look for a bit to see the VuMark
         runtime.reset();
-        while (runtime.seconds() < 3) {
+        while (runtime.seconds() < 1) {
             if (!opModeIsActive()) {robot.stopMoving(); break;} // Stop and return
             /*
              * See if any of the instances of {@link relicTemplate} are currently visible.
@@ -145,7 +162,7 @@ public class BellatorumAuto extends LinearOpMode {
         return relicVuMark;
     }
 
-    void turn(double angle, double power) {
+    void oldTurn(double angle, double power) {
 
         if (angle==0) return; // Return immediately for 0 degree turn
         robot.startRotate(angle, power); // Start rotating in the angle direction at power
@@ -160,9 +177,10 @@ public class BellatorumAuto extends LinearOpMode {
         }
         robot.stopMoving();
     }
+    void turn(double angle, double power) { gyroTurn(power, angle);}
     void turn(double angle) {turn(angle, robot.TURN_POWER);} // Overload with default power
 
-    void move(double angle, double distance, double power){
+    void oldMove(double angle, double distance, double power){
         log("Start moving...");
         robot.startMovingEncoder(angle, distance, power); // Start moving in the right direction
 
@@ -178,6 +196,10 @@ public class BellatorumAuto extends LinearOpMode {
         robot.stopMoving();
         robot.setupEncoders();
     }
+    void move(double angle, double distance, double power){
+        gyroDrive(power, distance, angle);
+    }
+
     void move(double angle, double distance){ // Overload with default power
         move(angle, distance, robot.FORWARD_POWER);
     }
@@ -227,6 +249,20 @@ public class BellatorumAuto extends LinearOpMode {
     void redTeamDisplaceJewel(){ displaceJewel(robot.COLOR_BLUE);}
     void blueTeamDisplaceJewel() {displaceJewel(robot.COLOR_RED);}
 
+    void autonomousInit(){
+        gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
+        gyro.calibrate();
+
+        // make sure the gyro is calibrated before continuing
+        while (!isStopRequested() && gyro.isCalibrating())  {
+            sleep(50);
+            idle();
+        }
+
+        // Initialize the Vuforia capability
+        initVuforia();
+    }
+
     @Override
     public void runOpMode() {
         /*
@@ -234,18 +270,180 @@ public class BellatorumAuto extends LinearOpMode {
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
+        autonomousInit();
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "This is a template Autonomous. Override");    //
         telemetry.update();
 
-        // Initialize the Vuforia capability
-        initVuforia();
-
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+        gyro.resetZAxisIntegrator();
 
         // Get the RelicRecoverVuMark location
         getRelicRecoveryVuMark();
     }
+
+
+   /**
+    *  Method to drive on a fixed compass bearing (angle), based on encoder counts.
+    *  Move will stop if either of these conditions occur:
+    *  1) Move gets to the desired position
+    *  2) Driver stops the opmode running.
+    *
+    * @param speed      Target speed for forward motion.  Should allow for _/- variance for adjusting heading
+    * @param distance   Distance (in inches) to move from current position.  Negative distance means move backwards.
+    * @param angle      Absolute Angle (in Degrees) relative to last gyro reset.
+    *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
+    *                   If a relative angle is required, add/subtract from current heading.
+    */
+    public void gyroDrive ( double speed,
+                            double distance,
+                            double angle) {
+        double  error;
+        double  steer;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            log("Start moving...");
+            robot.startMovingEncoder(angle, distance, speed); // Start moving in the right direction
+
+            // keep looping while we are still active, and BOTH motors are running.
+            while (opModeIsActive() && robot.motorsBusy()) {
+
+                // adjust direction and speed based on heading error.
+                error = getError(angle);
+                steer = getSteer(error, P_DRIVE_COEFF);
+
+                robot.startMovingInDirection(angle-steer, speed);
+
+                // Display drive status for the driver.
+                telemetry.addData("Angle/Speed",   "%5.2f:%5.2f",  angle, speed);
+                telemetry.addData("Err/St/New Angle",  "%5.1f/%5.1f, %5.2f",
+                        error, steer, angle-steer);
+                telemetry.addData("Actual",  "%7d:%7d:%7d:%7d",
+                        robot.leftFrontMotor.getCurrentPosition(),
+                        robot.rightFrontMotor.getCurrentPosition(),
+                        robot.leftBackMotor.getCurrentPosition(),
+                        robot.rightBackMotor.getCurrentPosition());
+                telemetry.update();
+            }
+
+            // Stop all motion;
+            robot.stopMoving();
+
+            // Turn off RUN_TO_POSITION
+            robot.setupEncoders();
+        }
+    }
+
+    /**
+     *  Method to spin on central axis to point in a new direction.
+     *  Move will stop if either of these conditions occur:
+     *  1) Move gets to the heading (angle)
+     *  2) Driver stops the opmode running.
+     *
+     * @param speed Desired speed of turn.
+     * @param angle      Absolute Angle (in Degrees) relative to last gyro reset.
+     *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
+     *                   If a relative angle is required, add/subtract from current heading.
+     */
+    public void gyroTurn (  double speed, double angle) {
+
+        // keep looping while we are still active, and not on heading.
+        while (opModeIsActive() && !onHeading(speed, angle, P_TURN_COEFF)) {
+            // Update telemetry & Allow time for other processes to run.
+            telemetry.update();
+        }
+    }
+
+    /**
+     *  Method to obtain & hold a heading for a finite amount of time
+     *  Move will stop once the requested time has elapsed
+     *
+     * @param speed      Desired speed of turn.
+     * @param angle      Absolute Angle (in Degrees) relative to last gyro reset.
+     *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
+     *                   If a relative angle is required, add/subtract from current heading.
+     * @param holdTime   Length of time (in seconds) to hold the specified heading.
+     */
+    public void gyroHold( double speed, double angle, double holdTime) {
+
+        ElapsedTime holdTimer = new ElapsedTime();
+
+        // keep looping while we have time remaining.
+        holdTimer.reset();
+        while (opModeIsActive() && (holdTimer.time() < holdTime)) {
+            // Update telemetry & Allow time for other processes to run.
+            onHeading(speed, angle, P_TURN_COEFF);
+            telemetry.update();
+        }
+
+        // Stop all motion;
+        robot.stopMoving();
+    }
+
+    /**
+     * Perform one cycle of closed loop heading control.
+     *
+     * @param speed     Desired speed of turn.
+     * @param angle     Absolute Angle (in Degrees) relative to last gyro reset.
+     *                  0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
+     *                  If a relative angle is required, add/subtract from current heading.
+     * @param PCoeff    Proportional Gain coefficient
+     * @return
+     */
+    boolean onHeading(double speed, double angle, double PCoeff) {
+        double   error ;
+        double   steer ;
+        boolean  onTarget = false ;
+
+        // determine turn power based on +/- error
+        error = getError(angle);
+
+        if (Math.abs(error) <= HEADING_THRESHOLD) {
+            steer = 0.0;
+            robot.stopMoving();
+            onTarget = true;
+        }
+        else {
+            steer = getSteer(error, P_TURN_COEFF);
+            robot.startRotate(error, steer);
+        }
+
+        // Display it for the driver.
+        telemetry.addData("Target", "%5.2f", angle);
+        telemetry.addData("Err/St", "%5.2f/%5.2f", error, steer);
+
+        return onTarget;
+    }
+
+    /**
+     * getError determines the error between the target angle and the robot's current heading
+     * @param   targetAngle  Desired angle (relative to global reference established at last Gyro Reset).
+     * @return  error angle: Degrees in the range +/- 180. Centered on the robot's frame of reference
+     *          +ve error means the robot should turn LEFT (CCW) to reduce error.
+     */
+    public double getError(double targetAngle) {
+
+        double robotError;
+
+        // calculate error in -179 to +180 range  (
+        robotError = targetAngle + gyro.getIntegratedZValue();
+        while (robotError > 180)  robotError -= 360;
+        while (robotError <= -180) robotError += 360;
+        return robotError;
+    }
+
+    /**
+     * returns desired steering force.  +/- 1 range.  +ve = steer left
+     * @param error   Error angle in robot relative degrees
+     * @param PCoeff  Proportional Gain Coefficient
+     * @return
+     */
+    public double getSteer(double error, double PCoeff) {
+        return Range.clip(Math.abs(error * PCoeff), -1, 1);
+    }
+
 }
