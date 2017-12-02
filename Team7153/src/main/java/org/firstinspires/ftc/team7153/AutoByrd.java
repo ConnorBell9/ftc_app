@@ -85,18 +85,26 @@ public class AutoByrd extends LinearOpMode {
 		sleep(1000);
 		//If the hammer, by the will of God, still does not detect any color the hammer will move closer to the jewel's potential position
 		//scan();
-		//If the color red is greater than the color blue then if the arguement is red it will putt the blue ball off (Left) otherwise it will putt the red ball off (Right)
+		//If the color red is greater than the color blue then if the argument is red it will putt the blue ball off (Left) otherwise it will putt the red ball off (Right)
+		telemetry.clear();
 		if(robot.color.red()>robot.color.blue()){
-			telemetry.addData("Color Red: ", robot.color.red());
+			telemetry.addData("Color Detected: ", "red");
+			telemetry.addData("Color Red:  ", robot.color.red());
 			telemetry.addData("Color Blue: ", robot.color.blue());
 			telemetry.update();
 			if(colorRemaining==RED){putt(LEFT);} else {putt(RIGHT);}
 		} else if (robot.color.red()<robot.color.blue()){
 			//Else if the color red is less than the color blue then if the arguement is red it will put the blue ball off (Right) otherwise it will putt the red ball off (Left)
+			telemetry.addData("Color Detected: ", "blue");
 			telemetry.addData("Color Red: ", robot.color.red());
 			telemetry.addData("Color Blue: ", robot.color.blue());
 			telemetry.update();
 			if(colorRemaining==RED){putt(RIGHT);} else {putt(LEFT);}
+		} else{
+			telemetry.addData("Color Detected: ", "None");
+			telemetry.addData("Color Red: ", robot.color.red());
+			telemetry.addData("Color Blue: ", robot.color.blue());
+			telemetry.update();
 		}
 		//Reset the hammer position to up and turn off the light
 		sleep(2000);
