@@ -55,8 +55,8 @@ class HardwareFortissimus2
     final double MOVE_START_SECS = 0.1;
     final double TURN_POWER    = 0.1;
     final double FORWARD =0.0;
-    final double RIGHT = 90.0;
-    final double LEFT = -90.0;
+    final double LEFT = 90.0;
+    final double RIGHT = -90.0;
     final double BACK = 180.0;
     final double AROUND = 180.0;
     final double DEGREES_PER_SEC = 340+.0;
@@ -89,9 +89,9 @@ class HardwareFortissimus2
         rightBackMotor   = hwMap.dcMotor.get("br");
         track   = hwMap.dcMotor.get("track");
         reel    = hwMap.dcMotor.get("reel");
-        //leftFrontMotor.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
+        leftFrontMotor.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
-        //leftBackMotor.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
+        leftBackMotor.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         rightBackMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
 
 
@@ -101,7 +101,6 @@ class HardwareFortissimus2
         leftBackMotor.setPower(0);
         rightBackMotor.setPower(0);
         reel.setPower(0);
-        c.enableLed(true);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.

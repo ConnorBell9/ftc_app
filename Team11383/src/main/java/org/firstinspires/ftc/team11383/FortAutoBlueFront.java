@@ -124,8 +124,8 @@ public class FortAutoBlueFront extends LinearOpMode {
             if (!opModeIsActive()) {robot.stopMoving(); return;} // Stop and return
         }
         // Displace the blue color ball
-        if (robot.c.blue() >= 1) turnAngle += 20;
-        if (robot.c.red() >= 1) turnAngle -= 20;
+        if (robot.c.blue() >= 1) turnAngle -= 20;
+        if (robot.c.red() >= 1) turnAngle += 20;
 
         // Turn the other way to displace thr
         if(color == robot.COLOR_RED) turnAngle*=-1; // Turn the other way
@@ -153,20 +153,20 @@ public class FortAutoBlueFront extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        robot.clampClose(); // Grab the glyph
-        sleep(1000); // Wait one second
-        liftUp(1); // Raise the lift in ft
+        //robot.clampClose(); // Grab the glyph
+        //sleep(1000); // Wait one second
+        //liftUp(1); // Raise the lift in ft
 
-        displaceJewel(robot.COLOR_RED); // Knock of the jewel of this color
+        displaceJewel(robot.COLOR_BLUE); // Knock of the jewel opposite this color
 
         move(robot.LEFT, 3); // Move left 3 feet
-        turn(robot.AROUND); // Turn 180 degrees
+       /* turn(robot.AROUND); // Turn 180 degrees
         move(robot.FORWARD, 1); // Move forward 1 foot
 
         robot.clampOpen(); // Drop the glyph
         move(robot.FORWARD, 0.5); // Move forward 6 inches
 
-        move(robot.BACK, 0.5); // Back up 6 inches
+        move(robot.BACK, 0.5); // Back up 6 inches*/
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
