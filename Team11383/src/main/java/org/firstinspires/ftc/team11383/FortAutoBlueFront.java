@@ -133,6 +133,7 @@ public class FortAutoBlueFront extends LinearOpMode {
         turn(turnAngle); // Turn to knock off the jewel
         robot.armUp();   // Raise the arm
         turn(-turnAngle);// Turn back
+        robot.armUp();
     }
     void redTeamJewel(){ displaceJewel(robot.COLOR_BLUE);}
     void blueTeamJewel() {displaceJewel(robot.COLOR_RED);}
@@ -158,7 +159,7 @@ public class FortAutoBlueFront extends LinearOpMode {
         //liftUp(1); // Raise the lift in ft
 
         displaceJewel(robot.COLOR_BLUE); // Knock of the jewel opposite this color
-
+        robot.armUp();
         move(robot.LEFT, 3, 1); // Move left 3 feet
        /* turn(robot.AROUND); // Turn 180 degrees
         move(robot.FORWARD, 1); // Move forward 1 foot
