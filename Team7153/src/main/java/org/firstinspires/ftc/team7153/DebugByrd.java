@@ -66,7 +66,6 @@ public class DebugByrd extends OpMode{
 		}
 
 		if(IS_HAMMER_DOWN){
-			robot.hammerX.setPosition(gamepad1.right_stick_x);
 			robot.hammerY.setPower(gamepad1.right_stick_y);
 		}
 
@@ -118,6 +117,7 @@ public class DebugByrd extends OpMode{
 		telemetry.addData("Plate is:  ", IS_PLATE);
 		telemetry.addData("Hammer is: ", IS_HAMMER_DOWN);
 		telemetry.addData("Idol is:   ", IS_IDOL_GRAB);
+		telemetry.addData("ArmT is at:       ", robot.armT.getPower());
 	    telemetry.addData("forkY Running to: ", robot.forkY.getTargetPosition());
 		telemetry.addData("forkY Running at: ", robot.forkY.getCurrentPosition());
 		telemetry.addData("forkX Running to: ", robot.forkX.getTargetPosition());

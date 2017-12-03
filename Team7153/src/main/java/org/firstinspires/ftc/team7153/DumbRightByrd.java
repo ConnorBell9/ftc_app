@@ -3,15 +3,13 @@ package org.firstinspires.ftc.team7153;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import static org.firstinspires.ftc.team7153.HardwareByrd.IS_GYRO_ON;
-import static org.firstinspires.ftc.team7153.HardwareByrd.MOVE_BACKWARDS;
 import static org.firstinspires.ftc.team7153.HardwareByrd.MOVE_FORWARDS;
-import static org.firstinspires.ftc.team7153.HardwareByrd.MOVE_RIGHT;
 import static org.firstinspires.ftc.team7153.HardwareByrd.RED;
-import static org.firstinspires.ftc.team7153.HardwareByrd.TURN_BACK;
+import static org.firstinspires.ftc.team7153.HardwareByrd.TURN_FORWARDS;
 import static org.firstinspires.ftc.team7153.HardwareByrd.TURN_LEFT;
 
-@Autonomous(name="RedLeftByrdMK4")
-public class RedLeftByrdMK4 extends AutoByrd {
+@Autonomous(name="DumbRightByrd")
+public class DumbRightByrd extends AutoByrd {
 
 	@Override
 	public void runOpMode() throws InterruptedException {
@@ -38,17 +36,18 @@ public class RedLeftByrdMK4 extends AutoByrd {
 			forkX(true);
 			sleep(1000);
 			forkY(true);
-			//int cubby = vuValue(RIGHT);
+			turn(TURN_LEFT,.3);
 			hammer(RED);
-			//move(MOVE_RIGHT,1000,.5);
-			//dismount(0);
+			turn(TURN_FORWARDS,.3);
             move(MOVE_FORWARDS,1000,.5);
-            turn(TURN_LEFT,.3);
-            move(MOVE_RIGHT,1000,.5);
-            turn(TURN_BACK,.3);
-            move(MOVE_BACKWARDS,750,.5);
-			//vuCubby(RIGHT, 2);
-			insert(MOVE_RIGHT);
+            turn(135,.3);
+            move(135, 1000,.5);
+            forkY(false);
+            sleep(1000);
+            grab(false);
+            move(315,500,.1);
+            forkX(false);
+
 		}
 	}
 }
