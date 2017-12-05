@@ -87,7 +87,7 @@ class HardwareByrd
 
     static final double IDOL_Z_START_POSITION = 600;
     static final double IDOL_Z_POSITION       = 0;
-    static final int    IDOL_Z_DELTA_POSITION = 21;
+    static final int    IDOL_Z_DELTA_POSITION = 42;
     static final double IDOL_Y_POSITION       = 0;
 
     static boolean       IS_BLOCK_GRAB     = true;

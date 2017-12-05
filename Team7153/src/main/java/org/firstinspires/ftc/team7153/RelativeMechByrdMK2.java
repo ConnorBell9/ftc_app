@@ -57,7 +57,7 @@ public class RelativeMechByrdMK2 extends OpMode{
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
-		if(gamepad1.x && System.currentTimeMillis() > INPUT_TIMER+500){
+		if(gamepad2.x && System.currentTimeMillis() > INPUT_TIMER+500){
 			IS_IDOL_GRAB=!IS_IDOL_GRAB;
 			INPUT_TIMER = System.currentTimeMillis();
 		}
@@ -98,9 +98,9 @@ public class RelativeMechByrdMK2 extends OpMode{
 		}
 
 		if(gamepad2.right_trigger>.1){
-			robot.idolY.setPower(.5*gamepad2.right_trigger);
+			robot.idolY.setPower(.75*gamepad2.right_trigger);
 		} else if (gamepad2.left_trigger>.1){
-			robot.idolY.setPower(-.5*gamepad2.left_trigger);
+			robot.idolY.setPower(-.75*gamepad2.left_trigger);
 		} else {robot.idolY.setPower(0);}
 		if(gamepad2.right_bumper && System.currentTimeMillis() > INPUT_TIMER+10){
 			robot.idolZ.setTargetPosition(robot.idolZ.getCurrentPosition()+IDOL_Z_DELTA_POSITION);
