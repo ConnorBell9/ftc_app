@@ -104,9 +104,9 @@ public class BellatorumTeleopOmni_Iterative extends OpMode{
         float r = gamepad1.right_stick_x; // Read the rotation from the right stick
 
         robot.leftFrontMotor.setPower(x+r);  // Set wheels equal to left stick //
-        robot.rightFrontMotor.setPower(y+r);  // direction plus amount of turn  //
-        robot.rightBackMotor.setPower(r-x);
-        robot.leftBackMotor.setPower(r-y);
+        robot.rightFrontMotor.setPower(-r-y);  // direction plus amount of turn  //
+        robot.rightBackMotor.setPower(x-r);
+        robot.leftBackMotor.setPower( r-y);
 
         // Use gamepad left & right Bumpers to open and close the clamp
         if (gamepad2.right_bumper)
@@ -119,6 +119,7 @@ public class BellatorumTeleopOmni_Iterative extends OpMode{
         robot.leftClamp.setPosition(robot.CLAMP_LEFT_OPEN + clampOffset);
         robot.rightClamp.setPosition(robot.CLAMP_RIGHT_OPEN - clampOffset);
 
+        /*
         // Use gamepad buttons to move the lift up (Y) and down (A)
         if (gamepad2.a)
             robot.liftMotor.setPower(robot.LIFT_UP_POWER);
@@ -126,6 +127,27 @@ public class BellatorumTeleopOmni_Iterative extends OpMode{
             robot.liftMotor.setPower(robot.LIFT_DOWN_POWER);
         else
             robot.liftMotor.setPower(0.0);
+        */
+
+        // Read the y displacement from both sticks
+        float a = gamepad2.left_stick_y;
+        float b = gamepad2.right_stick_y;
+
+        // Use the left stick to move the front lift up and down
+        if(a > 0.1)
+            robot.liftMotor.setPower(robot.LIFT_DOWN_POWER);
+        else if (a < -0.1)
+            robot.liftMotor.setPower(robot.LIFT_UP_POWER);
+        else
+            robot.liftMotor.setPower(0.0);
+
+        // Use the right stick to move the back lift up and down
+        if (b > 0.1)
+            robot.backLiftMotor.setPower(robot.LIFT_UP_POWER);
+        else if (b < -0.1)
+            robot.backLiftMotor.setPower(robot.LIFT_DOWN_POWER);
+        else
+            robot.backLiftMotor.setPower(0.0);
 
         // Send telemetry message to signify robot running;
         telemetry.addData("clamp",  "Offset = %.2f", clampOffset);

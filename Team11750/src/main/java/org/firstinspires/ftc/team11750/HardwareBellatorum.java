@@ -23,6 +23,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Motor channel:  Left Back drive motor:    "left_back_drive"
  * Motor channel:  Right Back drive motor:   "right_back_drive"
  * Motor channel:  Lift Drive motor:         "lift_arm"
+ * Motor channel:  Back Lift Drive motor:    "back_lift_arm"
  * Servo channel:  Servo to move left clamp: "left_hand"
  * Servo channel:  Servo to move right clamp:"right_hand"
  */
@@ -34,6 +35,7 @@ class HardwareBellatorum
     DcMotor  leftBackMotor    = null;
     DcMotor  rightBackMotor   = null;
     DcMotor  liftMotor   = null;
+    DcMotor  backLiftMotor    = null;
     Servo    leftClamp   = null;
     Servo    rightClamp  = null;
     Servo    colorArm = null;
@@ -58,7 +60,7 @@ class HardwareBellatorum
     final double AROUND = 180.0;
     final double DEGREES_PER_SEC = 500;
     final double TURN_START_SECS = 0;
-    final double ARM_UP = 0.25;
+    final double ARM_UP = 0.22;
     final double ARM_DOWN = 115;
     final int COLOR_RED = 1;
     final int COLOR_BLUE = 2;
@@ -102,6 +104,10 @@ class HardwareBellatorum
             liftMotor    = hwMap.dcMotor.get("lift_arm");
             liftMotor.setPower(0);
             liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+            backLiftMotor    = hwMap.dcMotor.get("back_lift_arm");
+            backLiftMotor.setPower(0);
+            backLiftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
             leftClamp = hwMap.servo.get("left_hand");
             rightClamp = hwMap.servo.get("right_hand");

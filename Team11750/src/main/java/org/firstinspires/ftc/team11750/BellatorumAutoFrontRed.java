@@ -83,7 +83,7 @@ public class BellatorumAutoFrontRed extends BellatorumAuto {
         double relicMove = 3.0; // Default is to move 3.0 feet
         if (relicVuMark == RelicRecoveryVuMark.RIGHT) { relicMove -= 7.63 / 12; } // 7.63" shorter
         if (relicVuMark == RelicRecoveryVuMark.LEFT) { relicMove += 7.63/12; } // 7.63" further
-        move(robot.RIGHT, relicMove); // Move forward relicMove feet
+        move(robot.RIGHT, relicMove, 1); // Move forward relicMove feet
         turn(robot.AROUND); // Turn 180 degrees
         move(robot.FORWARD, 0.8); // Move forward 0.8 feet
 
@@ -91,6 +91,8 @@ public class BellatorumAutoFrontRed extends BellatorumAuto {
         move(robot.FORWARD, 0.7); // Move forward 0.7 feet
 
         move(robot.BACK, 0.75); // Back up 9 inches
+        move(robot.FORWARD, 0.75);
+        move(robot.BACK, 0.7);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
