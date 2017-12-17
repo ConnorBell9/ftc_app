@@ -22,6 +22,8 @@ import static org.firstinspires.ftc.team7153.HardwareByrd.RED;
 import static org.firstinspires.ftc.team7153.HardwareByrd.RIGHT;
 import static org.firstinspires.ftc.team7153.HardwareByrd.RIGHT_CLAMP_CLOSE;
 import static org.firstinspires.ftc.team7153.HardwareByrd.RIGHT_CLAMP_OPEN;
+import static org.firstinspires.ftc.team7153.HardwareByrd.TOP_CLAMP_CLOSE;
+import static org.firstinspires.ftc.team7153.HardwareByrd.TOP_CLAMP_OPEN;
 
 
 public class AutoByrd extends LinearOpMode {
@@ -53,15 +55,27 @@ public class AutoByrd extends LinearOpMode {
 			robot.forkX.setTargetPosition((int)LIFT_X_IN);
 		}
 	}
+
+	void forkY(boolean direction){
+		if(direction) {
+			robot.forkY.setPower(.5);
+		} else {
+			robot.forkY.setPower(-.5);
+		}
+		sleep(2000);
+		robot.forkY.setPower(0);
+	}
 	
 	void grab(boolean grab) {
 		//If the arguement is true then the clamp will close otherwise the clamp will return to its original orientation
 		if (grab) {
 			robot.armL.setPosition(LEFT_CLAMP_CLOSE);
 			robot.armR.setPosition(RIGHT_CLAMP_CLOSE);
+			robot.armT.setPower(TOP_CLAMP_CLOSE);
 		} else {
 			robot.armL.setPosition(LEFT_CLAMP_OPEN);
 			robot.armR.setPosition(RIGHT_CLAMP_OPEN);
+			robot.armT.setPower(TOP_CLAMP_OPEN);
 		}
 	}
 	
@@ -76,37 +90,37 @@ public class AutoByrd extends LinearOpMode {
 		//scan();
 		//If the hammer still does not detect any color the robot will move closer to the jewels and the wall
 		resetTimer();
-		while (robot.color.blue() == robot.color.red() && System.currentTimeMillis() < INPUT_TIMER + 500) {
+		while (robot.color.blue() == robot.color.red() && System.currentTimeMillis() < INPUT_TIMER + 1000) {
 			moveWithoutStopping(MOVE_BACKWARDS,.1);
+			telemetry.addData("Function: ", "Hammer");
+			telemetry.addData("Blue: ", robot.color.blue());
+			telemetry.addData("Red:  ", robot.color.red());
+			telemetry.addData("Time Left: ", INPUT_TIMER+1000-System.currentTimeMillis());
+			telemetry.clear();
+			telemetry.update();
 		}
 		stopMoving();
-		telemetry.addData("Function: ", "Hammer");
-		telemetry.update();
 		sleep(1000);
 		//If the hammer, by the will of God, still does not detect any color the hammer will move closer to the jewel's potential position
 		//scan();
-		//If the color red is greater than the color blue then if the argument is red it will putt the blue ball off (Left) otherwise it will putt the red ball off (Right)
-		telemetry.clear();
+		//If the color red is greater than the color blue then if the arguement is red it will putt the blue ball off (Left) otherwise it will putt the red ball off (Right)
 		if(robot.color.red()>robot.color.blue()){
-			telemetry.addData("Color Detected: ", "red");
-			telemetry.addData("Color Red:  ", robot.color.red());
-			telemetry.addData("Color Blue: ", robot.color.blue());
-			telemetry.update();
-			if(colorRemaining==RED){putt(LEFT);} else {putt(RIGHT);}
-		} else if (robot.color.red()<robot.color.blue()){
-			//Else if the color red is less than the color blue then if the arguement is red it will put the blue ball off (Right) otherwise it will putt the red ball off (Left)
-			telemetry.addData("Color Detected: ", "blue");
 			telemetry.addData("Color Red: ", robot.color.red());
 			telemetry.addData("Color Blue: ", robot.color.blue());
 			telemetry.update();
 			if(colorRemaining==RED){putt(RIGHT);} else {putt(LEFT);}
-		} else{
-			telemetry.addData("Color Detected: ", "None");
+		} else if (robot.color.red()<robot.color.blue()){
+			//Else if the color red is less than the color blue then if the argument is red it will put the blue ball off (Right) otherwise it will putt the red ball off (Left)
 			telemetry.addData("Color Red: ", robot.color.red());
 			telemetry.addData("Color Blue: ", robot.color.blue());
 			telemetry.update();
+			if(colorRemaining==RED){putt(LEFT);} else {putt(RIGHT);}
 		}
 		//Reset the hammer position to up and turn off the light
+		telemetry.clear();
+		telemetry.addData("Color Red: ", robot.color.red());
+		telemetry.addData("Color Blue: ", robot.color.blue());
+		telemetry.update();
 		sleep(2000);
 		robot.hammerY.setPower(HAMMER_UP);
 		robot.hammerX.setPosition(HAMMER_CENTER);
@@ -299,7 +313,7 @@ public class AutoByrd extends LinearOpMode {
 		robot.hammerX.setPosition(HAMMER_CENTER);
 		robot.hammerY.setPower(HAMMER_MIDDLE);
 		while (robot.color.blue() == robot.color.red()) {
-			moveWithoutStopping(MOVE_BACKWARDS,.1);
+			moveWithoutStopping(MOVE_BACKWARDS,.2);
 			telemetry.addData("Color Blue: ", robot.color.blue());
 			telemetry.addData("Color Red:  ", robot.color.red());
 			telemetry.clear();

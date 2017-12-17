@@ -7,11 +7,18 @@ import static org.firstinspires.ftc.team7153.HardwareByrd.*;
 @TeleOp(name="RelativeMechByrdMK2")
 public class RelativeMechByrdMK2 extends OpMode{
 	private HardwareByrd robot = new HardwareByrd();
+	double robotAngle=0;
     @Override
     public void init() {
 		robot.init(hardwareMap);
-		robot.gyro.calibrate();
+		if(!IS_GYRO_ON) {
+			robot.gyro.calibrate();
+			IS_GYRO_ON=true;
+		}
+		IS_GYRO_ON=false;
 		IS_BLOCK_GRAB=true;
+		robot.forkX.setTargetPosition((int)LIFT_X_OUT);
+		robot.idolY.setTargetPosition(300);
     }
 
     @Override
@@ -19,7 +26,11 @@ public class RelativeMechByrdMK2 extends OpMode{
 	    double maxSpeed = 1;//Defines what fraction of speed the robot will run atb
 		double radGyro = (robot.gyro.getHeading() * Math.PI) / 180;
 	    double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
-	    double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4 - radGyro;
+	    if(IS_GYRO_ON){
+			robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4 - radGyro;
+		} else {
+			robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
+		}
 	    double rightX = gamepad1.right_stick_x;
 	    final double v1 = r * Math.cos(robotAngle) + rightX;
 	    final double v2 = r * Math.sin(robotAngle) - rightX;
@@ -41,7 +52,12 @@ public class RelativeMechByrdMK2 extends OpMode{
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
-		if(gamepad1.x && System.currentTimeMillis() > INPUT_TIMER+500){
+		if(gamepad1.y && System.currentTimeMillis() > INPUT_TIMER+500){
+			IS_GYRO_ON=!IS_GYRO_ON;
+			INPUT_TIMER = System.currentTimeMillis();
+		}
+
+		if(gamepad2.x && System.currentTimeMillis() > INPUT_TIMER+500){
 			IS_IDOL_GRAB=!IS_IDOL_GRAB;
 			INPUT_TIMER = System.currentTimeMillis();
 		}
@@ -49,9 +65,11 @@ public class RelativeMechByrdMK2 extends OpMode{
 	    if(IS_BLOCK_GRAB){
 		    robot.armL.setPosition(LEFT_CLAMP_CLOSE);
 			robot.armR.setPosition(RIGHT_CLAMP_CLOSE);
+			robot.armT.setPower(TOP_CLAMP_CLOSE);
 	    } else {
 			robot.armL.setPosition(LEFT_CLAMP_OPEN);
 			robot.armR.setPosition(RIGHT_CLAMP_OPEN);
+			robot.armT.setPower(TOP_CLAMP_OPEN);
 	    }
 
 	    if(IS_PLATE){
@@ -80,9 +98,9 @@ public class RelativeMechByrdMK2 extends OpMode{
 		}
 
 		if(gamepad2.right_trigger>.1){
-			robot.idolY.setPower(.5*gamepad2.right_trigger);
+			robot.idolY.setPower(.75*gamepad2.right_trigger);
 		} else if (gamepad2.left_trigger>.1){
-			robot.idolY.setPower(-.5*gamepad2.left_trigger);
+			robot.idolY.setPower(-.75*gamepad2.left_trigger);
 		} else {robot.idolY.setPower(0);}
 		if(gamepad2.right_bumper && System.currentTimeMillis() > INPUT_TIMER+10){
 			robot.idolZ.setTargetPosition(robot.idolZ.getCurrentPosition()+IDOL_Z_DELTA_POSITION);
@@ -92,8 +110,10 @@ public class RelativeMechByrdMK2 extends OpMode{
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
-	    telemetry.addData("Grab is: ", IS_BLOCK_GRAB);
+	    telemetry.addData("Grab is:  ", IS_BLOCK_GRAB);
 		telemetry.addData("Plate is: ", IS_PLATE);
+		telemetry.addData("Idol is:  ", IS_IDOL_GRAB);
+		telemetry.addData("Gyro is:  ", IS_GYRO_ON);
 	    telemetry.addData("forkY Running to: ", robot.forkY.getTargetPosition());
 		telemetry.addData("forkY Running at: ", robot.forkY.getCurrentPosition());
 		telemetry.addData("forkX Running to: ", robot.forkX.getTargetPosition());

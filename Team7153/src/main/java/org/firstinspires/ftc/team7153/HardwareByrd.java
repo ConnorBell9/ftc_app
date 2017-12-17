@@ -67,6 +67,7 @@ class HardwareByrd
 
     Servo    armL       = null;
     Servo    armR       = null;
+    CRServo  armT       = null;
 
     Servo    hammerX    = null;
     CRServo  hammerY    = null;
@@ -81,23 +82,25 @@ class HardwareByrd
     ModernRoboticsI2cGyro gyro         = null;
     ModernRoboticsI2cColorSensor color = null;
 
-    static final double LIFT_X_OUT = ((1440/(1.25*3.1415))*7);
+    static final double LIFT_X_OUT = (((1440/(1.25*3.1415))*7)/2);
     static final double LIFT_X_IN  = 0;
 
     static final double IDOL_Z_START_POSITION = 600;
     static final double IDOL_Z_POSITION       = 0;
-    static final int    IDOL_Z_DELTA_POSITION = 21;
+    static final int    IDOL_Z_DELTA_POSITION = 42;
     static final double IDOL_Y_POSITION       = 0;
 
     static boolean       IS_BLOCK_GRAB     = true;
     static final double  LEFT_CLAMP_CLOSE  = .4;
     static final double  RIGHT_CLAMP_CLOSE = 1;
+    static final double  TOP_CLAMP_CLOSE   = -1;
     static final double  LEFT_CLAMP_OPEN   = .7;
     static final double  RIGHT_CLAMP_OPEN  = .7;
+    static final double  TOP_CLAMP_OPEN    = 1;
 
     static boolean       IS_HAMMER      = false;
     static boolean       IS_HAMMER_DOWN = false;
-    static final double  HAMMER_DOWN    = .4;
+    static final double  HAMMER_DOWN    = .3;
     static final double  HAMMER_MIDDLE  =  0;
     static final double  HAMMER_UP      = -1;
     static final double  HAMMER_LEFT    = .8;
@@ -111,6 +114,8 @@ class HardwareByrd
     static boolean       IS_IDOL_GRAB      = false;
     static final double  IDOL_CLAMP_OPEN   = 0;
     static final double  IDOL_CLAMP_CLOSED = 1;
+
+    static boolean       IS_GYRO_ON        = false;
 
     static long INPUT_TIMER = 0;
 
@@ -191,6 +196,7 @@ class HardwareByrd
         // Define and initialize ALL installed servos.
         armL = hwMap.servo.get("armL");
         armR = hwMap.servo.get("armR");
+        armT = hwMap.crservo.get("armT");
 
         hammerX = hwMap.servo.get("hammerX");
         hammerY = hwMap.crservo.get("hammerY");
@@ -199,8 +205,9 @@ class HardwareByrd
 
         grabber = hwMap.servo.get("grabber");
 
-        armL.setPosition(LEFT_CLAMP_OPEN);
-        armR.setPosition(RIGHT_CLAMP_OPEN);
+        armL.setPosition(LEFT_CLAMP_CLOSE);
+        armR.setPosition(RIGHT_CLAMP_CLOSE);
+        armT.setPower(TOP_CLAMP_CLOSE);
         hammerX.setPosition(HAMMER_CENTER);
         hammerY.setPower(HAMMER_UP);
         plate.setPosition(PUSH_PLATE_UP);
