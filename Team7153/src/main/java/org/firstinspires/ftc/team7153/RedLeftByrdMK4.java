@@ -38,16 +38,12 @@ public class RedLeftByrdMK4 extends AutoByrd {
 			forkX(true);
 			sleep(1000);
 			forkY(true);
-			//int cubby = vuValue(RIGHT);
 			hammer(RED);
-			//move(MOVE_RIGHT,1000,.5);
-			//dismount(0);
             move(MOVE_FORWARDS,1000,.5);
             turn(TURN_LEFT,.3);
             move(MOVE_RIGHT,1000,.5);
             turn(TURN_BACK,.3);
             move(MOVE_BACKWARDS,750,.5);
-			//vuCubby(RIGHT, 2);
 			insert(MOVE_RIGHT);
 		}
 	}
