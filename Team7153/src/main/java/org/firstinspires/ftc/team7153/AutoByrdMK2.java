@@ -1,0 +1,299 @@
+package org.firstinspires.ftc.team7153;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.*;
+
+
+public class AutoByrdMK2 extends LinearOpMode {
+	HardwareByrdMK2 robot = new HardwareByrdMK2(); //Gets robot from HardwareByrd class
+	private double imaginaryAngle=0;         //Sets the robot's initial angle to 0
+	/*private VuforiaLocalizer vuforia;        //Stored instance of the vuforia engine
+	//These load the Relic Vuforia Marks for use
+	private VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+	private VuforiaTrackable relicTemplate = relicTrackables.get(0);*/
+	//
+	void dismount(double direction) throws InterruptedException {
+		//The robot first checks to see if there are no dramatic changes in the robot's orientation while moving consistantly in a preset direction
+		//After the first fall it will once again check to see if there is a dramatic change (at this point 2 wheels should be on the platform and two wheels off)
+		//After this the robot should be off of the platform
+		while(robot.gyro.rawX()<500 || robot.gyro.rawY()<500 || robot.gyro.rawX()>-500 || robot.gyro.rawY()>-500){
+			moveWithoutStopping(direction,1);
+		}
+		while(robot.gyro.rawX()<500 || robot.gyro.rawY()<500 || robot.gyro.rawX()>-500 || robot.gyro.rawY()>-500){
+			moveWithoutStopping(direction,1);
+		}
+		stopMoving();
+	}
+
+	void forkY(boolean direction){
+		if(direction) {
+			robot.forkY.setPower(-.5);
+		} else {
+			robot.forkY.setPower(.5);
+		}
+		sleep(2000);
+		robot.forkY.setPower(0);
+	}
+	
+	void grab(boolean grab) {
+		//If the arguement is true then the clamp will close otherwise the clamp will return to its original orientation
+		if (grab) {
+			robot.armL.setPosition(LEFT_CLAMP_CLOSE);
+			robot.armR.setPosition(RIGHT_CLAMP_CLOSE);
+			robot.armT.setPower(TOP_CLAMP_CLOSE);
+		} else {
+			robot.armL.setPosition(LEFT_CLAMP_OPEN);
+			robot.armR.setPosition(RIGHT_CLAMP_OPEN);
+			robot.armT.setPower(TOP_CLAMP_OPEN);
+		}
+	}
+	
+	void hammer(boolean colorRemaining) throws InterruptedException {
+		telemetry.addData("Function: ", "Hammer");
+		telemetry.update();
+		//Bring the hammer down and wait in order to get around the shakiness of the hammer
+		robot.color.enableLed(true);
+		robot.hammerY.setPosition(HAMMER_DOWN);
+		sleep(2000);
+		//If the color red is greater than the color blue then if the arguement is red it will putt the blue ball off (Left) otherwise it will putt the red ball off (Right)
+		if(robot.color.red()>robot.color.blue()){
+			telemetry.addData("Color Red: ", robot.color.red());
+			telemetry.addData("Color Blue: ", robot.color.blue());
+			telemetry.update();
+			if(colorRemaining==RED){putt(RIGHT);} else {putt(LEFT);}
+		} else if (robot.color.red()<robot.color.blue()){
+			//Else if the color red is less than the color blue then if the argument is red it will put the blue ball off (Right) otherwise it will putt the red ball off (Left)
+			telemetry.addData("Color Red: ", robot.color.red());
+			telemetry.addData("Color Blue: ", robot.color.blue());
+			telemetry.update();
+			if(colorRemaining==RED){putt(LEFT);} else {putt(RIGHT);}
+		}
+		//Reset the hammer position to up and turn off the light
+		telemetry.clear();
+		telemetry.addData("Color Red: ", robot.color.red());
+		telemetry.addData("Color Blue: ", robot.color.blue());
+		telemetry.update();
+		robot.hammerY.setPosition(HAMMER_UP);
+		robot.hammerX.setPower(HAMMER_CENTER);
+		robot.color.enableLed(false);
+		sleep(1000);
+	}
+	
+	void insert(double direction) throws InterruptedException{
+
+	}
+
+	void moveWithEncoders(double distance, double power, boolean direction) throws InterruptedException {
+		if (!opModeIsActive()) {
+			stopMoving();
+			return;
+		}
+		straighten();
+		if(!direction){distance*=-1;}
+
+		robot.frontLeft.setPower(power);
+		robot.frontRight.setPower(power);
+		robot.backLeft.setPower(power);
+		robot.backRight.setPower(power);
+
+		robot.frontLeft.setTargetPosition((int)(robot.frontLeft.getCurrentPosition()+(distance/4)*280));
+		robot.frontRight.setTargetPosition((int)(robot.frontRight.getCurrentPosition()+(distance/4)*280));
+		robot.backLeft.setTargetPosition((int)(robot.backLeft.getCurrentPosition()+(distance/4)*280));
+		robot.backRight.setTargetPosition((int)(robot.backRight.getCurrentPosition()+(distance/4)*280));
+
+		robot.frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+		robot.frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+		robot.backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+		robot.backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+		while(robot.frontLeft.getTargetPosition()>5+robot.frontLeft.getCurrentPosition() || robot.frontLeft.getTargetPosition() < robot.frontLeft.getCurrentPosition()-5){
+			telemetry.addData("Target Position: ", robot.frontLeft.getTargetPosition());
+			telemetry.addData("Current Position:  ", robot.frontLeft.getCurrentPosition());
+			telemetry.clear();
+			telemetry.update();
+			sleep(10);
+		}
+		sleep(500);
+		robot.frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+		robot.frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+		robot.backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+		robot.backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+	}
+	
+	private void moveToCubby(boolean direction) throws InterruptedException {
+		straighten();
+		//While the hammer is not detecting any color or the time-out hasn't occurred the robot will move towards a cubby slot
+		resetTimer();
+		while((robot.color.blue() == robot.color.red()) && System.currentTimeMillis() < INPUT_TIMER + 5000){
+			if(direction){
+				moveWithoutStopping(MOVE_RIGHT, 1);
+			} else {
+				moveWithoutStopping(MOVE_LEFT, 1);
+			}
+			telemetry.addData("Color Blue: ", robot.color.blue());
+			telemetry.addData("Color Red:  ", robot.color.red());
+			telemetry.clear();
+			telemetry.update();
+		}
+	}
+
+	private void moveWithoutStopping(double angle, double power) throws InterruptedException {
+		//See the move function. Just doesn't have the stopMoving() function built in.
+		if (!opModeIsActive()) {
+			stopMoving();
+			return;
+		}
+		double radGyro = (robot.gyro.getIntegratedZValue() * Math.PI) / 180;
+		double robotAngle = angle * (Math.PI / 180) - Math.PI / 4 - radGyro;
+
+		if (robotAngle > Math.PI) {
+			robotAngle = Math.PI * -2 + robotAngle;
+		} else if (robotAngle < -Math.PI) {
+			robotAngle = Math.PI * 2 + robotAngle;
+		}
+
+		final double v1 = power * Math.cos(robotAngle);
+		final double v2 = power * Math.sin(robotAngle);
+		final double v3 = power * Math.sin(robotAngle);
+		final double v4 = power * Math.cos(robotAngle);
+
+		robot.frontLeft.setPower(v1);
+		robot.frontRight.setPower(v2);
+		robot.backLeft.setPower(v3);
+		robot.backRight.setPower(v4);
+		telemetry.addData("Function: ", "MoveWithoutStopping");
+		telemetry.addData("FrontLeft:  ", robot.frontLeft.getPower());
+		telemetry.addData("FrontRight: ", robot.frontRight.getPower());
+		telemetry.addData("BackLeft:   ", robot.backLeft.getPower());
+		telemetry.addData("BackRight:  ", robot.backRight.getPower());
+		telemetry.addData("Moving at Angle: ", angle);
+		telemetry.addData("Moving at Speed: ", power);
+		telemetry.update();
+	}
+	
+	private void putt(boolean direction){
+		telemetry.addData("Function: ", "Putt");
+		telemetry.update();
+		//If the arguement says right or left then the hammer will putt to the respective positions
+		if(direction == RIGHT){
+			telemetry.addData("Hammer Position: ", "Right");
+			telemetry.update();
+			robot.hammerX.setPower(HAMMER_RIGHT);
+		} else {
+			telemetry.addData("Hammer Position: ", "Left");
+			telemetry.update();
+			robot.hammerX.setPower(HAMMER_LEFT);
+		}
+	}
+
+	private void resetTimer(){
+		INPUT_TIMER = System.currentTimeMillis();
+	}
+	
+	private void scan(){
+		//Set the hammer to move closer to the Jewel that the hammer can sense.
+		if(robot.color.blue() == robot.color.red()){
+			robot.hammerX.setPower(HAMMER_CENTER-.1);
+		}
+		sleep(500);
+		//If no color is detected then it will reset the hammer to its original position.
+		if(robot.color.blue() == robot.color.red()){
+			robot.hammerX.setPower(HAMMER_CENTER);
+		}
+	}
+	
+	private void stopMoving() throws InterruptedException {
+		//Sets the power of all motors to zero and then waits for half a second
+		robot.frontLeft.setPower(0);
+		robot.frontRight.setPower(0);
+		robot.backLeft.setPower(0);
+		robot.backRight.setPower(0);
+		sleep(500);
+	}
+	
+	private void straighten() throws InterruptedException {
+		//Inputs into the turn function the angle that the robot is supposed to be in
+		turn(imaginaryAngle,.4);
+	}
+
+	void turn(double angle, double speed) throws InterruptedException {
+		//Sets the angle that the robot is supposed to be in to the angle arguement
+		imaginaryAngle = angle;
+		//While the angel is > the gyroscope+2 or < the gyroscope-2
+		while(angle > (robot.gyro.getHeading()+2)%360 || angle < robot.gyro.getHeading()-2){
+		    if((angle>robot.gyro.getHeading() && angle<robot.gyro.getHeading()+181) || (angle<robot.gyro.getHeading()-180)){
+                	robot.frontLeft.setPower(-speed);
+                	robot.frontRight.setPower(speed);
+                	robot.backLeft.setPower(-speed);
+                	robot.backRight.setPower(speed);
+		    } else {
+                	robot.frontLeft.setPower(speed);
+                	robot.frontRight.setPower(-speed);
+                	robot.backLeft.setPower(speed);
+                	robot.backRight.setPower(-speed);
+            }
+			telemetry.addData("Function: ", "Turn");
+			telemetry.addData("Current Angle: ", robot.gyro.getIntegratedZValue());
+			telemetry.addData("Target Angle:  ", angle);
+			telemetry.addData("Current Speed: ", speed);
+			telemetry.update();
+            }
+		stopMoving();
+	}
+
+	void vuCubby(boolean direction, int target) throws InterruptedException{
+		robot.color.enableLed(true);
+		robot.hammerX.setPower(HAMMER_CENTER);
+		robot.hammerY.setPosition(HAMMER_MIDDLE);
+		while (robot.color.blue() == robot.color.red()) {
+			moveWithoutStopping(MOVE_BACKWARDS,.2);
+			telemetry.addData("Color Blue: ", robot.color.blue());
+			telemetry.addData("Color Red:  ", robot.color.red());
+			telemetry.clear();
+			telemetry.update();
+		}
+		while(target>0){
+			robot.hammerX.setPower(HAMMER_CENTER);
+			robot.hammerY.setPosition(HAMMER_MIDDLE);
+			moveToCubby(direction);
+			if(direction){
+				robot.hammerX.setPower(HAMMER_LEFT);
+			} else {
+				robot.hammerX.setPower(HAMMER_RIGHT);
+			}
+			robot.hammerY.setPosition(HAMMER_UP);
+			sleep(250);
+			stopMoving();
+			sleep(2000);
+			target-=1;
+		}
+	}
+
+	/*int vuValue(boolean direction){
+		RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+        relicTrackables.activate();
+		if(vuMark != RelicRecoveryVuMark.UNKNOWN){
+			if(vuMark == RelicRecoveryVuMark.LEFT){
+				if(direction == RIGHT){return 1;} else{return 3;}
+			} else if(vuMark == RelicRecoveryVuMark.RIGHT){
+				if(direction == RIGHT){return 3;} else{return 1;}
+			} else {return 2;}
+		}
+		return 1;
+	}*/
+
+	@Override
+	public void runOpMode() throws InterruptedException {
+		robot.init(hardwareMap);
+
+		/*int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+		VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+		parameters.vuforiaLicenseKey = "ARK0G5D/////AAAAGTNyS/9bI0eKk0BiZlza4w8qOLSfAS/JLHbvWMY95VY7PgFNgH178LKZTQVDke1Eu9JzX/o9QWeyU5ottyCSuPaRr98YId9QUZtfX918roLvNx3n5bXekGlcKSoxgw+UcH3HN+c8V57B3fFhNMt0uyKEWNAXYmAx1OkvoFUSSurH82uzsGg+aBZ3nlVfj043RPXSDyiJO7uDZmwVH14LPjdhP92Qj6byGdICOqc5dxKG1rVFdNgAWJjYVWbz53K1qNWyO9fYgE0lIjwgNopM2GCFVR2ycS0JHx5UW3Bk2m47kDoFCFJP+A8fWxfLyrtgH02JOzNyHb0VoKv4ZDan5Czl7Wcs+ItJBby3qyEmPRkf";
+		parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+		this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);*/
+
+		robot.color.enableLed(false);
+	}
+}
