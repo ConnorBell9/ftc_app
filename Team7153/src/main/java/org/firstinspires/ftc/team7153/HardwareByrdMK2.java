@@ -76,9 +76,6 @@ class HardwareByrdMK2
 
     Servo    grabber    = null;
 
-    //public TouchSensor touchL  = null;
-    //public TouchSensor touchR  = null;
-
     ModernRoboticsI2cGyro gyro         = null;
     ModernRoboticsI2cColorSensor color = null;
 
@@ -138,10 +135,6 @@ class HardwareByrdMK2
     static final double TURN_RIGHT    = 270;
     static final double TURN_BACK     = 180;
 
-
-    /* local OpMode members. */
-    private HardwareMap hwMap           =  null;
-
     /* Constructor */
     HardwareByrdMK2(){
 
@@ -150,6 +143,9 @@ class HardwareByrdMK2
     /* Initialize standard Hardware interfaces */
     void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
+
+        HardwareMap hwMap;
+
         hwMap = ahwMap;
 
         // Define and Initialize Motors
@@ -182,10 +178,10 @@ class HardwareByrdMK2
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
-        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         forkY.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         idolZ.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         idolZ.setTargetPosition((int)IDOL_Z_START_POSITION);

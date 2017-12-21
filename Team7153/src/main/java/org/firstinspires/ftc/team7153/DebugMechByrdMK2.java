@@ -2,12 +2,28 @@ package org.firstinspires.ftc.team7153;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import static org.firstinspires.ftc.team7153.HardwareByrd.*;
 
-@TeleOp(name="RelativeMechByrdMK2")
-public class RelativeMechByrdMK2 extends OpMode{
-	private HardwareByrd robot = new HardwareByrd();
-	double robotAngle=0;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IDOL_CLAMP_CLOSED;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IDOL_CLAMP_OPEN;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IDOL_Z_DELTA_POSITION;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INPUT_TIMER;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_BLOCK_GRAB;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_GYRO_ON;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_IDOL_GRAB;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_PLATE;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_CLOSE;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_OPEN;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.PUSH_PLATE_DOWN;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.PUSH_PLATE_UP;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RIGHT_CLAMP_CLOSE;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RIGHT_CLAMP_OPEN;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TOP_CLAMP_CLOSE;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TOP_CLAMP_OPEN;
+
+@TeleOp(name="RelativeMechByrdMK3")
+public class
+DebugMechByrdMK2 extends OpMode{
+	private HardwareByrdMK2 robot = new HardwareByrdMK2();
     @Override
     public void init() {
 		robot.init(hardwareMap);
@@ -17,30 +33,42 @@ public class RelativeMechByrdMK2 extends OpMode{
 		}
 		IS_GYRO_ON=false;
 		IS_BLOCK_GRAB=true;
-		robot.forkX.setTargetPosition((int)LIFT_X_OUT);
 		robot.idolY.setTargetPosition(300);
     }
 
     @Override
     public void loop() {
 	    double maxSpeed = 1;//Defines what fraction of speed the robot will run atb
-		double radGyro = (robot.gyro.getHeading() * Math.PI) / 180;
-	    double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
-	    if(IS_GYRO_ON){
-			robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4 - radGyro;
-		} else {
-			robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
-		}
-	    double rightX = gamepad1.right_stick_x;
-	    final double v1 = r * Math.cos(robotAngle) + rightX;
-	    final double v2 = r * Math.sin(robotAngle) - rightX;
-	    final double v3 = r * Math.sin(robotAngle) + rightX;
-	    final double v4 = r * Math.cos(robotAngle) - rightX;
+
+	    final double v1=gamepad1.left_stick_y;
+		final double v2=gamepad1.left_stick_y;
+		final double v3=gamepad1.left_stick_y;
+		final double v4=gamepad1.left_stick_y;
 
 	    robot.frontLeft.setPower(v1*maxSpeed);
 		robot.frontRight.setPower(v2*maxSpeed);
 		robot.backLeft.setPower(v3*maxSpeed);
 		robot.backRight.setPower(v4*maxSpeed);
+
+		if(gamepad1.dpad_left && System.currentTimeMillis() > INPUT_TIMER+500){
+			robot.hammerX.setPower(-.1+robot.hammerX.getPower());
+			INPUT_TIMER = System.currentTimeMillis();
+		}
+
+		if(gamepad1.dpad_right && System.currentTimeMillis() > INPUT_TIMER+500){
+			robot.hammerX.setPower(.1+robot.hammerX.getPower());
+			INPUT_TIMER = System.currentTimeMillis();
+		}
+
+		if(gamepad1.dpad_up && System.currentTimeMillis() > INPUT_TIMER+500){
+			robot.hammerY.setPosition(.1+robot.hammerY.getPosition());
+			INPUT_TIMER = System.currentTimeMillis();
+		}
+
+		if(gamepad1.dpad_down && System.currentTimeMillis() > INPUT_TIMER+500){
+			robot.hammerY.setPosition(-.1+robot.hammerY.getPosition());
+			INPUT_TIMER = System.currentTimeMillis();
+		}
 
 	    if(gamepad2.a && System.currentTimeMillis() > INPUT_TIMER+500){
 			IS_BLOCK_GRAB=!IS_BLOCK_GRAB;
@@ -89,13 +117,6 @@ public class RelativeMechByrdMK2 extends OpMode{
 		} else if(gamepad2.left_stick_y <- .1) {
 			robot.forkY.setPower(gamepad2.left_stick_y * .5);
 		} else {robot.forkY.setPower(0);}
-		if(gamepad2.dpad_right) {
-			robot.forkX.setTargetPosition((int)LIFT_X_OUT);
-			IS_BLOCK_GRAB=true;
-		} else if(gamepad2.dpad_left) {
-			robot.forkX.setTargetPosition((int)LIFT_X_IN);
-			IS_BLOCK_GRAB=true;
-		}
 
 		if(gamepad2.right_trigger>.1){
 			robot.idolY.setPower(.75*gamepad2.right_trigger);
@@ -114,18 +135,18 @@ public class RelativeMechByrdMK2 extends OpMode{
 		telemetry.addData("Plate is: ", IS_PLATE);
 		telemetry.addData("Idol is:  ", IS_IDOL_GRAB);
 		telemetry.addData("Gyro is:  ", IS_GYRO_ON);
+		telemetry.addData("HammerX is at:    ", robot.hammerX.getPower());
+		telemetry.addData("HammerY is at:    ", robot.hammerY.getPosition());
 	    telemetry.addData("forkY Running to: ", robot.forkY.getTargetPosition());
 		telemetry.addData("forkY Running at: ", robot.forkY.getCurrentPosition());
-		telemetry.addData("forkX Running to: ", robot.forkX.getTargetPosition());
-		telemetry.addData("forkX Running at: ", robot.forkX.getCurrentPosition());
 		telemetry.addData("idolY Running to: ", robot.idolY.getTargetPosition());
 		telemetry.addData("idolY Running at: ", robot.idolY.getCurrentPosition());
 		telemetry.addData("idolZ Running to: ", robot.idolZ.getTargetPosition());
 		telemetry.addData("idolZ Running at: ", robot.idolZ.getCurrentPosition());
-	    telemetry.addData("frontLeft", v1);
-	    telemetry.addData("frontRight", v2);
-	    telemetry.addData("backLeft", v3);
-	    telemetry.addData("backRight", v4);
+	    telemetry.addData("frontLeft", robot.frontLeft.getPower());
+	    telemetry.addData("frontRight", robot.frontRight.getPower());
+	    telemetry.addData("backLeft", robot.backLeft.getPower());
+	    telemetry.addData("backRight", robot.backRight.getPower());
 	    telemetry.addData("Gyro", robot.gyro.getHeading());
 		telemetry.addData("Color Blue: ", robot.color.blue());
 		telemetry.addData("Color Red: ", robot.color.red());

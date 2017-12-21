@@ -31,7 +31,6 @@ public class BlueRightByrdMK4 extends AutoByrdMK2 {
 		robot.gyro.resetZAxisIntegrator();
 		IS_GYRO_ON = true;
 		if (!isStopRequested()) {
-            //robot.idolY.setTargetPosition(50);
 			grab(true);
 			sleep(500);
 			grab(false);
@@ -45,6 +44,7 @@ public class BlueRightByrdMK4 extends AutoByrdMK2 {
             moveWithEncoders(36,.5,FORWARDS);
             turn(TURN_BACK,.3);
             moveWithEncoders(36,.5,FORWARDS);
+            moveToCubby();
 		}
 	}
 }

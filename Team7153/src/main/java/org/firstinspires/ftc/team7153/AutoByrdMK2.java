@@ -3,31 +3,45 @@ package org.firstinspires.ftc.team7153;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.*;
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.BACKWARDS;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.FORWARDS;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_CENTER;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_DOWN;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_LEFT;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_RIGHT;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_UP;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INPUT_TIMER;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_CLOSE;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_OPEN;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.MOVE_BACKWARDS;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RED;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RIGHT;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RIGHT_CLAMP_CLOSE;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RIGHT_CLAMP_OPEN;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TOP_CLAMP_CLOSE;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TOP_CLAMP_OPEN;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_BACK;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_LEFT;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_RIGHT;
 
 
 public class AutoByrdMK2 extends LinearOpMode {
 	HardwareByrdMK2 robot = new HardwareByrdMK2(); //Gets robot from HardwareByrd class
 	private double imaginaryAngle=0;         //Sets the robot's initial angle to 0
-	/*private VuforiaLocalizer vuforia;        //Stored instance of the vuforia engine
-	//These load the Relic Vuforia Marks for use
-	private VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
-	private VuforiaTrackable relicTemplate = relicTrackables.get(0);*/
+
+	//Vuforia
+	private VuforiaLocalizer vuforia;
 	//
-	void dismount(double direction) throws InterruptedException {
-		//The robot first checks to see if there are no dramatic changes in the robot's orientation while moving consistantly in a preset direction
-		//After the first fall it will once again check to see if there is a dramatic change (at this point 2 wheels should be on the platform and two wheels off)
-		//After this the robot should be off of the platform
-		while(robot.gyro.rawX()<500 || robot.gyro.rawY()<500 || robot.gyro.rawX()>-500 || robot.gyro.rawY()>-500){
-			moveWithoutStopping(direction,1);
-		}
-		while(robot.gyro.rawX()<500 || robot.gyro.rawY()<500 || robot.gyro.rawX()>-500 || robot.gyro.rawY()>-500){
-			moveWithoutStopping(direction,1);
-		}
-		stopMoving();
-	}
 
 	void forkY(boolean direction){
+		statusCheck();
 		if(direction) {
 			robot.forkY.setPower(-.5);
 		} else {
@@ -39,6 +53,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 	
 	void grab(boolean grab) {
 		//If the arguement is true then the clamp will close otherwise the clamp will return to its original orientation
+		statusCheck();
 		if (grab) {
 			robot.armL.setPosition(LEFT_CLAMP_CLOSE);
 			robot.armR.setPosition(RIGHT_CLAMP_CLOSE);
@@ -51,12 +66,14 @@ public class AutoByrdMK2 extends LinearOpMode {
 	}
 	
 	void hammer(boolean colorRemaining) throws InterruptedException {
+		statusCheck();
 		telemetry.addData("Function: ", "Hammer");
 		telemetry.update();
 		//Bring the hammer down and wait in order to get around the shakiness of the hammer
 		robot.color.enableLed(true);
 		robot.hammerY.setPosition(HAMMER_DOWN);
 		sleep(2000);
+		statusCheck();
 		//If the color red is greater than the color blue then if the arguement is red it will putt the blue ball off (Left) otherwise it will putt the red ball off (Right)
 		if(robot.color.red()>robot.color.blue()){
 			telemetry.addData("Color Red: ", robot.color.red());
@@ -80,16 +97,9 @@ public class AutoByrdMK2 extends LinearOpMode {
 		robot.color.enableLed(false);
 		sleep(1000);
 	}
-	
-	void insert(double direction) throws InterruptedException{
-
-	}
 
 	void moveWithEncoders(double distance, double power, boolean direction) throws InterruptedException {
-		if (!opModeIsActive()) {
-			stopMoving();
-			return;
-		}
+		statusCheck();
 		straighten();
 		if(!direction){distance*=-1;}
 
@@ -108,7 +118,8 @@ public class AutoByrdMK2 extends LinearOpMode {
 		robot.backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 		robot.backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-		while(robot.frontLeft.getTargetPosition()>5+robot.frontLeft.getCurrentPosition() || robot.frontLeft.getTargetPosition() < robot.frontLeft.getCurrentPosition()-5){
+		while(robot.frontLeft.getTargetPosition()!=robot.frontLeft.getCurrentPosition()){
+			statusCheck();
 			telemetry.addData("Target Position: ", robot.frontLeft.getTargetPosition());
 			telemetry.addData("Current Position:  ", robot.frontLeft.getCurrentPosition());
 			telemetry.clear();
@@ -122,29 +133,29 @@ public class AutoByrdMK2 extends LinearOpMode {
 		robot.backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 	}
 	
-	private void moveToCubby(boolean direction) throws InterruptedException {
+	void moveToCubby() throws InterruptedException {
+		statusCheck();
 		straighten();
 		//While the hammer is not detecting any color or the time-out hasn't occurred the robot will move towards a cubby slot
-		resetTimer();
-		while((robot.color.blue() == robot.color.red()) && System.currentTimeMillis() < INPUT_TIMER + 5000){
-			if(direction){
-				moveWithoutStopping(MOVE_RIGHT, 1);
-			} else {
-				moveWithoutStopping(MOVE_LEFT, 1);
-			}
-			telemetry.addData("Color Blue: ", robot.color.blue());
-			telemetry.addData("Color Red:  ", robot.color.red());
-			telemetry.clear();
-			telemetry.update();
+		if (statusCheck() == 1){
+			turn(TURN_LEFT,.3);
+			moveWithEncoders(12,.3,FORWARDS);
+		}else if ( statusCheck() == 3){
+			turn(TURN_RIGHT,.3);
+			moveWithEncoders(12,.3,FORWARDS);
 		}
+		turn(TURN_BACK,.3);
+		moveWithoutStopping(MOVE_BACKWARDS,.3);
+		grab(false);
+		sleep(1000);
+		stopMoving();
+		moveWithEncoders(12,.3,BACKWARDS);
 	}
 
 	private void moveWithoutStopping(double angle, double power) throws InterruptedException {
 		//See the move function. Just doesn't have the stopMoving() function built in.
-		if (!opModeIsActive()) {
-			stopMoving();
-			return;
-		}
+		statusCheck();
+
 		double radGyro = (robot.gyro.getIntegratedZValue() * Math.PI) / 180;
 		double robotAngle = angle * (Math.PI / 180) - Math.PI / 4 - radGyro;
 
@@ -174,6 +185,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 	}
 	
 	private void putt(boolean direction){
+		statusCheck();
 		telemetry.addData("Function: ", "Putt");
 		telemetry.update();
 		//If the arguement says right or left then the hammer will putt to the respective positions
@@ -191,20 +203,32 @@ public class AutoByrdMK2 extends LinearOpMode {
 	private void resetTimer(){
 		INPUT_TIMER = System.currentTimeMillis();
 	}
-	
-	private void scan(){
-		//Set the hammer to move closer to the Jewel that the hammer can sense.
-		if(robot.color.blue() == robot.color.red()){
-			robot.hammerX.setPower(HAMMER_CENTER-.1);
+
+	private int statusCheck() {
+		VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+		VuforiaTrackable relicTemplate = relicTrackables.get(0);
+		RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+		RelicRecoveryVuMark currentVuMark;
+		relicTrackables.activate();
+		if(!opModeIsActive()){stop();}
+		if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+			currentVuMark = vuMark;
+                /* Found an instance of the template. In the actual game, you will probably
+                 * loop until this condition occurs, then move on to act accordingly depending
+                 * on which VuMark was visible. */
+			telemetry.addData("VuMark", "%s visible", vuMark);
+		} else {
+			return 0;
 		}
-		sleep(500);
-		//If no color is detected then it will reset the hammer to its original position.
-		if(robot.color.blue() == robot.color.red()){
-			robot.hammerX.setPower(HAMMER_CENTER);
-		}
+		if (currentVuMark == RelicRecoveryVuMark.LEFT){
+			return 1;
+		} else if (currentVuMark == RelicRecoveryVuMark.RIGHT){
+			return 3;
+		} else {return 2;}
 	}
-	
+
 	private void stopMoving() throws InterruptedException {
+		statusCheck();
 		//Sets the power of all motors to zero and then waits for half a second
 		robot.frontLeft.setPower(0);
 		robot.frontRight.setPower(0);
@@ -219,10 +243,12 @@ public class AutoByrdMK2 extends LinearOpMode {
 	}
 
 	void turn(double angle, double speed) throws InterruptedException {
+		statusCheck();
 		//Sets the angle that the robot is supposed to be in to the angle arguement
 		imaginaryAngle = angle;
 		//While the angel is > the gyroscope+2 or < the gyroscope-2
 		while(angle > (robot.gyro.getHeading()+2)%360 || angle < robot.gyro.getHeading()-2){
+			statusCheck();
 		    if((angle>robot.gyro.getHeading() && angle<robot.gyro.getHeading()+181) || (angle<robot.gyro.getHeading()-180)){
                 	robot.frontLeft.setPower(-speed);
                 	robot.frontRight.setPower(speed);
@@ -243,34 +269,6 @@ public class AutoByrdMK2 extends LinearOpMode {
 		stopMoving();
 	}
 
-	void vuCubby(boolean direction, int target) throws InterruptedException{
-		robot.color.enableLed(true);
-		robot.hammerX.setPower(HAMMER_CENTER);
-		robot.hammerY.setPosition(HAMMER_MIDDLE);
-		while (robot.color.blue() == robot.color.red()) {
-			moveWithoutStopping(MOVE_BACKWARDS,.2);
-			telemetry.addData("Color Blue: ", robot.color.blue());
-			telemetry.addData("Color Red:  ", robot.color.red());
-			telemetry.clear();
-			telemetry.update();
-		}
-		while(target>0){
-			robot.hammerX.setPower(HAMMER_CENTER);
-			robot.hammerY.setPosition(HAMMER_MIDDLE);
-			moveToCubby(direction);
-			if(direction){
-				robot.hammerX.setPower(HAMMER_LEFT);
-			} else {
-				robot.hammerX.setPower(HAMMER_RIGHT);
-			}
-			robot.hammerY.setPosition(HAMMER_UP);
-			sleep(250);
-			stopMoving();
-			sleep(2000);
-			target-=1;
-		}
-	}
-
 	/*int vuValue(boolean direction){
 		RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
         relicTrackables.activate();
@@ -288,11 +286,13 @@ public class AutoByrdMK2 extends LinearOpMode {
 	public void runOpMode() throws InterruptedException {
 		robot.init(hardwareMap);
 
-		/*int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+		int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 		VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 		parameters.vuforiaLicenseKey = "ARK0G5D/////AAAAGTNyS/9bI0eKk0BiZlza4w8qOLSfAS/JLHbvWMY95VY7PgFNgH178LKZTQVDke1Eu9JzX/o9QWeyU5ottyCSuPaRr98YId9QUZtfX918roLvNx3n5bXekGlcKSoxgw+UcH3HN+c8V57B3fFhNMt0uyKEWNAXYmAx1OkvoFUSSurH82uzsGg+aBZ3nlVfj043RPXSDyiJO7uDZmwVH14LPjdhP92Qj6byGdICOqc5dxKG1rVFdNgAWJjYVWbz53K1qNWyO9fYgE0lIjwgNopM2GCFVR2ycS0JHx5UW3Bk2m47kDoFCFJP+A8fWxfLyrtgH02JOzNyHb0VoKv4ZDan5Czl7Wcs+ItJBby3qyEmPRkf";
-		parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-		this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);*/
+		parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
+		this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+
+
 
 		robot.color.enableLed(false);
 	}

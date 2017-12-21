@@ -23,7 +23,6 @@ import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TOP_CLAMP_OPEN;
 @TeleOp(name="RelativeMechByrdMK3")
 public class RelativeMechByrdMK3 extends OpMode{
 	private HardwareByrdMK2 robot = new HardwareByrdMK2();
-	double robotAngle=0;
     @Override
     public void init() {
 		robot.init(hardwareMap);
@@ -41,21 +40,16 @@ public class RelativeMechByrdMK3 extends OpMode{
 	    double maxSpeed = 1;//Defines what fraction of speed the robot will run atb
 		double radGyro = (robot.gyro.getHeading() * Math.PI) / 180;
 	    double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
-	    /*if(IS_GYRO_ON){
-			robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4 - radGyro;
-		} else {
-			robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
+		double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
+	    if(IS_GYRO_ON){
+			robotAngle -= radGyro;
 		}
 	    double rightX = gamepad1.right_stick_x;
 	    final double v1 = r * Math.cos(robotAngle) + rightX;
 	    final double v2 = r * Math.sin(robotAngle) - rightX;
 	    final double v3 = r * Math.sin(robotAngle) + rightX;
-	    final double v4 = r * Math.cos(robotAngle) - rightX;*/
+	    final double v4 = r * Math.cos(robotAngle) - rightX;
 
-	    final double v1=gamepad1.left_stick_y;
-		final double v2=gamepad1.left_stick_y;
-		final double v3=gamepad1.left_stick_y;
-		final double v4=gamepad1.left_stick_y;
 	    robot.frontLeft.setPower(v1*maxSpeed);
 		robot.frontRight.setPower(v2*maxSpeed);
 		robot.backLeft.setPower(v3*maxSpeed);
