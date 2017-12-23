@@ -60,6 +60,8 @@ public class Dance extends BellatorumAuto {
          */
         robot.init(hardwareMap);
 
+        autonomousInit(); // Initialize the autonomous method
+
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");
         if (!robot.clampInstalled) telemetry.addData("Status","### Clamp disabled ###");
@@ -68,6 +70,7 @@ public class Dance extends BellatorumAuto {
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+        gyro.resetZAxisIntegrator(); // Reset the gyro
 
         // Do the box step
         move(robot.RIGHT, 1);
