@@ -79,23 +79,23 @@ public class BellatorumAutoBackBlue extends BellatorumAuto {
 
         displaceJewel(robot.COLOR_RED); // Knock off the jewel of this color
 
-        move(robot.LEFT, 2.5, 1); // Move left 2.5 feet
+        move(robot.LEFT, 2.5, 1); // Move in feet
+        move(robot.RIGHT, 1.0, 0.2); // Move back to align with platform
+        move(robot.LEFT, 0.25); // Move 1/4 foot
 
         // Move the robot according to the relic VuMark
-        double relicMove = 1.2; // Default is to move 1.2 feet
+        double relicMove = 0.0; // Default to move in feet
         if (relicVuMark == RelicRecoveryVuMark.LEFT) { relicMove -= 7.63/12; } // 7.63" shorter
         if (relicVuMark == RelicRecoveryVuMark.RIGHT) { relicMove += 7.63/12; } // 7.63" further
         move(robot.FORWARD, relicMove); // Move forward relicMove feet
+        turn(-55); // Turn left in degrees
+        move(robot.FORWARD, 0.75); // Move forward in feet
 
-        turn(robot.LEFT); // Turn 90 degrees
-        move(robot.FORWARD, 0.8); // Move forward 0.8 feet
-
+        liftDown(0.6); // Lower the lift in ft
         robot.clampOpen(); // Drop the glyph
-        move(robot.FORWARD, 0.7); // Move forward 0.7 feet
+        move(robot.FORWARD, 0.65, 0.4); // Move forward in feet
 
-        move(robot.BACK, 0.75); // Back up 9 inches
-        move(robot.FORWARD, 0.75);
-        move(robot.BACK, 0.7);
+        move(robot.BACK, 0.2); // Back up
 
         telemetry.addData("Path", "Complete");
         telemetry.update();

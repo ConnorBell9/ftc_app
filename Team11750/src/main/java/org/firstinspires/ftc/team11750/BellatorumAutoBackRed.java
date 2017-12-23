@@ -79,25 +79,23 @@ public class BellatorumAutoBackRed extends BellatorumAuto {
 
         displaceJewel(robot.COLOR_BLUE); // Knock off the jewel of this color
 
-        move(robot.RIGHT, 3, 1); // Move right 3 feet
-        move(robot.LEFT, 1.5, 0.2); // Move back to align with platform
-        move(robot.RIGHT, 0.25); // Move 1/4 foot to the right
+        move(robot.RIGHT, 2.5, 1); // Move in feet
+        move(robot.LEFT, 1.0, 0.2); // Move back to align with platform
+        move(robot.RIGHT, 0.25); // Move 1/4 foot
 
         // Move the robot according to the relic VuMark
-        double relicMove = 1.2; // Default is to move 1.2 feet
-        if (relicVuMark == RelicRecoveryVuMark.RIGHT) { relicMove -= 7.63 / 12; } // 7.63" shorter
-        if (relicVuMark == RelicRecoveryVuMark.LEFT) { relicMove += 7.63/12; } // 7.63" further
+        double relicMove = 0.0; // Default to move in feet
+        if (relicVuMark == RelicRecoveryVuMark.LEFT) { relicMove -= 7.63/12; } // 7.63" shorter
+        if (relicVuMark == RelicRecoveryVuMark.RIGHT) { relicMove += 7.63/12; } // 7.63" further
         move(robot.FORWARD, relicMove); // Move forward relicMove feet
+        turn(55); // Turn right in degrees
+        move(robot.FORWARD, 0.75); // Move forward in feet
 
-        turn(robot.RIGHT); // Turn 90 degrees
-        move(robot.FORWARD, 0.4); // Move forward 0.4 feet
-
+        liftDown(0.6); // Lower the lift in ft
         robot.clampOpen(); // Drop the glyph
-        move(robot.FORWARD, 0.7); // Move forward 0.7 feet
+        move(robot.FORWARD, 0.65, 0.4); // Move forward in feet
 
-        move(robot.BACK, 0.75); // Back up 9 inches
-        move(robot.FORWARD, 0.75, 0.3);
-        move(robot.BACK, 0.7, 0.3);
+        move(robot.BACK, 0.2); // Back up
 
         telemetry.addData("Path", "Complete");
         telemetry.update();

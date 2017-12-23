@@ -42,8 +42,8 @@ class HardwareBellatorum
     ColorSensor colorSensor;
     boolean clampInstalled=true; // Set to false to run without clamp installed, true to run with
 
-    final double CLAMP_LEFT_OPEN  =  0.4;
-    final double CLAMP_RIGHT_OPEN = 0.7;
+    final double CLAMP_LEFT_OPEN  =  0.35;
+    final double CLAMP_RIGHT_OPEN = 0.75;
     final double CLAMP_LEFT_CLOSED  = 1.0;
     final double CLAMP_RIGHT_CLOSED = 0.0;
     final double LIFT_UP_POWER    =  0.25 ;
@@ -61,7 +61,7 @@ class HardwareBellatorum
     final double DEGREES_PER_SEC = 500;
     final double TURN_START_SECS = 0;
     final double ARM_UP = 0.22;
-    final double ARM_DOWN = 115;
+    final double ARM_DOWN = 118;
     final int COLOR_RED = 1;
     final int COLOR_BLUE = 2;
     final double     COUNTS_PER_MOTOR_REV    = 1120 ;    // eg: AndyMark NeverRest 40 Motor Encoder
@@ -215,7 +215,7 @@ class HardwareBellatorum
         leftClamp.setPosition(CLAMP_LEFT_CLOSED - angle/2/180);
         rightClamp.setPosition(CLAMP_RIGHT_CLOSED + angle/2/180);
     }
-    void clampOpen() {clampOpen(180);} // Open the clamp all the way
+    void clampOpen() {clampOpen(190);} // Open the clamp all the way
     void clampClose() {clampOpen(30);} // Close the clamp on a glyph
 
     // Set the color arm to the specified down angle from 0 degrees straight up, 100 degrees down

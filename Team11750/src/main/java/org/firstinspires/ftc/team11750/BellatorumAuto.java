@@ -309,8 +309,11 @@ public class BellatorumAuto extends LinearOpMode {
             log("Start moving...");
             robot.startMovingEncoder(angle, distance, speed); // Start moving in the right direction
 
+            // Run long enough to make the distance + 1 sec, then timeout
+            runtime.reset();
             // keep looping while we are still active, and BOTH motors are running.
-            while (opModeIsActive() && robot.motorsBusy()) {
+            while (opModeIsActive() && robot.motorsBusy()
+                    && runtime.seconds() < distance/robot.FEET_PER_SEC/speed + 1) {
 
                 // adjust direction and speed based on heading error.
                 error = getError(angle);
