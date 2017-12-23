@@ -6,12 +6,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.BLUE;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.FORWARDS;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_GYRO_ON;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.MOVE_BACKWARDS;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.MOVE_LEFT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_BACK;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_LEFT;
 
-@Autonomous(name="BlueRightByrdMK4")
-public class BlueRightByrdMK4 extends AutoByrdMK2 {
+@Autonomous(name="BlueLeftByrdMK4")
+public class BlueLeftByrdMK4 extends AutoByrdMK2 {
 	//private VuforiaLocalizer vuforia;
 
 	@Override
@@ -51,10 +51,11 @@ public class BlueRightByrdMK4 extends AutoByrdMK2 {
 			hammer(BLUE);
             moveWithEncoders(32,.5,FORWARDS);
             turn(TURN_LEFT,.3);
-            moveWithEncoders(36,.5,FORWARDS);
-            turn(TURN_BACK,.3);
             moveWithEncoders(28,.5,FORWARDS);
-            moveToCubby(MOVE_BACKWARDS);
+            turn(TURN_BACK,.3);
+            moveWithEncoders(13,.5,FORWARDS);
+            turn(TURN_LEFT,.3);
+            moveToCubby(MOVE_LEFT);
 		}
 	}
 }

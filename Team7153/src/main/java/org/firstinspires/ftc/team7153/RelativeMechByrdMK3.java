@@ -32,7 +32,6 @@ public class RelativeMechByrdMK3 extends OpMode{
 		}
 		IS_GYRO_ON=false;
 		IS_BLOCK_GRAB=true;
-		robot.idolY.setTargetPosition(300);
     }
 
     @Override
@@ -97,10 +96,10 @@ public class RelativeMechByrdMK3 extends OpMode{
 			robot.grabber.setPosition(IDOL_CLAMP_OPEN);
 		}
 
-		if(gamepad2.left_stick_y>.1) {
+		if(gamepad2.left_stick_y>.02) {
 			robot.forkY.setPower(gamepad2.left_stick_y);
-		} else if(gamepad2.left_stick_y <- .1) {
-			robot.forkY.setPower(gamepad2.left_stick_y * .5);
+		} else if(gamepad2.left_stick_y <- .02) {
+			robot.forkY.setPower(gamepad2.left_stick_y);
 		} else {robot.forkY.setPower(0);}
 
 		if(gamepad2.right_trigger>.1){

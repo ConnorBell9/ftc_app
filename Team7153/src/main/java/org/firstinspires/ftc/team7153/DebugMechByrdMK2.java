@@ -2,25 +2,16 @@ package org.firstinspires.ftc.team7153;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IDOL_CLAMP_CLOSED;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IDOL_CLAMP_OPEN;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IDOL_Z_DELTA_POSITION;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INPUT_TIMER;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_BLOCK_GRAB;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_GYRO_ON;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_IDOL_GRAB;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_PLATE;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_CLOSE;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_OPEN;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.PUSH_PLATE_DOWN;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.PUSH_PLATE_UP;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RIGHT_CLAMP_CLOSE;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RIGHT_CLAMP_OPEN;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TOP_CLAMP_CLOSE;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TOP_CLAMP_OPEN;
 
-@TeleOp(name="RelativeMechByrdMK3")
+@TeleOp(name="DebugMechByrdMK2")
 public class
 DebugMechByrdMK2 extends OpMode{
 	private HardwareByrdMK2 robot = new HardwareByrdMK2();
@@ -33,12 +24,12 @@ DebugMechByrdMK2 extends OpMode{
 		}
 		IS_GYRO_ON=false;
 		IS_BLOCK_GRAB=true;
-		robot.idolY.setTargetPosition(300);
+		robot.color.enableLed(true);
     }
 
     @Override
     public void loop() {
-	    double maxSpeed = 1;//Defines what fraction of speed the robot will run atb
+	    double maxSpeed = 1;//Defines what fraction of speed the robot will run at
 
 	    final double v1=gamepad1.left_stick_y;
 		final double v2=gamepad1.left_stick_y;
@@ -51,24 +42,46 @@ DebugMechByrdMK2 extends OpMode{
 		robot.backRight.setPower(v4*maxSpeed);
 
 		if(gamepad1.dpad_left && System.currentTimeMillis() > INPUT_TIMER+500){
-			robot.hammerX.setPower(-.1+robot.hammerX.getPower());
+			robot.hammerX.setPosition(-.1+robot.hammerX.getPosition());
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
 		if(gamepad1.dpad_right && System.currentTimeMillis() > INPUT_TIMER+500){
-			robot.hammerX.setPower(.1+robot.hammerX.getPower());
+			robot.hammerX.setPosition(.1+robot.hammerX.getPosition());
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
 		if(gamepad1.dpad_up && System.currentTimeMillis() > INPUT_TIMER+500){
-			robot.hammerY.setPosition(.1+robot.hammerY.getPosition());
+			robot.hammerY.setPower(.1+robot.hammerY.getPower());
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
 		if(gamepad1.dpad_down && System.currentTimeMillis() > INPUT_TIMER+500){
-			robot.hammerY.setPosition(-.1+robot.hammerY.getPosition());
+			robot.hammerY.setPower(-.1+robot.hammerY.getPower());
 			INPUT_TIMER = System.currentTimeMillis();
 		}
+
+		if(gamepad2.dpad_left && System.currentTimeMillis() > INPUT_TIMER+500){
+			robot.armL.setPosition(-.1+robot.armL.getPosition());
+			robot.armR.setPosition(.1+robot.armR.getPosition());
+			INPUT_TIMER = System.currentTimeMillis();
+		}
+
+		if(gamepad2.dpad_right && System.currentTimeMillis() > INPUT_TIMER+500){
+			robot.armL.setPosition(.1+robot.armL.getPosition());
+			robot.armR.setPosition(-.1+robot.armR.getPosition());
+			INPUT_TIMER = System.currentTimeMillis();
+		}
+
+		/*if(gamepad2.dpad_up && System.currentTimeMillis() > INPUT_TIMER+500){
+			robot.armT.setPower(.1+robot.armT.getPower());
+			INPUT_TIMER = System.currentTimeMillis();
+		}
+
+		if(gamepad2.dpad_down && System.currentTimeMillis() > INPUT_TIMER+500){
+			robot.armT.setPower(-.1+robot.armT.getPower());
+			INPUT_TIMER = System.currentTimeMillis();
+		}*/
 
 	    if(gamepad2.a && System.currentTimeMillis() > INPUT_TIMER+500){
 			IS_BLOCK_GRAB=!IS_BLOCK_GRAB;
@@ -90,7 +103,7 @@ DebugMechByrdMK2 extends OpMode{
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
-	    if(IS_BLOCK_GRAB){
+	    /*if(IS_BLOCK_GRAB){
 		    robot.armL.setPosition(LEFT_CLAMP_CLOSE);
 			robot.armR.setPosition(RIGHT_CLAMP_CLOSE);
 			robot.armT.setPower(TOP_CLAMP_CLOSE);
@@ -110,12 +123,15 @@ DebugMechByrdMK2 extends OpMode{
 			robot.grabber.setPosition(IDOL_CLAMP_CLOSED);
 		} else {
 			robot.grabber.setPosition(IDOL_CLAMP_OPEN);
-		}
+		}*/
+
+	    robot.armT.setPower(1);
+		robot.armT.setDirection(DcMotorSimple.Direction.FORWARD);
 
 		if(gamepad2.left_stick_y>.1) {
 			robot.forkY.setPower(gamepad2.left_stick_y);
 		} else if(gamepad2.left_stick_y <- .1) {
-			robot.forkY.setPower(gamepad2.left_stick_y * .5);
+			robot.forkY.setPower(gamepad2.left_stick_y);
 		} else {robot.forkY.setPower(0);}
 
 		if(gamepad2.right_trigger>.1){
@@ -135,8 +151,11 @@ DebugMechByrdMK2 extends OpMode{
 		telemetry.addData("Plate is: ", IS_PLATE);
 		telemetry.addData("Idol is:  ", IS_IDOL_GRAB);
 		telemetry.addData("Gyro is:  ", IS_GYRO_ON);
-		telemetry.addData("HammerX is at:    ", robot.hammerX.getPower());
-		telemetry.addData("HammerY is at:    ", robot.hammerY.getPosition());
+		telemetry.addData("ArmL is at:       ", robot.armL.getPosition());
+		telemetry.addData("ArmR is at:       ", robot.armR.getPosition());
+		telemetry.addData("ArmT is at:       ", robot.armT.getPower());
+		telemetry.addData("HammerX is at:    ", robot.hammerX.getPosition());
+		telemetry.addData("HammerY is at:    ", robot.hammerY.getPower());
 	    telemetry.addData("forkY Running to: ", robot.forkY.getTargetPosition());
 		telemetry.addData("forkY Running at: ", robot.forkY.getCurrentPosition());
 		telemetry.addData("idolY Running to: ", robot.idolY.getTargetPosition());

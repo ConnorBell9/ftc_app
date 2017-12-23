@@ -69,40 +69,39 @@ class HardwareByrdMK2
     Servo    armR       = null;
     CRServo  armT       = null;
 
-    CRServo    hammerX    = null;
-    Servo  hammerY    = null;
+    CRServo    hammerY  = null;
+    Servo  hammerX      = null;
 
-    Servo    plate     = null;
+    Servo    plate      = null;
 
     Servo    grabber    = null;
 
     ModernRoboticsI2cGyro gyro         = null;
     ModernRoboticsI2cColorSensor color = null;
 
-    static final double LIFT_X_OUT = (((1440/(1.25*3.1415))*7)/2);
-    static final double LIFT_X_IN  = 0;
-
-    static final double IDOL_Z_START_POSITION = 600;
+    static final double IDOL_Z_START_POSITION = 0;//300
     static final double IDOL_Z_POSITION       = 0;
-    static final int    IDOL_Z_DELTA_POSITION = 42;
+    static final int    IDOL_Z_DELTA_POSITION = 50;
     static final double IDOL_Y_POSITION       = 0;
 
     static boolean       IS_BLOCK_GRAB     = false;
-    static final double  LEFT_CLAMP_CLOSE  = .4;
-    static final double  RIGHT_CLAMP_CLOSE = 1;
-    static final double  TOP_CLAMP_CLOSE   = -1;
-    static final double  LEFT_CLAMP_OPEN   = .7;
-    static final double  RIGHT_CLAMP_OPEN  = .7;
-    static final double  TOP_CLAMP_OPEN    = 1;
+    static final double  LEFT_CLAMP_CLOSE  =   1;
+    static final double  RIGHT_CLAMP_CLOSE =   0;
+    static final double  TOP_CLAMP_CLOSE   = -.2;
+    static final double  LEFT_CLAMP_OPEN   =  .6;
+    static final double  RIGHT_CLAMP_OPEN  =  .4;
+    static final double  TOP_CLAMP_OPEN    =   1;
+    static final double  LEFT_CLAMP_INIT   =  .4;
+    static final double  RIGHT_CLAMP_INIT  =  .6;
+    static final double  TOP_CLAMP_INIT    =  -1;
 
     static boolean       IS_HAMMER      = false;
     static boolean       IS_HAMMER_DOWN = false;
-    static final double  HAMMER_DOWN    = .3;
-    static final double  HAMMER_MIDDLE  =  0;
-    static final double  HAMMER_UP      = -1;
-    static final double  HAMMER_LEFT    = .8;
-    static final double  HAMMER_RIGHT   = .4;
-    static final double  HAMMER_CENTER  = .6;
+    static final double  HAMMER_DOWN    =  1;
+    static final double  HAMMER_UP      = -.5;
+    static final double  HAMMER_LEFT    = .5;
+    static final double  HAMMER_RIGHT   = .3;
+    static final double  HAMMER_CENTER  = .4;
 
     static boolean       IS_PLATE        = false;
     static final double  PUSH_PLATE_DOWN = 0;
@@ -192,18 +191,18 @@ class HardwareByrdMK2
         armR = hwMap.servo.get("armR");
         armT = hwMap.crservo.get("armT");
 
-        hammerX = hwMap.crservo.get("hammerX");
-        hammerY = hwMap.servo.get("hammerY");
+        hammerY = hwMap.crservo.get("hammerY");
+        hammerX = hwMap.servo.get("hammerX");
 
         plate = hwMap.servo.get("plate");
 
         grabber = hwMap.servo.get("grabber");
 
-        armL.setPosition(LEFT_CLAMP_OPEN);
-        armR.setPosition(RIGHT_CLAMP_OPEN);
-        armT.setPower(TOP_CLAMP_OPEN);
-        hammerX.setPower(HAMMER_CENTER);
-        hammerY.setPosition(HAMMER_UP);
+        armL.setPosition(LEFT_CLAMP_INIT);
+        armR.setPosition(RIGHT_CLAMP_INIT);//open is default
+        armT.setPower(TOP_CLAMP_INIT);
+        hammerY.setPower(HAMMER_UP);
+        hammerX.setPosition(HAMMER_CENTER);
         plate.setPosition(PUSH_PLATE_UP);
         grabber.setPosition(IDOL_CLAMP_OPEN);
 
