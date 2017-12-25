@@ -3,6 +3,11 @@ package org.firstinspires.ftc.team7153;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.BACKWARDS;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_CENTER;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_DOWN;
@@ -26,7 +31,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 	private double imaginaryAngle=0;         //Sets the robot's initial angle to 0
 
 	//Vuforia
-	//private VuforiaLocalizer vuforia;
+	private VuforiaLocalizer vuforia;
 	//
 
 	void forkY(boolean direction){
@@ -214,32 +219,9 @@ public class AutoByrdMK2 extends LinearOpMode {
 	}
 
 	private void statusCheck() {
-		/*VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
-		VuforiaTrackable relicTemplate = relicTrackables.get(0);
-		RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-		RelicRecoveryVuMark currentVuMark;
-		relicTrackables.activate();
-		if(!opModeIsActive()){stop();}
-		if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
-			currentVuMark = vuMark;
-                /* Found an instance of the template. In the actual game, you will probably
-                 * loop until this condition occurs, then move on to act accordingly depending
-                 * on which VuMark was visible. */
-			/*Utelemetry.addData("VuMark", "%s visible", vuMark);
-		} else {
-			return 0;
-		}
-		if (currentVuMark == RelicRecoveryVuMark.LEFT){
-			return 1;
-		} else if (currentVuMark == RelicRecoveryVuMark.RIGHT){
-			return 3;
-		} else {return 2;}*/
 	}
 
-	private void stopMoving() throws InterruptedException {
-		if(isStopRequested()){
-			return;
-		}
+	void stopMoving() throws InterruptedException {
 		//Sets the power of all motors to zero and then waits for half a second
 		robot.frontLeft.setPower(0);
 		robot.frontRight.setPower(0);
@@ -287,14 +269,37 @@ public class AutoByrdMK2 extends LinearOpMode {
 	public void runOpMode() throws InterruptedException {
 		robot.init(hardwareMap);
 
-		/*int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+		int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 		VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 		parameters.vuforiaLicenseKey = "ARK0G5D/////AAAAGTNyS/9bI0eKk0BiZlza4w8qOLSfAS/JLHbvWMY95VY7PgFNgH178LKZTQVDke1Eu9JzX/o9QWeyU5ottyCSuPaRr98YId9QUZtfX918roLvNx3n5bXekGlcKSoxgw+UcH3HN+c8V57B3fFhNMt0uyKEWNAXYmAx1OkvoFUSSurH82uzsGg+aBZ3nlVfj043RPXSDyiJO7uDZmwVH14LPjdhP92Qj6byGdICOqc5dxKG1rVFdNgAWJjYVWbz53K1qNWyO9fYgE0lIjwgNopM2GCFVR2ycS0JHx5UW3Bk2m47kDoFCFJP+A8fWxfLyrtgH02JOzNyHb0VoKv4ZDan5Czl7Wcs+ItJBby3qyEmPRkf";
 		parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
-		this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);*/
+		this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
-
+		VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+		VuforiaTrackable relicTemplate = relicTrackables.get(0);
 
 		robot.color.enableLed(false);
+
+
+		robot.forkY.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+		robot.forkY.setPower(1);
+
+		telemetry.addData(">", "Gyro Calibrating. Do Not move!");
+		telemetry.update();
+		robot.gyro.calibrate();
+
+		while (!isStopRequested() && robot.gyro.isCalibrating()) {
+			Thread.sleep(50);
+			idle();
+		}
+
+		telemetry.addData(">", "Gyro Calibrated.  Press Start.");
+		telemetry.update();
+
+		waitForStart();
+
+		relicTrackables.activate();
+
+		robot.gyro.resetZAxisIntegrator();
 	}
 }
