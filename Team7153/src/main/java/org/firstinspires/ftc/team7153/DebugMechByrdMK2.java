@@ -52,12 +52,12 @@ DebugMechByrdMK2 extends OpMode{
 		}
 
 		if(gamepad1.dpad_up && System.currentTimeMillis() > INPUT_TIMER+500){
-			robot.hammerY.setPower(.1+robot.hammerY.getPower());
+			robot.hammerY.setPosition(.1+robot.hammerY.getPosition());
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
 		if(gamepad1.dpad_down && System.currentTimeMillis() > INPUT_TIMER+500){
-			robot.hammerY.setPower(-.1+robot.hammerY.getPower());
+			robot.hammerY.setPosition(-.1+robot.hammerY.getPosition());
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
@@ -125,14 +125,13 @@ DebugMechByrdMK2 extends OpMode{
 			robot.grabber.setPosition(IDOL_CLAMP_OPEN);
 		}*/
 
-	    robot.armT.setPower(1);
-		robot.armT.setDirection(DcMotorSimple.Direction.FORWARD);
+	    robot.armT.setPosition(1);
 
 		if(gamepad2.left_stick_y>.1) {
-			robot.forkY.setPower(gamepad2.left_stick_y);
+			robot.clamp.setPower(gamepad2.left_stick_y);
 		} else if(gamepad2.left_stick_y <- .1) {
-			robot.forkY.setPower(gamepad2.left_stick_y);
-		} else {robot.forkY.setPower(0);}
+			robot.clamp.setPower(gamepad2.left_stick_y);
+		} else {robot.clamp.setPower(0);}
 
 		if(gamepad2.right_trigger>.1){
 			robot.idolY.setPower(.75*gamepad2.right_trigger);
@@ -153,11 +152,11 @@ DebugMechByrdMK2 extends OpMode{
 		telemetry.addData("Gyro is:  ", IS_GYRO_ON);
 		telemetry.addData("ArmL is at:       ", robot.armL.getPosition());
 		telemetry.addData("ArmR is at:       ", robot.armR.getPosition());
-		telemetry.addData("ArmT is at:       ", robot.armT.getPower());
+		telemetry.addData("ArmT is at:       ", robot.armT.getPosition());
 		telemetry.addData("HammerX is at:    ", robot.hammerX.getPosition());
-		telemetry.addData("HammerY is at:    ", robot.hammerY.getPower());
-	    telemetry.addData("forkY Running to: ", robot.forkY.getTargetPosition());
-		telemetry.addData("forkY Running at: ", robot.forkY.getCurrentPosition());
+		telemetry.addData("HammerY is at:    ", robot.hammerY.getPosition());
+	    telemetry.addData("forkY Running to: ", robot.clamp.getTargetPosition());
+		telemetry.addData("forkY Running at: ", robot.clamp.getCurrentPosition());
 		telemetry.addData("idolY Running to: ", robot.idolY.getTargetPosition());
 		telemetry.addData("idolY Running at: ", robot.idolY.getCurrentPosition());
 		telemetry.addData("idolZ Running to: ", robot.idolZ.getTargetPosition());

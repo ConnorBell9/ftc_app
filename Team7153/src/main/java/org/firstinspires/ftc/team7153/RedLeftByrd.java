@@ -3,9 +3,7 @@ package org.firstinspires.ftc.team7153;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.BACKWARDS;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.BLUE;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.CLAMP_POSITION_2;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.FORWARDS;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.MOVE_LEFT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RED;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_LEFT;
