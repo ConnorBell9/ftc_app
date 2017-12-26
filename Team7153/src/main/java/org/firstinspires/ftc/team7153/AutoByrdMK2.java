@@ -2,6 +2,7 @@ package org.firstinspires.ftc.team7153;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
@@ -44,6 +45,8 @@ import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_RIGHT;
 public class AutoByrdMK2 extends LinearOpMode {
 	private HardwareByrdMK2 robot = new HardwareByrdMK2(); //Gets robot from HardwareByrd class
 	private double imaginaryAngle=0;         //Sets the robot's initial angle to 0
+
+	ElapsedTime runTime = new ElapsedTime();
 
 	//Vuforia
 	private VuforiaLocalizer vuforia;
@@ -95,6 +98,9 @@ public class AutoByrdMK2 extends LinearOpMode {
 
 		//Reset the gyroscope to account for drift
 		robot.gyro.resetZAxisIntegrator();
+
+		//Reset the timer to 0
+		runTime.reset();
 
 		//Tell the robot that the Gyroscope has been correctly calibrated
 		IS_GYRO_ON = true;
@@ -226,7 +232,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 
 		resetTimer();
 
-		while(robot.frontLeft.getTargetPosition()!=robot.frontLeft.getCurrentPosition() && INPUT_TIMER+5000>System.currentTimeMillis()){
+		while(robot.frontLeft.getTargetPosition()!=robot.frontLeft.getCurrentPosition() && INPUT_TIMER+5000>runTime.milliseconds()){
 			if(isStopRequested()){
 				return;
 			}
@@ -272,7 +278,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 			moveWithoutStopping(direction, .3);
 			sleep(1000);
 			stopMoving();
-			moveWithEncoders(6, .3, BACKWARDS);
+			moveWithEncoders(8, .3, BACKWARDS);
 			if (OFFSET_LEFT) {
 				moveWithoutStopping(direction - 90, 1);
 				OFFSET_LEFT = false;
@@ -339,7 +345,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 	}
 
 	private void resetTimer(){
-		INPUT_TIMER = System.currentTimeMillis();
+		INPUT_TIMER = runTime.milliseconds();
 	}
 
 	private void statusCheck() throws InterruptedException{
@@ -378,7 +384,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 		//While the angel is > the gyroscope+2 or < the gyroscope-2
 		//while(angle > (robot.gyro.getHeading()+2)%360 || angle < robot.gyro.getHeading()-2){
 		resetTimer();
-		while((robot.gyro.getIntegratedZValue()<angle-1 || robot.gyro.getIntegratedZValue()>angle+1) && (angle-1==-1 && robot.gyro.getIntegratedZValue() != 359 || angle-1!=-1) && (angle+1==360 && robot.gyro.getIntegratedZValue()!=0 || angle+1!=360) && INPUT_TIMER+5000>System.currentTimeMillis()){
+		while((robot.gyro.getIntegratedZValue()<angle-1 || robot.gyro.getIntegratedZValue()>angle+1) && (angle-1==-1 && robot.gyro.getIntegratedZValue() != 359 || angle-1!=-1) && (angle+1==360 && robot.gyro.getIntegratedZValue()!=0 || angle+1!=360) && INPUT_TIMER+5000>runTime.milliseconds()){
 			if(isStopRequested()){
 				return;
 			}

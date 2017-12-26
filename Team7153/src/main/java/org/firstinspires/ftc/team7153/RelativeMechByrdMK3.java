@@ -77,11 +77,11 @@ public class RelativeMechByrdMK3 extends OpMode{
 	    if(IS_BLOCK_GRAB){
 		    robot.armL.setPosition(LEFT_CLAMP_CLOSE);
 			robot.armR.setPosition(RIGHT_CLAMP_CLOSE);
-			robot.armT.setPower(TOP_CLAMP_CLOSE);
+			robot.armT.setPosition(TOP_CLAMP_CLOSE);
 	    } else {
 			robot.armL.setPosition(LEFT_CLAMP_OPEN);
 			robot.armR.setPosition(RIGHT_CLAMP_OPEN);
-			robot.armT.setPower(TOP_CLAMP_OPEN);
+			robot.armT.setPosition(TOP_CLAMP_OPEN);
 	    }
 
 	    if(IS_PLATE){
@@ -97,14 +97,14 @@ public class RelativeMechByrdMK3 extends OpMode{
 		}
 
 		if(gamepad2.left_stick_y>.02) {
-			robot.forkY.setPower(gamepad2.left_stick_y);
+			robot.clamp.setPower(gamepad2.left_stick_y);
 		} else if(gamepad2.left_stick_y <- .02) {
-			robot.forkY.setPower(gamepad2.left_stick_y);
-		} else {robot.forkY.setPower(0);}
+			robot.clamp.setPower(gamepad2.left_stick_y);
+		} else {robot.clamp.setPower(0);}
 
-		if(gamepad2.right_trigger>.1){
+		if(gamepad2.right_trigger>.02){
 			robot.idolY.setPower(.75*gamepad2.right_trigger);
-		} else if (gamepad2.left_trigger>.1){
+		} else if (gamepad2.left_trigger>.02){
 			robot.idolY.setPower(-.75*gamepad2.left_trigger);
 		} else {robot.idolY.setPower(0);}
 		if(gamepad2.right_bumper && System.currentTimeMillis() > INPUT_TIMER+10){
@@ -119,19 +119,19 @@ public class RelativeMechByrdMK3 extends OpMode{
 		telemetry.addData("Plate is: ", IS_PLATE);
 		telemetry.addData("Idol is:  ", IS_IDOL_GRAB);
 		telemetry.addData("Gyro is:  ", IS_GYRO_ON);
-	    telemetry.addData("forkY Running to: ", robot.forkY.getTargetPosition());
-		telemetry.addData("forkY Running at: ", robot.forkY.getCurrentPosition());
+	    telemetry.addData("clamp Running to: ", robot.clamp.getTargetPosition());
+		telemetry.addData("clamp Running at: ", robot.clamp.getCurrentPosition());
 		telemetry.addData("idolY Running to: ", robot.idolY.getTargetPosition());
 		telemetry.addData("idolY Running at: ", robot.idolY.getCurrentPosition());
 		telemetry.addData("idolZ Running to: ", robot.idolZ.getTargetPosition());
 		telemetry.addData("idolZ Running at: ", robot.idolZ.getCurrentPosition());
-	    telemetry.addData("frontLeft", robot.frontLeft.getPower());
-	    telemetry.addData("frontRight", robot.frontRight.getPower());
-	    telemetry.addData("backLeft", robot.backLeft.getPower());
-	    telemetry.addData("backRight", robot.backRight.getPower());
-	    telemetry.addData("Gyro", robot.gyro.getHeading());
+	    telemetry.addData("frontLeft:  ", robot.frontLeft.getPower());
+	    telemetry.addData("frontRight: ", robot.frontRight.getPower());
+	    telemetry.addData("backLeft:   ", robot.backLeft.getPower());
+	    telemetry.addData("backRight:  ", robot.backRight.getPower());
+	    telemetry.addData("Gyro:       ", robot.gyro.getHeading());
 		telemetry.addData("Color Blue: ", robot.color.blue());
-		telemetry.addData("Color Red: ", robot.color.red());
+		telemetry.addData("Color Red:  ", robot.color.red());
 	    telemetry.update();
     }
 }

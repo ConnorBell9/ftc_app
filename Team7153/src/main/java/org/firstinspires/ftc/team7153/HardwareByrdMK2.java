@@ -94,13 +94,11 @@ class HardwareByrdMK2
     static final double  INTAKE_ON         = 1;
     static final double  INTAKE_OFF        = 0;
 
-    static final int     CLAMP_POSITION_1  =    0;
-    static final int     CLAMP_POSITION_2  = 1440;
-    static final int     CLAMP_POSITION_3  = 2880;
-    static final int     CLAMP_POSITION_4  = 4320;
+    static final int     CLAMP_POSITION_1  =       0;
+    static final int     CLAMP_POSITION_2  =  7*1440;//(InchesToTravel*1440/InchesPerRevolution)
+    static final int     CLAMP_POSITION_3  = 13*1440;
+    static final int     CLAMP_POSITION_4  = 19*1440;
 
-    static boolean       IS_HAMMER      = false;
-    static boolean       IS_HAMMER_DOWN = false;
     static final double  HAMMER_DOWN    =     1;
     static final double  HAMMER_UP      =   -.5;
     static final double  HAMMER_LEFT    =    .5;
@@ -117,7 +115,7 @@ class HardwareByrdMK2
 
     static boolean       IS_GYRO_ON        = false;
 
-    static long INPUT_TIMER = 0;
+    static double INPUT_TIMER = 0;
 
     static final boolean LEFT  = false;
     static final boolean RIGHT = true;
