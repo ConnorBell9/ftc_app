@@ -377,7 +377,8 @@ public class AutoByrdMK2 extends LinearOpMode {
 		imaginaryAngle = angle;
 		//While the angel is > the gyroscope+2 or < the gyroscope-2
 		//while(angle > (robot.gyro.getHeading()+2)%360 || angle < robot.gyro.getHeading()-2){
-		while((robot.gyro.getIntegratedZValue()<angle-1 || robot.gyro.getIntegratedZValue()>angle+1) && (angle-1==-1 && robot.gyro.getIntegratedZValue() != 359 || angle-1!=-1) && (angle+1==360 && robot.gyro.getIntegratedZValue()!=0 || angle+1!=360)){
+		resetTimer();
+		while((robot.gyro.getIntegratedZValue()<angle-1 || robot.gyro.getIntegratedZValue()>angle+1) && (angle-1==-1 && robot.gyro.getIntegratedZValue() != 359 || angle-1!=-1) && (angle+1==360 && robot.gyro.getIntegratedZValue()!=0 || angle+1!=360) && INPUT_TIMER+5000>System.currentTimeMillis()){
 			if(isStopRequested()){
 				return;
 			}
