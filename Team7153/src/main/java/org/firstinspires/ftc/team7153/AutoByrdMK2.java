@@ -4,61 +4,122 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.BACKWARDS;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.CLAMP_POSITION_1;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.CLAMP_POSITION_2;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.FORWARDS;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INPUT_TIMER;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_CENTER;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_DOWN;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_LEFT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_RIGHT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_UP;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INPUT_TIMER;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INTAKE_OFF;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INTAKE_ON;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_GYRO_ON;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_CLOSE;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_OPEN;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.OFFSET_LEFT;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.OFFSET_RIGHT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RED;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RIGHT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RIGHT_CLAMP_CLOSE;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RIGHT_CLAMP_OPEN;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.SLOT_1;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.SLOT_2;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.SLOT_3;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TOP_CLAMP_CLOSE;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TOP_CLAMP_OPEN;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_BACK;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_FORWARDS;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_LEFT;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_RIGHT;
 
 
 public class AutoByrdMK2 extends LinearOpMode {
-	HardwareByrdMK2 robot = new HardwareByrdMK2(); //Gets robot from HardwareByrd class
+	private HardwareByrdMK2 robot = new HardwareByrdMK2(); //Gets robot from HardwareByrd class
 	private double imaginaryAngle=0;         //Sets the robot's initial angle to 0
 
 	//Vuforia
 	private VuforiaLocalizer vuforia;
+	private VuforiaTrackables relicTrackables;
+	private VuforiaTrackable relicTemplate;
+	private RelicRecoveryVuMark relicVuMark = RelicRecoveryVuMark.UNKNOWN;
 	//
+	void autonomousInit(){
+		robot.init(hardwareMap);
 
-	void forkY(boolean direction){
+		//Get the view for the camera monitor
+		int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+		VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+
+		//Use Vindicem license key
+		parameters.vuforiaLicenseKey = "ARK0G5D/////AAAAGTNyS/9bI0eKk0BiZlza4w8qOLSfAS/JLHbvWMY95VY7PgFNgH178LKZTQVDke1Eu9JzX/o9QWeyU5ottyCSuPaRr98YId9QUZtfX918roLvNx3n5bXekGlcKSoxgw+UcH3HN+c8V57B3fFhNMt0uyKEWNAXYmAx1OkvoFUSSurH82uzsGg+aBZ3nlVfj043RPXSDyiJO7uDZmwVH14LPjdhP92Qj6byGdICOqc5dxKG1rVFdNgAWJjYVWbz53K1qNWyO9fYgE0lIjwgNopM2GCFVR2ycS0JHx5UW3Bk2m47kDoFCFJP+A8fWxfLyrtgH02JOzNyHb0VoKv4ZDan5Czl7Wcs+ItJBby3qyEmPRkf";
+
+		//Assign which camera is to be used
+		parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+		this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+
+		//Load the VuMarks
+		VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+		VuforiaTrackable relicTemplate = relicTrackables.get(0);
+
+		relicTemplate.setName("relicVuMarkTemplate");
+
+		//Disable the LED to save battery
+		robot.color.enableLed(false);
+
+		//Activate Clamps's encoders
+		robot.clamp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+		robot.clamp.setPower(1);
+
+		//Calibrate the Gyroscope
+		telemetry.addData(">", "Gyro Calibrating. Do Not move!");
+		telemetry.update();
+		robot.gyro.calibrate();
+
+		while (!isStopRequested() && robot.gyro.isCalibrating()) {
+			sleep(50);
+			idle();
+		}
+
+		telemetry.addData(">", "Gyro Calibrated.  Press Start.");
+		telemetry.update();
+
+		waitForStart();
+
+		//Reset the gyroscope to account for drift
+		robot.gyro.resetZAxisIntegrator();
+
+		//Tell the robot that the Gyroscope has been correctly calibrated
+		IS_GYRO_ON = true;
+	}
+
+	void clamp(int position){
 		if(isStopRequested()){
 			return;
 		}
-		//robot.forkY.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-		if(direction) {
-			robot.forkY.setTargetPosition(-1440);
-		} else {
-			robot.forkY.setTargetPosition(0);
-		}
+		robot.clamp.setTargetPosition(position);
 	}
 	
 	void grab(boolean grab) {
-		//If the arguement is true then the clamp will close otherwise the clamp will return to its original orientation
+		//If the argument is true then the clamp will close otherwise the clamp will return to its original orientation
 		if(isStopRequested()){
 			return;
 		}
 		if (grab) {
 			robot.armL.setPosition(LEFT_CLAMP_CLOSE);
 			robot.armR.setPosition(RIGHT_CLAMP_CLOSE);
-			robot.armT.setPower(TOP_CLAMP_CLOSE);
+			robot.armT.setPosition(TOP_CLAMP_CLOSE);
 		} else {
 			robot.armL.setPosition(LEFT_CLAMP_OPEN);
 			robot.armR.setPosition(RIGHT_CLAMP_OPEN);
-			robot.armT.setPower(TOP_CLAMP_OPEN);
+			robot.armT.setPosition(TOP_CLAMP_OPEN);
 		}
 	}
 	
@@ -70,7 +131,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 		telemetry.update();
 		//Bring the hammer down and wait in order to get around the shakiness of the hammer
 		robot.color.enableLed(true);
-		robot.hammerY.setPower(HAMMER_DOWN);
+		robot.hammerY.setPosition(HAMMER_DOWN);
 		sleep(1000);
 		if(isStopRequested()){
 			return;
@@ -94,10 +155,52 @@ public class AutoByrdMK2 extends LinearOpMode {
 		telemetry.addData("Color Red: ", robot.color.red());
 		telemetry.addData("Color Blue: ", robot.color.blue());
 		telemetry.update();
-		robot.hammerY.setPower(HAMMER_UP);
+		robot.hammerY.setPosition(HAMMER_UP);
 		robot.hammerX.setPosition(HAMMER_CENTER);
 		robot.color.enableLed(false);
 	}
+
+	void harvest(double X_AXIS, double Y_AXIS) throws InterruptedException{
+		turn(TURN_RIGHT,.3);
+		grab(false);
+		intake(true);
+		moveWithEncoders(Y_AXIS,.3,FORWARDS);
+		if(X_AXIS>0){
+			turn(TURN_FORWARDS,.3);
+			moveWithEncoders(X_AXIS,.3,FORWARDS);
+			grab(true);
+			clamp(CLAMP_POSITION_2);
+			moveWithEncoders(X_AXIS,.3,BACKWARDS);
+		} else if (X_AXIS<0) {
+			turn(TURN_BACK,.3);
+			moveWithEncoders(-X_AXIS,.3,FORWARDS);
+			grab(true);
+			clamp(CLAMP_POSITION_2);
+			moveWithEncoders(-X_AXIS,.3,BACKWARDS);
+		} else{
+			grab(true);
+			clamp(CLAMP_POSITION_2);
+		}
+		intake(false);
+		moveWithEncoders(Y_AXIS,.3,FORWARDS);
+		turn(TURN_LEFT,.3);
+
+	}
+
+	void intake(boolean mode){
+		if(mode){
+			robot.intakeTopLeft.setPower(INTAKE_ON);
+			robot.intakeTopRight.setPower(INTAKE_ON);
+			robot.intakeBottomLeft.setPower(INTAKE_ON);
+			robot.intakeBottomRight.setPower(INTAKE_ON);
+		} else {
+			robot.intakeTopLeft.setPower(INTAKE_OFF);
+			robot.intakeTopRight.setPower(INTAKE_OFF);
+			robot.intakeBottomLeft.setPower(INTAKE_OFF);
+			robot.intakeBottomRight.setPower(INTAKE_OFF);
+		}
+	}
+
 
 	void moveWithEncoders(double distance, double power, boolean direction) throws InterruptedException {
 		if(isStopRequested()){
@@ -121,7 +224,9 @@ public class AutoByrdMK2 extends LinearOpMode {
 		robot.backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 		robot.backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-		while(robot.frontLeft.getTargetPosition()!=robot.frontLeft.getCurrentPosition()){
+		resetTimer();
+
+		while(robot.frontLeft.getTargetPosition()!=robot.frontLeft.getCurrentPosition() && INPUT_TIMER+5000>System.currentTimeMillis()){
 			if(isStopRequested()){
 				return;
 			}
@@ -129,6 +234,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 			telemetry.addData("Current Position:  ", robot.frontLeft.getCurrentPosition());
 			telemetry.clear();
 			telemetry.update();
+			statusCheck();
 			sleep(10);
 		}
 		sleep(500);
@@ -138,28 +244,46 @@ public class AutoByrdMK2 extends LinearOpMode {
 		robot.backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 	}
 	
-	void moveToCubby(double direction) throws InterruptedException {
-		if(isStopRequested()){
-			return;
+	void moveToCubby(double direction, int blocks, boolean mode) throws InterruptedException {
+		for(int i = 0; i<blocks; i++) {
+			if (isStopRequested()) {
+				return;
+			}
+			straighten();
+			//While the hammer is not detecting any color or the time-out hasn't occurred the robot will move towards a cubby slot
+			if ((relicVuMark == RelicRecoveryVuMark.LEFT && mode) || (!SLOT_1 && !mode)) {
+				moveWithoutStopping(direction + 90, 1);
+				SLOT_1 = true;
+				OFFSET_LEFT = true;
+				sleep(750);
+			} else if ((relicVuMark == RelicRecoveryVuMark.RIGHT && mode) || (!SLOT_3 && !mode)) {
+				moveWithoutStopping(direction - 90, 1);
+				SLOT_3 = true;
+				OFFSET_RIGHT = true;
+				sleep(750);
+			} else if (mode || (!SLOT_2 && !mode)) {
+				SLOT_2 = true;
+			}
+			stopMoving();
+			straighten();
+			clamp(CLAMP_POSITION_1);
+			sleep(1000);
+			grab(false);
+			moveWithoutStopping(direction, .3);
+			sleep(1000);
+			stopMoving();
+			moveWithEncoders(6, .3, BACKWARDS);
+			if (OFFSET_LEFT) {
+				moveWithoutStopping(direction - 90, 1);
+				OFFSET_LEFT = false;
+				sleep(750);
+			} else if (OFFSET_RIGHT) {
+				moveWithoutStopping(direction + 90, 1);
+				OFFSET_RIGHT = false;
+				sleep(750);
+			}
+			stopMoving();
 		}
-		straighten();
-		//While the hammer is not detecting any color or the time-out hasn't occurred the robot will move towards a cubby slot
-		if (false){
-			moveWithoutStopping(direction+90,1);
-			sleep(750);
-		}else if (true){
-			moveWithoutStopping(direction-90,1);
-			sleep(750);
-		}
-		stopMoving();
-		straighten();
-		forkY(false);
-		sleep(1000);
-		grab(false);
-		moveWithoutStopping(direction,.3);
-		sleep(1000);
-		stopMoving();
-		moveWithEncoders(6,.3,BACKWARDS);
 	}
 
 	private void moveWithoutStopping(double angle, double power) throws InterruptedException {
@@ -218,7 +342,18 @@ public class AutoByrdMK2 extends LinearOpMode {
 		INPUT_TIMER = System.currentTimeMillis();
 	}
 
-	private void statusCheck() {
+	private void statusCheck() throws InterruptedException{
+		relicTrackables.activate();
+		if(isStopRequested()){
+			stopMoving();
+			return;
+		}
+
+		if(relicVuMark == RelicRecoveryVuMark.UNKNOWN){
+			relicVuMark = RelicRecoveryVuMark.from(relicTemplate);
+		}
+		telemetry.addData("VuMark", "%s visible", relicVuMark);
+		telemetry.update();
 	}
 
 	void stopMoving() throws InterruptedException {
@@ -241,7 +376,8 @@ public class AutoByrdMK2 extends LinearOpMode {
 		//Sets the angle that the robot is supposed to be in to the angle arguement
 		imaginaryAngle = angle;
 		//While the angel is > the gyroscope+2 or < the gyroscope-2
-		while(angle > (robot.gyro.getHeading()+2)%360 || angle < robot.gyro.getHeading()-2){
+		//while(angle > (robot.gyro.getHeading()+2)%360 || angle < robot.gyro.getHeading()-2){
+		while((robot.gyro.getIntegratedZValue()<angle-1 || robot.gyro.getIntegratedZValue()>angle+1) && (angle-1==-1 && robot.gyro.getIntegratedZValue() != 359 || angle-1!=-1) && (angle+1==360 && robot.gyro.getIntegratedZValue()!=0 || angle+1!=360)){
 			if(isStopRequested()){
 				return;
 			}
@@ -267,39 +403,6 @@ public class AutoByrdMK2 extends LinearOpMode {
 
 	@Override
 	public void runOpMode() throws InterruptedException {
-		robot.init(hardwareMap);
 
-		int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-		VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-		parameters.vuforiaLicenseKey = "ARK0G5D/////AAAAGTNyS/9bI0eKk0BiZlza4w8qOLSfAS/JLHbvWMY95VY7PgFNgH178LKZTQVDke1Eu9JzX/o9QWeyU5ottyCSuPaRr98YId9QUZtfX918roLvNx3n5bXekGlcKSoxgw+UcH3HN+c8V57B3fFhNMt0uyKEWNAXYmAx1OkvoFUSSurH82uzsGg+aBZ3nlVfj043RPXSDyiJO7uDZmwVH14LPjdhP92Qj6byGdICOqc5dxKG1rVFdNgAWJjYVWbz53K1qNWyO9fYgE0lIjwgNopM2GCFVR2ycS0JHx5UW3Bk2m47kDoFCFJP+A8fWxfLyrtgH02JOzNyHb0VoKv4ZDan5Czl7Wcs+ItJBby3qyEmPRkf";
-		parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
-		this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
-
-		VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
-		VuforiaTrackable relicTemplate = relicTrackables.get(0);
-
-		robot.color.enableLed(false);
-
-
-		robot.forkY.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-		robot.forkY.setPower(1);
-
-		telemetry.addData(">", "Gyro Calibrating. Do Not move!");
-		telemetry.update();
-		robot.gyro.calibrate();
-
-		while (!isStopRequested() && robot.gyro.isCalibrating()) {
-			Thread.sleep(50);
-			idle();
-		}
-
-		telemetry.addData(">", "Gyro Calibrated.  Press Start.");
-		telemetry.update();
-
-		waitForStart();
-
-		relicTrackables.activate();
-
-		robot.gyro.resetZAxisIntegrator();
 	}
 }
