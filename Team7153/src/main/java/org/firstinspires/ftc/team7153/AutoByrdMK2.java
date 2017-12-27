@@ -20,6 +20,7 @@ import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_LEFT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_RIGHT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_UP;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INPUT_TIMER;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_GYRO_ON;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_CLOSE;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_OPEN;
@@ -41,7 +42,7 @@ import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_RIGHT;
 
 
 public class AutoByrdMK2 extends LinearOpMode {
-	HardwareByrdMK2 robot = new HardwareByrdMK2(); //Gets robot from HardwareByrd class
+	private HardwareByrdMK2 robot = new HardwareByrdMK2(); //Gets robot from HardwareByrd class
 	private double imaginaryAngle=0;         //Sets the robot's initial angle to 0
 
 	ElapsedTime runTime = new ElapsedTime();
@@ -54,6 +55,30 @@ public class AutoByrdMK2 extends LinearOpMode {
 	private RelicRecoveryVuMark relicVuMark = RelicRecoveryVuMark.UNKNOWN;
 	//
 	void autonomousInit(){
+
+
+		////////////////////////////////////////////////////////////////////////////////////Hardware////////////////////////////////////////////////////////////////////////////////
+		robot.init(hardwareMap);
+		robot.color.enableLed(false);
+
+		//Activate Clamps's encoders
+		robot.clamp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+		robot.clamp.setPower(1);
+
+		//Calibrate the Gyroscope
+		telemetry.addData(">", "Gyro Calibrating. Do Not move!");
+		telemetry.update();
+		robot.gyro.calibrate();
+
+		while (!isStopRequested() && robot.gyro.isCalibrating()) {
+			sleep(50);
+			idle();
+		}
+
+		telemetry.addData(">", "Gyro Calibrated.  Press Start.");
+		telemetry.update();
+
+		////////////////////////////////////////////////////////////////////////////////////Vuforia/////////////////////////////////////////////////////////////////////////////////
 
 		//Get the view for the camera monitor
 		int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -74,6 +99,17 @@ public class AutoByrdMK2 extends LinearOpMode {
 
 		//Disable the LED to save battery
 
+	}
+
+	void autonomousStart(){
+		//Reset the gyroscope to account for drift
+		robot.gyro.resetZAxisIntegrator();
+
+		//Reset the timer to 0
+		runTime.reset();
+
+		//Tell the robot that the Gyroscope has been correctly calibrated
+		IS_GYRO_ON = true;
 	}
 
 	void clamp(int position){
@@ -207,6 +243,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 
 		while(robot.frontLeft.getTargetPosition()!=robot.frontLeft.getCurrentPosition() && INPUT_TIMER+5000>runTime.milliseconds()){
 			if(isStopRequested()){
+				stopMoving();
 				return;
 			}
 			telemetry.addData("Target Position: ", robot.frontLeft.getTargetPosition());
@@ -351,10 +388,11 @@ public class AutoByrdMK2 extends LinearOpMode {
 		//Sets the angle that the robot is supposed to be in to the angle arguement
 		imaginaryAngle = angle;
 		//While the angel is > the gyroscope+2 or < the gyroscope-2
-		while(angle > (robot.gyro.getHeading()+2)%360 || angle < robot.gyro.getHeading()-2){
-		//resetTimer();
-		//while((robot.gyro.getIntegratedZValue()<angle-1 || robot.gyro.getIntegratedZValue()>angle+1) && (angle-1==-1 && robot.gyro.getIntegratedZValue() != 359 || angle-1!=-1) && (angle+1==360 && robot.gyro.getIntegratedZValue()!=0 || angle+1!=360) && INPUT_TIMER+5000>runTime.milliseconds()){
+		//while(angle > (robot.gyro.getHeading()+2)%360 || angle < robot.gyro.getHeading()-2){
+		resetTimer();
+		while((robot.gyro.getHeading()<angle-1 || robot.gyro.getHeading()>angle+1) && (angle-1==-1 && robot.gyro.getHeading() != 359 || angle-1!=-1) && (angle+1==360 && robot.gyro.getHeading()!=0 || angle+1!=360) && INPUT_TIMER+5000>runTime.milliseconds()){
 			if(isStopRequested()){
+				stopMoving();
 				return;
 			}
 		    if((angle>robot.gyro.getHeading() && angle<robot.gyro.getHeading()+181) || (angle<robot.gyro.getHeading()-180)){
