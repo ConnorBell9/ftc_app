@@ -47,7 +47,7 @@ class HardwareBellatorum
     final double CLAMP_LEFT_CLOSED  = 1.0;
     final double CLAMP_RIGHT_CLOSED = 0.0;
     final double LIFT_UP_POWER    =  0.25 ;
-    final double LIFT_DOWN_POWER  = -0.25 ;
+    final double LIFT_DOWN_POWER  = -0.13 ;
     final double LIFT_FEET_PER_SEC = 5;
     final double FORWARD_POWER = 0.6;
     final double FEET_PER_SEC = 4;
@@ -107,6 +107,7 @@ class HardwareBellatorum
 
             backLiftMotor    = hwMap.dcMotor.get("back_lift_arm");
             backLiftMotor.setPower(0);
+            backLiftMotor.setDirection(DcMotor.Direction.REVERSE); // Reverse this motor
             backLiftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
             leftClamp = hwMap.servo.get("left_hand");
