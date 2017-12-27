@@ -2,7 +2,12 @@ package org.firstinspires.ftc.team7153;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IDOL_Z_DELTA_POSITION;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INPUT_TIMER;
@@ -15,9 +20,29 @@ import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_PLATE;
 public class
 DebugMechByrdMK2 extends OpMode{
 	private HardwareByrdMK2 robot = new HardwareByrdMK2();
+	private VuforiaLocalizer vuforia;
+	private VuforiaLocalizer.Parameters parameters;
+	private VuforiaTrackables relicTrackables;
+	private VuforiaTrackable relicTemplate;
+	private RelicRecoveryVuMark relicVuMark = RelicRecoveryVuMark.UNKNOWN;
     @Override
     public void init() {
 		robot.init(hardwareMap);
+		int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+		parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+
+		//Use Vindicem license key
+		parameters.vuforiaLicenseKey = "ARK0G5D/////AAAAGTNyS/9bI0eKk0BiZlza4w8qOLSfAS/JLHbvWMY95VY7PgFNgH178LKZTQVDke1Eu9JzX/o9QWeyU5ottyCSuPaRr98YId9QUZtfX918roLvNx3n5bXekGlcKSoxgw+UcH3HN+c8V57B3fFhNMt0uyKEWNAXYmAx1OkvoFUSSurH82uzsGg+aBZ3nlVfj043RPXSDyiJO7uDZmwVH14LPjdhP92Qj6byGdICOqc5dxKG1rVFdNgAWJjYVWbz53K1qNWyO9fYgE0lIjwgNopM2GCFVR2ycS0JHx5UW3Bk2m47kDoFCFJP+A8fWxfLyrtgH02JOzNyHb0VoKv4ZDan5Czl7Wcs+ItJBby3qyEmPRkf";
+
+		//Assign which camera is to be used
+		parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
+		this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+
+		//Load the VuMarks
+		relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+		relicTemplate = relicTrackables.get(0);
+
+		relicTemplate.setName("relicVuMarkTemplate");
 		if(!IS_GYRO_ON) {
 			robot.gyro.calibrate();
 			IS_GYRO_ON=true;
@@ -25,6 +50,7 @@ DebugMechByrdMK2 extends OpMode{
 		IS_GYRO_ON=false;
 		IS_BLOCK_GRAB=true;
 		robot.color.enableLed(true);
+		relicTrackables.activate();
     }
 
     @Override
@@ -41,10 +67,7 @@ DebugMechByrdMK2 extends OpMode{
 		robot.backLeft.setPower(v3*maxSpeed);
 		robot.backRight.setPower(v4*maxSpeed);
 
-		if(gamepad1.dpad_left && System.currentTimeMillis() > INPUT_TIMER+500){
-			robot.hammerX.setPosition(-.1+robot.hammerX.getPosition());
-			INPUT_TIMER = System.currentTimeMillis();
-		}
+		relicVuMark = RelicRecoveryVuMark.from(relicTemplate);
 
 		if(gamepad1.dpad_right && System.currentTimeMillis() > INPUT_TIMER+500){
 			robot.hammerX.setPosition(.1+robot.hammerX.getPosition());
@@ -146,6 +169,7 @@ DebugMechByrdMK2 extends OpMode{
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
+		telemetry.addData("VuMark:   ", relicVuMark);
 	    telemetry.addData("Grab is:  ", IS_BLOCK_GRAB);
 		telemetry.addData("Plate is: ", IS_PLATE);
 		telemetry.addData("Idol is:  ", IS_IDOL_GRAB);
