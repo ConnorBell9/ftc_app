@@ -99,8 +99,8 @@ class HardwareByrdMK2
 
     static final double  HAMMER_DOWN    =     1;
     static final double  HAMMER_UP      =   -.5;
-    static final double  HAMMER_LEFT    =    .5;
-    static final double  HAMMER_RIGHT   =    .3;
+    static final double  HAMMER_LEFT    =    .6;
+    static final double  HAMMER_RIGHT   =    .2;
     static final double  HAMMER_CENTER  =    .4;
 
     static boolean       IS_PLATE        = false;
@@ -118,7 +118,7 @@ class HardwareByrdMK2
     static final boolean LEFT  = false;
     static final boolean RIGHT = true;
 
-    static final boolean RED  = true;
+    static final boolean RED  = false;
     static final boolean BLUE = true;
 
     static final double MOVE_BACKWARDS = 270;

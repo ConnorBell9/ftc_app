@@ -156,14 +156,14 @@ public class AutoByrdMK2 extends LinearOpMode {
 			telemetry.addData("Color Red:   ", robot.color.red());
 			telemetry.addData("Color Blue:  ", robot.color.blue());
 			telemetry.update();
-			if(colorRemaining==RED){putt(LEFT);} else {putt(RIGHT);}
+			if(colorRemaining==RED){putt(RIGHT);} else {putt(LEFT);}
 		} else if (robot.color.red()<robot.color.blue()){
 			//Else if the color red is less than the color blue then if the argument is red it will put the blue ball off (Right) otherwise it will putt the red ball off (Left)
 			telemetry.addData("Found Color: ", "blue");
 			telemetry.addData("Color Red: ", robot.color.red());
 			telemetry.addData("Color Blue: ", robot.color.blue());
 			telemetry.update();
-			if(colorRemaining==RED){putt(RIGHT);} else {putt(LEFT);}
+			if(colorRemaining==RED){putt(LEFT);} else {putt(RIGHT);}
 		} else {
 			telemetry.addData("Found Color: ", "Nothing");
 			telemetry.addData("Color Red:   ", robot.color.red());
@@ -381,7 +381,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 	
 	private void straighten() throws InterruptedException {
 		//Inputs into the turn function the angle that the robot is supposed to be in
-		turn(imaginaryAngle,.4);
+		turn(imaginaryAngle,.3);
 	}
 
 	void turn(double angle, double speed) throws InterruptedException {
