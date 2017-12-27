@@ -36,7 +36,7 @@ public class RelativeMechByrdMK3 extends OpMode{
 
     @Override
     public void loop() {
-	    double maxSpeed = 1;//Defines what fraction of speed the robot will run atb
+	    double maxSpeed = 1;//Defines what fraction of speed the robot will run at
 		double radGyro = (robot.gyro.getHeading() * Math.PI) / 180;
 	    double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
 		double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
