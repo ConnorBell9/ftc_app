@@ -97,11 +97,11 @@ public class AutoByrdMK2 extends LinearOpMode {
 
 		relicTemplate.setName("relicVuMarkTemplate");
 
-		//Disable the LED to save battery
+		relicTrackables.activate();
 
 	}
 
-	void autonomousStart(){
+	void autonomousStart() throws InterruptedException{
 		//Reset the gyroscope to account for drift
 		robot.gyro.resetZAxisIntegrator();
 
@@ -110,6 +110,8 @@ public class AutoByrdMK2 extends LinearOpMode {
 
 		//Tell the robot that the Gyroscope has been correctly calibrated
 		IS_GYRO_ON = true;
+
+		statusCheck();
 	}
 
 	void clamp(int position){
@@ -168,7 +170,9 @@ public class AutoByrdMK2 extends LinearOpMode {
 			telemetry.addData("Color Blue:  ", robot.color.blue());
 			telemetry.update();
 		}
+		statusCheck();
 		sleep(1000);
+		statusCheck();
 		//Reset the hammer position to up and turn off the light
 		robot.hammerY.setPosition(HAMMER_UP);
 		robot.hammerX.setPosition(HAMMER_CENTER);
@@ -250,7 +254,6 @@ public class AutoByrdMK2 extends LinearOpMode {
 			telemetry.addData("Current Position:  ", robot.frontLeft.getCurrentPosition());
 			telemetry.addData("VuMark", "%s visible", relicVuMark);
 			telemetry.update();
-			statusCheck();
 			sleep(10);
 		}
 		sleep(500);
@@ -357,9 +360,9 @@ public class AutoByrdMK2 extends LinearOpMode {
 	}
 
 	private void statusCheck() throws InterruptedException{
-		relicTrackables.activate();
 		if(isStopRequested()){
 			stopMoving();
+			intake(false);
 			return;
 		}
 
