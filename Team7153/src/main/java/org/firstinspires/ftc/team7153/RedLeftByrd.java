@@ -2,8 +2,12 @@ package org.firstinspires.ftc.team7153;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.BLUE;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.BACKWARDS;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.CLAMP_POSITION_2;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.MOVE_LEFT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RED;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_LEFT;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.VUFORIA_ENABLED;
 
 @Autonomous(name="RedLeftByrd")
 public class RedLeftByrd extends AutoByrdMK2 {
@@ -13,19 +17,7 @@ public class RedLeftByrd extends AutoByrdMK2 {
 		waitForStart();
 		autonomousStart();
 		if (!isStopRequested()) {
-			hammer(RED);
-			sleep(1000);
-			hammer(BLUE);
-			sleep(1000);
-			hammer(RED);
-			sleep(1000);
-			hammer(BLUE);
-			sleep(1000);
-			hammer(RED);
-			sleep(1000);
-			hammer(BLUE);
-			sleep(1000);
-			/*grab(false);
+			grab(false);
 			sleep(1000);
 			grab(true);
 			sleep(100);
@@ -38,8 +30,8 @@ public class RedLeftByrd extends AutoByrdMK2 {
             	harvest(0,44);
             	moveToCubby(MOVE_LEFT,1,VUFORIA_DISABLED);
 			}*/
-			/*stopMoving();
-            intake(false);*/
+			stopMoving();
+            intake(false);
 		}
 	}
 }
