@@ -66,7 +66,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 		robot.clamp.setPower(1);
 
 		//Calibrate the Gyroscope
-		telemetry.addData(">", "Gyro Calibrating. Do Not move!");
+		telemetry.addData("Gyro", " Calibrating. Do Not move!");
 		telemetry.update();
 		robot.gyro.calibrate();
 
@@ -75,7 +75,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 			idle();
 		}
 
-		telemetry.addData(">", "Gyro Calibrated.  Press Start.");
+		telemetry.addData("Gyro", " Calibrated.");
 		telemetry.update();
 
 		////////////////////////////////////////////////////////////////////////////////////Vuforia/////////////////////////////////////////////////////////////////////////////////
@@ -97,8 +97,12 @@ public class AutoByrdMK2 extends LinearOpMode {
 
 		relicTemplate.setName("relicVuMarkTemplate");
 
-		relicTrackables.activate();
+		telemetry.addData("Vuforia", " Activating. Do Not Start!");
+		telemetry.update();
 
+		relicTrackables.activate();
+		telemetry.addData("Vuforia", " Activated. Start");
+		telemetry.update();
 	}
 
 	void autonomousStart() throws InterruptedException{
@@ -141,8 +145,6 @@ public class AutoByrdMK2 extends LinearOpMode {
 		if(isStopRequested()){
 			return;
 		}
-		telemetry.addData("Function: ", "Hammer");
-		telemetry.update();
 		//Bring the hammer down and wait in order to get around the shakiness of the hammer
 		robot.color.enableLed(true);
 		robot.hammerY.setPosition(HAMMER_DOWN);
@@ -153,22 +155,16 @@ public class AutoByrdMK2 extends LinearOpMode {
 		//If the color red is greater than the color blue then if the arguement is red it will putt the blue ball off (Left) otherwise it will putt the red ball off (Right)
 		if(robot.color.red()>robot.color.blue()){
 			telemetry.addData("Found Color: ", "red");
-			telemetry.addData("Color Red:   ", robot.color.red());
-			telemetry.addData("Color Blue:  ", robot.color.blue());
-			telemetry.update();
+			telemetry();
 			if(colorRemaining==RED){putt(RIGHT);} else {putt(LEFT);}
 		} else if (robot.color.red()<robot.color.blue()){
 			//Else if the color red is less than the color blue then if the argument is red it will put the blue ball off (Right) otherwise it will putt the red ball off (Left)
 			telemetry.addData("Found Color: ", "blue");
-			telemetry.addData("Color Red: ", robot.color.red());
-			telemetry.addData("Color Blue: ", robot.color.blue());
-			telemetry.update();
+			telemetry();
 			if(colorRemaining==RED){putt(LEFT);} else {putt(RIGHT);}
 		} else {
 			telemetry.addData("Found Color: ", "Nothing");
-			telemetry.addData("Color Red:   ", robot.color.red());
-			telemetry.addData("Color Blue:  ", robot.color.blue());
-			telemetry.update();
+			telemetry();
 		}
 		statusCheck();
 		sleep(1000);
@@ -250,10 +246,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 				stopMoving();
 				return;
 			}
-			telemetry.addData("Target Position: ", robot.frontLeft.getTargetPosition());
-			telemetry.addData("Current Position:  ", robot.frontLeft.getCurrentPosition());
-			telemetry.addData("VuMark", "%s visible", relicVuMark);
-			telemetry.update();
+			telemetry();
 			sleep(10);
 		}
 		sleep(500);
@@ -263,46 +256,46 @@ public class AutoByrdMK2 extends LinearOpMode {
 		robot.backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 	}
 	
-	void moveToCubby(double direction, int blocks, boolean mode) throws InterruptedException {
-		for(int i = 0; i<blocks; i++) {
-			if (isStopRequested()) {
-				return;
-			}
-			straighten();
-			//While the hammer is not detecting any color or the time-out hasn't occurred the robot will move towards a cubby slot
-			if ((relicVuMark == RelicRecoveryVuMark.LEFT && mode) || (!SLOT_1 && !mode)) {
-				moveWithoutStopping(direction + 90, 1);
-				SLOT_1 = true;
-				OFFSET_LEFT = true;
-				sleep(750);
-			} else if ((relicVuMark == RelicRecoveryVuMark.RIGHT && mode) || (!SLOT_3 && !mode)) {
-				moveWithoutStopping(direction - 90, 1);
-				SLOT_3 = true;
-				OFFSET_RIGHT = true;
-				sleep(750);
-			} else if (mode || (!SLOT_2 && !mode)) {
-				SLOT_2 = true;
-			}
-			stopMoving();
-			straighten();
-			clamp(CLAMP_POSITION_1);
-			sleep(1000);
-			grab(false);
-			moveWithoutStopping(direction, .3);
-			sleep(1000);
-			stopMoving();
-			moveWithEncoders(8, .3, BACKWARDS);
-			if (OFFSET_LEFT) {
-				moveWithoutStopping(direction - 90, 1);
-				OFFSET_LEFT = false;
-				sleep(750);
-			} else if (OFFSET_RIGHT) {
-				moveWithoutStopping(direction + 90, 1);
-				OFFSET_RIGHT = false;
-				sleep(750);
-			}
-			stopMoving();
+	void moveToCubby(double direction, boolean mode) throws InterruptedException {
+		if (isStopRequested()) {
+			return;
 		}
+		straighten();
+		//While the hammer is not detecting any color or the time-out hasn't occurred the robot will move towards a cubby slot
+		if(!SLOT_2 && !mode){
+			SLOT_2 = true;
+		} else if ((relicVuMark == RelicRecoveryVuMark.LEFT && mode) || (!SLOT_1 && !mode)) {
+			moveWithoutStopping(direction + 90, 1);
+			SLOT_1 = true;
+			OFFSET_LEFT = true;
+			sleep(750);
+		} else if ((relicVuMark == RelicRecoveryVuMark.RIGHT && mode) || (!SLOT_3 && !mode)) {
+			moveWithoutStopping(direction - 90, 1);
+			SLOT_3 = true;
+			OFFSET_RIGHT = true;
+			sleep(750);
+		} else if (mode) {
+			SLOT_2 = true;
+		}
+		stopMoving();
+		straighten();
+		clamp(CLAMP_POSITION_1);
+		sleep(1000);
+		grab(false);
+		moveWithoutStopping(direction, .3);
+		sleep(1000);
+		stopMoving();
+		moveWithEncoders(8, .3, BACKWARDS);
+		if (OFFSET_LEFT) {
+			moveWithoutStopping(direction - 90, 1);
+			OFFSET_LEFT = false;
+			sleep(750);
+		} else if (OFFSET_RIGHT) {
+			moveWithoutStopping(direction + 90, 1);
+			OFFSET_RIGHT = false;
+			sleep(750);
+		}
+		stopMoving();
 	}
 
 	private void moveWithoutStopping(double angle, double power) throws InterruptedException {
@@ -329,14 +322,11 @@ public class AutoByrdMK2 extends LinearOpMode {
 		robot.frontRight.setPower(v2);
 		robot.backLeft.setPower(v3);
 		robot.backRight.setPower(v4);
+
 		telemetry.addData("Function: ", "MoveWithoutStopping");
-		telemetry.addData("FrontLeft:  ", robot.frontLeft.getPower());
-		telemetry.addData("FrontRight: ", robot.frontRight.getPower());
-		telemetry.addData("BackLeft:   ", robot.backLeft.getPower());
-		telemetry.addData("BackRight:  ", robot.backRight.getPower());
-		telemetry.addData("Moving at Angle: ", angle);
-		telemetry.addData("Moving at Speed: ", power);
-		telemetry.update();
+		telemetry.addData("Target Angle:  ", angle);
+		telemetry.addData("Current Speed: ", power);
+		telemetry();
 	}
 	
 	private void putt(boolean direction){
@@ -346,11 +336,11 @@ public class AutoByrdMK2 extends LinearOpMode {
 		//If the arguement says right or left then the hammer will putt to the respective positions
 		if(direction == RIGHT){
 			telemetry.addData("Hammer Position: ", "Right");
-			telemetry.update();
+			telemetry();
 			robot.hammerX.setPosition(HAMMER_RIGHT);
 		} else {
 			telemetry.addData("Hammer Position: ", "Left");
-			telemetry.update();
+			telemetry();
 			robot.hammerX.setPosition(HAMMER_LEFT);
 		}
 	}
@@ -381,7 +371,25 @@ public class AutoByrdMK2 extends LinearOpMode {
 	
 	private void straighten() throws InterruptedException {
 		//Inputs into the turn function the angle that the robot is supposed to be in
-		turn(imaginaryAngle,.3);
+		turn(imaginaryAngle,.2);
+	}
+
+	private void telemetry(){
+		telemetry.addData("/////VUFORIA", "/////");
+		telemetry.addData("VuMark", "%s visible", relicVuMark);
+		telemetry.addData("/////SENSORS", "/////");
+		telemetry.addData("Color Red      ", robot.color.red());
+		telemetry.addData("Color Blue:    ", robot.color.blue());
+		telemetry.addData("Current Angle: ", robot.gyro.getIntegratedZValue());
+		telemetry.addData("/////ENCODERS", "////");
+		telemetry.addData("Target Position:  ", robot.frontLeft.getTargetPosition());
+		telemetry.addData("Current Position: ", robot.frontLeft.getCurrentPosition());
+		telemetry.addData("/////MOTORS", "//////");
+		telemetry.addData("FrontLeft:  ", robot.frontLeft.getPower());
+		telemetry.addData("FrontRight: ", robot.frontRight.getPower());
+		telemetry.addData("BackLeft:   ", robot.backLeft.getPower());
+		telemetry.addData("BackRight:  ", robot.backRight.getPower());
+		telemetry.update();
 	}
 
 	void turn(double angle, double speed) throws InterruptedException {
@@ -410,10 +418,9 @@ public class AutoByrdMK2 extends LinearOpMode {
                 	robot.backRight.setPower(-speed);
             }
 			telemetry.addData("Function: ", "Turn");
-			telemetry.addData("Current Angle: ", robot.gyro.getIntegratedZValue());
 			telemetry.addData("Target Angle:  ", angle);
 			telemetry.addData("Current Speed: ", speed);
-			telemetry.update();
+			telemetry();
             }
 		stopMoving();
 	}

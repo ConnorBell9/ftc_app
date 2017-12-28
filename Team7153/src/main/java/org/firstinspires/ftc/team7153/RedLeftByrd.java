@@ -25,10 +25,10 @@ public class RedLeftByrd extends AutoByrdMK2 {
 			hammer(RED);
             moveWithEncoders(36,.3,BACKWARDS);
             turn(TURN_LEFT,.3);
-            moveToCubby(MOVE_LEFT,1, VUFORIA_ENABLED);
+            moveToCubby(MOVE_LEFT, VUFORIA_ENABLED);
             /*while(runTime.milliseconds()<25000 && opModeIsActive()){
             	harvest(0,44);
-            	moveToCubby(MOVE_LEFT,1,VUFORIA_DISABLED);
+            	moveToCubby(MOVE_LEFT, VUFORIA_DISABLED);
 			}*/
 			stopMoving();
             intake(false);
