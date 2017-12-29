@@ -304,6 +304,8 @@ public class AutoByrdMK2 extends LinearOpMode {
 			return;
 		}
 
+		straighten();
+
 		double radGyro = (robot.gyro.getIntegratedZValue() * Math.PI) / 180;
 		double robotAngle = angle * (Math.PI / 180) - Math.PI / 4 - radGyro;
 
@@ -371,7 +373,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 	
 	private void straighten() throws InterruptedException {
 		//Inputs into the turn function the angle that the robot is supposed to be in
-		turn(imaginaryAngle,.2);
+		turn(imaginaryAngle,.28);
 	}
 
 	private void telemetry(){
