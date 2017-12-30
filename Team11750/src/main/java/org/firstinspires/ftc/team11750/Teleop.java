@@ -123,7 +123,7 @@ public class Teleop extends OpMode{
         // Read the x,y displacement from the left stick
         float x = desens(gamepad1.left_stick_x);
         float y = desens(gamepad1.left_stick_y);
-        float r = desens(gamepad1.right_stick_x)/2; // Read the rotation from the right stick
+        float r = desens(gamepad1.right_stick_x)/(float)1.5; // Read the rotation from the right stick
 
         // Robot Translate/Slide mode
         if(gamepad1.x) {
@@ -132,15 +132,14 @@ public class Teleop extends OpMode{
         }
         if(gamepad1.b) drill=false; // Disable drill mode
         if(drill) {
-            double z=Math.toRadians(gyro.getIntegratedZValue()); // Get anchor heading
+            double z=-Math.toRadians(gyro.getIntegratedZValue()); // Get anchor heading
             double angle=0;
-            if (x!=0 || y!=0) angle=Math.atan(-y/x); // Calculate the new desired direction
-
             double power=Math.sqrt(x*x+y*y); // Calculate the desired power
+            if (power!=0) angle=Math.atan2(y,x); // Calculate the new desired direction
             // Set the wheels to the send the bot towards the desired direction less the z anchor + rotation
             robot.leftFrontMotor.setPower(power*Math.cos(angle-z)+r);
-            robot.rightFrontMotor.setPower(-power*Math.sin(angle-z)+r);
-            robot.rightBackMotor.setPower(power*Math.cos(angle-z)+r);
+            robot.rightFrontMotor.setPower(-power*Math.sin(angle-z)-r);
+            robot.rightBackMotor.setPower(power*Math.cos(angle-z)-r);
             robot.leftBackMotor.setPower(-power*Math.sin(angle-z)+r);
             telemetry.addData("angle, z",  "%.2f, %.2f", angle, z);
             telemetry.addData("power",  "%.2f", power);
