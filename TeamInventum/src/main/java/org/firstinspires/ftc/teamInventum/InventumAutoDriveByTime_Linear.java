@@ -27,18 +27,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.team11750;
+package org.firstinspires.ftc.teamInventum;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
 /**
  * This file illustrates the concept of driving a path based on time.
- * It uses the Bellatorum hardware class to define the drive on the robot.
+ * It uses the common Inventum hardware class to define the drive on the robot.
  * The code is structured as a LinearOpMode
  *
  * The code assumes that you do NOT have encoders on the wheels,
- *   otherwise you would use: PushbotAutoDriveByEncoder;
+ *   otherwise you would use: InventumAutoDriveByEncoder;
+ *
+ *   The desired path in this example is:
+ *   - Drive forward for 3 seconds
+ *   - Spin right for 1.3 seconds
+ *   - Drive Backwards for 1 Second
+ *   - Stop and close the claw.
  *
  *  The code is written in a simple form with no optimizations.
  *  However, there are several ways that this type of sequence could be streamlined,
@@ -47,8 +57,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Bellatorum: Front Blue", group="Bellatorum")
-public class BellatorumAutoFrontBlue extends BellatorumAuto {
+@Autonomous(name="Inventum: Auto Drive By Time", group="Inventum")
+public class InventumAutoDriveByTime_Linear extends LinearOpMode {
+
+    /* Declare OpMode members. */
+    HardwareInventum         robot   = new HardwareInventum();   // Use a Inventum's hardware
+    private ElapsedTime     runtime = new ElapsedTime();
+
+
+    static final double     FORWARD_SPEED = 0.1;
+    static final double     TURN_SPEED    = 0.5;
 
     @Override
     public void runOpMode() {
@@ -59,45 +77,47 @@ public class BellatorumAutoFrontBlue extends BellatorumAuto {
          */
         robot.init(hardwareMap);
 
-        autonomousInit(); // Initialize the autonomous method
-
         // Send telemetry message to signify robot waiting;
-        telemetry.addData("Status", "Ready to run");
-        if (!robot.clampInstalled) telemetry.addData("Status","### Clamp disabled ###");
+        telemetry.addData("Status", "Ready to run");    //
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        gyro.resetZAxisIntegrator(); // Reset the gyro
 
-        robot.clampClose(); // Grab the glyph
-        sleep(1000); // Wait one second
-        liftUp(1); // Raise the lift in ft
+        // Step through each leg of the path, ensuring that the Auto mode has not been stopped along the way
 
-        // Get the RelicRecoverVuMark location
-        relicVuMark = getRelicRecoveryVuMark();
+        // Step 1:  Drive forward for a few seconds
+        robot.leftMotor.setPower(FORWARD_SPEED);
+        robot.rightMotor.setPower(FORWARD_SPEED);
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < 3.0)) {
+            telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
+/*
+        // Step 2:  Spin right for 1.3 seconds
+        robot.leftMotor.setPower(TURN_SPEED);
+        robot.rightMotor.setPower(-TURN_SPEED);
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < 1.3)) {
+            telemetry.addData("Path", "Leg 2: %2.5f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
+*/
+        // Step 3:  Drive Backwards for 1 Second
+        robot.leftMotor.setPower(-FORWARD_SPEED);
+        robot.rightMotor.setPower(-FORWARD_SPEED);
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() < 0.5)) {
+            telemetry.addData("Path", "Leg 3: %2.5f S Elapsed", runtime.seconds());
+            telemetry.update();
+        }
 
-        displaceJewel(robot.COLOR_RED); // Knock off the jewel of this color
-
-        move(robot.LEFT, 2.5, 1); // Move in feet
-        turn(robot.RIGHT/6, 0.8); turn(robot.FORWARD, 0.8 ); // Wiggle off the platform
-        move(robot.FORWARD, 0.33); // move away from the glyph box
-        move(robot.RIGHT, 1.0, 0.2); // Move back to align with platform
-
-        // Move the robot according to the relic VuMark
-        double relicMove = 7.63/12; // Default to move in feet
-        double turnAngle=-145.0; // Default turn angle
-        if (relicVuMark == RelicRecoveryVuMark.LEFT) { turnAngle += -19.0; } // Turn a little further
-        if (relicVuMark == RelicRecoveryVuMark.RIGHT) { relicMove += 8.63/12; } // 7.63" further
-        move(robot.LEFT, relicMove); // Move forward relicMove feet
-        turn(turnAngle); // Turn left in degrees
-        move(robot.FORWARD, 0.75); // Move forward in feet
-
-        liftDown(0.6); // Lower the lift in ft
-        robot.clampOpen(); // Drop the glyph
-        move(robot.FORWARD, 0.65, 0.4); // Move forward in feet
-
-        move(robot.BACK, 0.2); // Back up
+        // Step 4:  Stop and close the claw.
+        robot.leftMotor.setPower(0);
+        robot.rightMotor.setPower(0);
+        robot.leftClaw.setPosition(1.0);
+        robot.rightClaw.setPosition(0.0);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
