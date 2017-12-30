@@ -123,7 +123,7 @@ public class Teleop extends OpMode{
         // Read the x,y displacement from the left stick
         float x = desens(gamepad1.left_stick_x);
         float y = desens(gamepad1.left_stick_y);
-        float r = desens(gamepad1.right_stick_x); // Read the rotation from the right stick
+        float r = desens(gamepad1.right_stick_x)/2; // Read the rotation from the right stick
 
         // Robot Translate/Slide mode
         if(gamepad1.x) {
@@ -165,11 +165,11 @@ public class Teleop extends OpMode{
         // Use the bumpers to move the lifts up and down
         if(gamepad1.left_bumper) {
             robot.liftMotor.setPower(robot.LIFT_DOWN_POWER / 2);
-            robot.backLiftMotor.setPower(robot.LIFT_DOWN_POWER / 2);
+            robot.backLiftMotor.setPower(robot.LIFT_DOWN_POWER);
         }
        else if (gamepad1.right_bumper) {
             robot.liftMotor.setPower(robot.LIFT_UP_POWER);
-            robot.backLiftMotor.setPower(robot.LIFT_UP_POWER);
+            robot.backLiftMotor.setPower(robot.LIFT_UP_POWER * 2);
         }
         else {
             robot.liftMotor.setPower(0.0);

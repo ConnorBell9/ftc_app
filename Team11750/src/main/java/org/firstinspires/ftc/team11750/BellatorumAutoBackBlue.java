@@ -84,7 +84,7 @@ public class BellatorumAutoBackBlue extends BellatorumAuto {
         move(robot.LEFT, 0.25); // Move 1/4 foot
 
         // Move the robot according to the relic VuMark
-        double relicMove = 0.0; // Default to move in feet
+        double relicMove = 0.334; // Default to move in feet
         if (relicVuMark == RelicRecoveryVuMark.LEFT) { relicMove -= 7.63/12; } // 7.63" shorter
         if (relicVuMark == RelicRecoveryVuMark.RIGHT) { relicMove += 7.63/12; } // 7.63" further
         move(robot.FORWARD, relicMove); // Move forward relicMove feet
