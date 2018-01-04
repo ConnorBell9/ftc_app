@@ -182,7 +182,7 @@ class HardwareByrdMK2
         backRight.setPower(0);
         backLeft.setPower(0);
         clamp.setPower(0);
-        idolZ.setPower(.5);
+        idolZ.setPower(1);
         idolY.setPower(0);
 
         // Set all motors to run without encoders.

@@ -62,14 +62,19 @@ DebugMechByrdMK2 extends OpMode{
 		final double v3=gamepad1.left_stick_y;
 		final double v4=gamepad1.left_stick_y;
 
-	    robot.frontLeft.setPower(v1*maxSpeed);
+	    /*robot.frontLeft.setPower(v1*maxSpeed);
 		robot.frontRight.setPower(v2*maxSpeed);
 		robot.backLeft.setPower(v3*maxSpeed);
-		robot.backRight.setPower(v4*maxSpeed);
+		robot.backRight.setPower(v4*maxSpeed);*/
 
 		relicVuMark = RelicRecoveryVuMark.from(relicTemplate);
 
 		if(gamepad1.dpad_right && System.currentTimeMillis() > INPUT_TIMER+500){
+			robot.hammerX.setPosition(-.1+robot.hammerX.getPosition());
+			INPUT_TIMER = System.currentTimeMillis();
+		}
+
+		if(gamepad1.dpad_left && System.currentTimeMillis() > INPUT_TIMER+500){
 			robot.hammerX.setPosition(.1+robot.hammerX.getPosition());
 			INPUT_TIMER = System.currentTimeMillis();
 		}
@@ -96,15 +101,21 @@ DebugMechByrdMK2 extends OpMode{
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
-		/*if(gamepad2.dpad_up && System.currentTimeMillis() > INPUT_TIMER+500){
-			robot.armT.setPower(.1+robot.armT.getPower());
+		if(gamepad2.dpad_up && System.currentTimeMillis() > INPUT_TIMER+500){
+			robot.frontLeft.setPower(.01+robot.frontLeft.getPower());
+			robot.frontRight.setPower(-.01+robot.frontRight.getPower());
+			robot.backLeft.setPower(.01+robot.backLeft.getPower());
+			robot.backRight.setPower(-.01+robot.backRight.getPower());
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
 		if(gamepad2.dpad_down && System.currentTimeMillis() > INPUT_TIMER+500){
-			robot.armT.setPower(-.1+robot.armT.getPower());
+			robot.frontLeft.setPower(-.01+robot.frontLeft.getPower());
+			robot.frontRight.setPower(.01+robot.frontRight.getPower());
+			robot.backLeft.setPower(-.01+robot.backLeft.getPower());
+			robot.backRight.setPower(.01+robot.backRight.getPower());
 			INPUT_TIMER = System.currentTimeMillis();
-		}*/
+		}
 
 	    if(gamepad2.a && System.currentTimeMillis() > INPUT_TIMER+500){
 			IS_BLOCK_GRAB=!IS_BLOCK_GRAB;

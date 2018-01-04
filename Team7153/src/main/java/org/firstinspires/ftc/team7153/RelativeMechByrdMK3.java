@@ -107,10 +107,10 @@ public class RelativeMechByrdMK3 extends OpMode{
 		} else if (gamepad2.left_trigger>.02){
 			robot.idolY.setPower(-.75*gamepad2.left_trigger);
 		} else {robot.idolY.setPower(0);}
-		if(gamepad2.right_bumper && System.currentTimeMillis() > INPUT_TIMER+10){
+		if(gamepad2.right_bumper && System.currentTimeMillis() > INPUT_TIMER+5){
 			robot.idolZ.setTargetPosition(robot.idolZ.getCurrentPosition()+IDOL_Z_DELTA_POSITION);
 			INPUT_TIMER = System.currentTimeMillis();
-		}else if(gamepad2.left_bumper && System.currentTimeMillis() > INPUT_TIMER+10){
+		}else if(gamepad2.left_bumper && System.currentTimeMillis() > INPUT_TIMER+5){
 			robot.idolZ.setTargetPosition(robot.idolZ.getCurrentPosition()-IDOL_Z_DELTA_POSITION);
 			INPUT_TIMER = System.currentTimeMillis();
 		}
