@@ -151,10 +151,14 @@ public class Teleop extends OpMode{
         }
 
         // Use gamepad left & right Bumpers to open and close the clamp
-        if ((gamepad1.right_trigger > 0.01) || (gamepad2.right_trigger > 0.01))
+        if ((gamepad1.right_trigger > 0.01) || (gamepad2.right_trigger > 0.01)
+                || (gamepad2.left_stick_x > 0.1) || (gamepad2.right_stick_x < -0.1)) {
             clampOffset += CLAMP_SPEED;
-        else if ((gamepad1.left_trigger > 0.01) || (gamepad2.left_trigger > 0.01))
+        }
+        else if ((gamepad1.left_trigger > 0.01) || (gamepad2.left_trigger > 0.01)
+                || (gamepad2.left_stick_x < -0.1) || (gamepad2.right_stick_x > 0.1)) {
             clampOffset -= CLAMP_SPEED;
+        }
 
         // Move both servos to new position.  Assume servos are mirror image of each other.
         clampOffset = Range.clip(clampOffset, -0.75, 0.75);
@@ -162,11 +166,13 @@ public class Teleop extends OpMode{
         robot.rightClamp.setPosition(robot.CLAMP_RIGHT_OPEN - clampOffset);
 
         // Use the bumpers to move the lifts up and down
-        if(gamepad1.left_bumper || gamepad2.left_bumper) {
+        if(gamepad1.left_bumper || gamepad2.left_bumper
+                || (gamepad2.left_stick_y > 0.1) || (gamepad2.right_stick_y > 0.1)) {
             robot.liftMotor.setPower(robot.LIFT_DOWN_POWER / 2);
             robot.backLiftMotor.setPower(robot.LIFT_DOWN_POWER);
         }
-       else if (gamepad1.right_bumper || gamepad2.right_bumper) {
+       else if (gamepad1.right_bumper || gamepad2.right_bumper
+                || (gamepad2.left_stick_y < -0.1) || (gamepad2.right_stick_y < -0.1)) {
             robot.liftMotor.setPower(robot.LIFT_UP_POWER);
             robot.backLiftMotor.setPower(robot.LIFT_UP_POWER * 2);
         }
