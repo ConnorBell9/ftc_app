@@ -123,7 +123,8 @@ public class Teleop extends OpMode{
         // Read the x,y displacement from the left stick
         float x = desens(gamepad1.left_stick_x);
         float y = desens(gamepad1.left_stick_y);
-        float r = desens(gamepad1.right_stick_x)/2; // Read the rotation from the right stick
+
+        float r = desens(gamepad1.right_stick_x)/(float)1.5; // Read the rotation from the right stick
 
         // Robot Translate/Slide mode
         if(gamepad1.x) {
@@ -132,15 +133,14 @@ public class Teleop extends OpMode{
         }
         if(gamepad1.b) drill=false; // Disable drill mode
         if(drill) {
-            double z=Math.toRadians(gyro.getIntegratedZValue()); // Get anchor heading
+            double z=-Math.toRadians(gyro.getIntegratedZValue()); // Get anchor heading
             double angle=0;
-            if (x!=0 || y!=0) angle=Math.atan(-y/x); // Calculate the new desired direction
-
             double power=Math.sqrt(x*x+y*y); // Calculate the desired power
+            if (power!=0) angle=Math.atan2(y,x); // Calculate the new desired direction
             // Set the wheels to the send the bot towards the desired direction less the z anchor + rotation
             robot.leftFrontMotor.setPower(power*Math.cos(angle-z)+r);
-            robot.rightFrontMotor.setPower(-power*Math.sin(angle-z)+r);
-            robot.rightBackMotor.setPower(power*Math.cos(angle-z)+r);
+            robot.rightFrontMotor.setPower(-power*Math.sin(angle-z)-r);
+            robot.rightBackMotor.setPower(power*Math.cos(angle-z)-r);
             robot.leftBackMotor.setPower(-power*Math.sin(angle-z)+r);
             telemetry.addData("angle, z",  "%.2f, %.2f", angle, z);
             telemetry.addData("power",  "%.2f", power);
@@ -152,10 +152,14 @@ public class Teleop extends OpMode{
         }
 
         // Use gamepad left & right Bumpers to open and close the clamp
-        if (gamepad1.right_trigger > 0.01)
+        if ((gamepad1.right_trigger > 0.01) || (gamepad2.right_trigger > 0.01)
+                || (gamepad2.left_stick_x > 0.1) || (gamepad2.right_stick_x < -0.1)) {
             clampOffset += CLAMP_SPEED;
-        else if (gamepad1.left_trigger > 0.01)
+        }
+        else if ((gamepad1.left_trigger > 0.01) || (gamepad2.left_trigger > 0.01)
+                || (gamepad2.left_stick_x < -0.1) || (gamepad2.right_stick_x > 0.1)) {
             clampOffset -= CLAMP_SPEED;
+        }
 
         // Move both servos to new position.  Assume servos are mirror image of each other.
         clampOffset = Range.clip(clampOffset, -0.75, 0.75);
@@ -163,11 +167,13 @@ public class Teleop extends OpMode{
         robot.rightClamp.setPosition(robot.CLAMP_RIGHT_OPEN - clampOffset);
 
         // Use the bumpers to move the lifts up and down
-        if(gamepad1.left_bumper) {
+        if(gamepad1.left_bumper || gamepad2.left_bumper
+                || (gamepad2.left_stick_y > 0.1) || (gamepad2.right_stick_y > 0.1)) {
             robot.liftMotor.setPower(robot.LIFT_DOWN_POWER / 2);
             robot.backLiftMotor.setPower(robot.LIFT_DOWN_POWER);
         }
-       else if (gamepad1.right_bumper) {
+       else if (gamepad1.right_bumper || gamepad2.right_bumper
+                || (gamepad2.left_stick_y < -0.1) || (gamepad2.right_stick_y < -0.1)) {
             robot.liftMotor.setPower(robot.LIFT_UP_POWER);
             robot.backLiftMotor.setPower(robot.LIFT_UP_POWER * 2);
         }

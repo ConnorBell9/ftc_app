@@ -89,7 +89,7 @@ public class BellatorumAutoFrontBlue extends BellatorumAuto {
         double turnAngle=-145.0; // Default turn angle
         if (relicVuMark == RelicRecoveryVuMark.LEFT) { turnAngle += -19.0; } // Turn a little further
         if (relicVuMark == RelicRecoveryVuMark.RIGHT) { relicMove += 8.63/12; } // 7.63" further
-        move(robot.LEFT, relicMove); // Move forward relicMove feet
+        move(robot.LEFT, relicMove); // Move left relicMove feet
         turn(turnAngle); // Turn left in degrees
         move(robot.FORWARD, 0.75); // Move forward in feet
 

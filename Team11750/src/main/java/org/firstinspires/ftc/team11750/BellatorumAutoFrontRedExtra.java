@@ -30,6 +30,8 @@
 package org.firstinspires.ftc.team11750;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
 /**
@@ -47,8 +49,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Bellatorum: Back Red", group="Bellatorum")
-public class BellatorumAutoBackRed extends BellatorumAuto {
+@Autonomous(name="Bellatorum: Front Red EXTRA", group="Bellatorum")
+@Disabled
+public class BellatorumAutoFrontRedExtra extends BellatorumAuto {
 
     @Override
     public void runOpMode() {
@@ -60,6 +63,10 @@ public class BellatorumAutoBackRed extends BellatorumAuto {
         robot.init(hardwareMap);
 
         autonomousInit(); // Initialize the autonomous method
+        gyro.resetZAxisIntegrator(); // Reset the gyro
+
+        // Get the RelicRecoverVuMark location
+        relicVuMark = getRelicRecoveryVuMark();
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");
@@ -68,28 +75,25 @@ public class BellatorumAutoBackRed extends BellatorumAuto {
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        gyro.resetZAxisIntegrator(); // Reset the gyro
 
         robot.clampClose(); // Grab the glyph
-        sleep(1000); // Wait one second
+        sleep(500); // Wait a bit
         liftUp(1); // Raise the lift in ft
-
-        // Get the RelicRecoverVuMark location
-        relicVuMark = getRelicRecoveryVuMark();
 
         displaceJewel(robot.COLOR_BLUE); // Knock off the jewel of this color
 
-        move(robot.RIGHT, 2.5, 1); // Move in feet
+        move(robot.RIGHT, 2.0, 1); // Move in feet
         turn(robot.LEFT/6, 0.8); turn(robot.FORWARD, 0.8 ); // Wiggle off the platform
+        move(robot.FORWARD, 0.33); // move away from the glyph box
         move(robot.LEFT, 1.0, 0.2); // Move back to align with platform
-        move(robot.RIGHT, 0.25); // Move 1/4 foot
 
         // Move the robot according to the relic VuMark
-        double relicMove = 0.334; // Default to move in feet
-        if (relicVuMark == RelicRecoveryVuMark.RIGHT) { relicMove -= 7.63/12; } // 7.63" shorter
-        if (relicVuMark == RelicRecoveryVuMark.LEFT) { relicMove += 7.63/12; } // 7.63" further
-        move(robot.FORWARD, relicMove); // Move forward relicMove feet
-        turn(55); // Turn right in degrees
+        double relicMove = 7.63/12; // Default to move in feet
+        double turnAngle=145.0; // Default turn angle
+        if (relicVuMark == RelicRecoveryVuMark.RIGHT) { turnAngle += 19.0; } // Turn a little further
+        if (relicVuMark == RelicRecoveryVuMark.LEFT) { relicMove += 8.63/12; } // 7.63" further
+        move(robot.RIGHT, relicMove); // Move right relicMove feet
+        turn(turnAngle); // Turn left in degrees
         move(robot.FORWARD, 0.75); // Move forward in feet
 
         liftDown(0.6); // Lower the lift in ft
@@ -100,6 +104,22 @@ public class BellatorumAutoBackRed extends BellatorumAuto {
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
-        sleep(1000);
+
+        // Try to score another glyph
+        liftUp(0.1); // Raise the lift a little
+        move(robot.BACK, 0.5); // Back up from the shelves
+        turn(robot.FORWARD); // Turn to the glyphs
+        move(robot.FORWARD,1.5); // Move to the glyphs
+        turn(robot.LEFT/2, 0.8); // Turn a bit
+        move(robot.RIGHT/2,0.5); // Wedge in to the glyphs
+        turn(robot.FORWARD); // Straighten out
+        robot.clampClose(); robot.clampOpen(); robot.clampClose(); // Pinch the clamp
+        liftUp(0.33); // Raise the lift a few inches
+        move(robot.BACK, 1.0); // Back up a foot to clear the other glyphs
+        turn(robot.BACK); // Turn back to the shelves
+        move(robot.FORWARD, 1.5);
+        robot.clampOpen();
+        move(robot.BACK, 0.33); // Back up a few inches6fxx
+        sleep(10000);
     }
 }
