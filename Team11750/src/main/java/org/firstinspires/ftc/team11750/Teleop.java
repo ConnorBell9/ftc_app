@@ -123,6 +123,7 @@ public class Teleop extends OpMode{
         // Read the x,y displacement from the left stick
         float x = desens(gamepad1.left_stick_x);
         float y = desens(gamepad1.left_stick_y);
+
         float r = desens(gamepad1.right_stick_x)/(float)1.5; // Read the rotation from the right stick
 
         // Robot Translate/Slide mode
