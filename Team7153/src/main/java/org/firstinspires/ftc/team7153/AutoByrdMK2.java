@@ -197,7 +197,8 @@ public class AutoByrdMK2 extends LinearOpMode {
 			clamp(CLAMP_POSITION_2);
 		}
 		intake(false);
-		moveWithEncoders(Y_AXIS,.3,FORWARDS);
+		turn(TURN_RIGHT,.3);
+		moveWithEncoders(Y_AXIS,.3,BACKWARDS);
 		turn(TURN_LEFT,.3);
 
 	}
@@ -373,7 +374,11 @@ public class AutoByrdMK2 extends LinearOpMode {
 	
 	private void straighten() throws InterruptedException {
 		//Inputs into the turn function the angle that the robot is supposed to be in
-		turn(imaginaryAngle,.28);
+		resetTimer();
+		while(robot.gyro.getHeading()<imaginaryAngle-1 || robot.gyro.getHeading()>imaginaryAngle+1) && (imaginaryAngle-1==-1 && robot.gyro.getHeading() != 359 || imaginaryAngle-1!=-1) && (imaginaryAngle+1==360 && robot.gyro.getHeading()!=0 || imaginaryAngle+1!=360) && INPUT_TIMER+10000>runTime.milliseconds()){
+			turn(imaginaryAngle,.28);
+			sleep(500);
+		}
 	}
 
 	private void telemetry(){
