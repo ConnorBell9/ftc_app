@@ -42,7 +42,7 @@ import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_LEFT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_RIGHT;
 
 
-public class AutoByrdMK2 extends LinearOpMode {
+public class AutoByrdMK2OUTDATED extends LinearOpMode {
 	private HardwareByrdMK2 robot = new HardwareByrdMK2(); //Gets robot from HardwareByrd class
 	private double imaginaryAngle=0;         //Sets the robot's initial angle to 0
 
@@ -269,45 +269,37 @@ public class AutoByrdMK2 extends LinearOpMode {
 		robot.backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 		robot.backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 	}
-
+	
 	void moveToCubby(double direction, boolean mode) throws InterruptedException {
 		if (isStopRequested()) {
 			return;
 		}
 		straighten();
-		clamp(CLAMP_POSITION_1);
 		//While the hammer is not detecting any color or the time-out hasn't occurred the robot will move towards a cubby slot
 		if(!SLOT_2 && !mode){
-			moveWithoutStopping(direction - 90, 1);
 			SLOT_2 = true;
-			sleep(1500);
-			turn(direction+45,.3);
-			moveWithoutStopping(direction+45,.3);
-			sleep(1000);
 		} else if ((relicVuMark == RelicRecoveryVuMark.LEFT && mode) || (!SLOT_1 && !mode)) {
 			moveWithoutStopping(direction - 90, 1);
 			SLOT_1 = true;
 			OFFSET_LEFT = true;
 			sleep(750);
-			turn(direction+45,.3);
-			moveWithoutStopping(direction+45,.3);
-			sleep(1000);
 		} else if ((relicVuMark == RelicRecoveryVuMark.RIGHT && mode) || (!SLOT_3 && !mode)) {
 			moveWithoutStopping(direction + 90, 1);
 			SLOT_3 = true;
 			OFFSET_RIGHT = true;
 			sleep(750);
-			turn(direction-45,.3);
-			moveWithoutStopping(direction-45,.3);
-			sleep(1000);
 		} else if (mode) {
 			SLOT_2 = true;
 		}
 		stopMoving();
 		straighten();
-		grab(false);
-		moveWithoutStopping(direction+180,1);
+		clamp(CLAMP_POSITION_1);
 		sleep(1000);
+		grab(false);
+		moveWithoutStopping(direction, .3);
+		sleep(1000);
+		stopMoving();
+		moveWithEncoders(8, .3, BACKWARDS);
 		if (OFFSET_LEFT) {
 			moveWithoutStopping(direction - 90, 1);
 			OFFSET_LEFT = false;

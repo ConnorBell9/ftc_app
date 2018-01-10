@@ -19,16 +19,15 @@ public class RedLeftByrd extends AutoByrdMK2 {
 		autonomousStart();
 		if (!isStopRequested()) {
 			grab(false);
-			sleep(1000);
+			sleep(500);
 			grab(true);
 			sleep(100);
 			clamp(CLAMP_POSITION_2);
 			hammer(RED);
             moveWithEncoders(36,.3,BACKWARDS);
-            turn(TURN_LEFT,.3);
             moveToCubby(MOVE_LEFT, VUFORIA_ENABLED);
-            while(runTime.milliseconds()<25000 && opModeIsActive()){
-            	harvest(0,44);
+            while(runTime.milliseconds()<20000 && opModeIsActive()){
+            	harvest(0,40);
             	moveToCubby(MOVE_LEFT, VUFORIA_DISABLED);
 			}
 			stopMoving();

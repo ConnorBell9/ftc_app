@@ -134,6 +134,8 @@ class HardwareByrdMK2
     static final double TURN_RIGHT    = 270;
     static final double TURN_BACK     = 180;
 
+    static final int TURN_ERROR = 2;
+
     static int FRONT_LEFT  = 0;
     static int FRONT_RIGHT = 0;
     static int BACK_LEFT   = 0;
