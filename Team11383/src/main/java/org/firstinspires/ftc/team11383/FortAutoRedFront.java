@@ -124,15 +124,16 @@ public class FortAutoRedFront extends LinearOpMode {
             if (!opModeIsActive()) {robot.stopMoving(); return;} // Stop and return
         }
         // Displace the blue color ball
-        if (robot.c.blue() >= 1) turnAngle -= 20;
-        if (robot.c.red() >= 1) turnAngle += 20;
+        if (robot.c.blue() >= 1) robot.colorh.setPosition(-.2);
+        if (robot.c.red() >= 1) robot.colorh.setPosition(.2);
+        robot.colorh.setPosition(0);
 
         // Turn the other way to displace thr
-        if(color == robot.COLOR_RED) turnAngle*=-1; // Turn the other way
+      /*  if(color == robot.COLOR_RED) turnAngle*=-1; // Turn the other way
 
         turn(turnAngle); // Turn to knock off the jewel
         robot.armUp();   // Raise the arm
-        turn(-turnAngle);// Turn back
+        turn(-turnAngle);// Turn back*/
     }
     void redTeamJewel(){ displaceJewel(robot.COLOR_BLUE);}
     void blueTeamJewel() {displaceJewel(robot.COLOR_RED);}
