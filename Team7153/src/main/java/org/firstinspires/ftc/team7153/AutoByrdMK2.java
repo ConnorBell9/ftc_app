@@ -247,6 +247,18 @@ public class AutoByrdMK2 extends LinearOpMode {
 				stopMoving();
 				return;
 			}
+			/*while((robot.gyro.getHeading()<imaginaryAngle-1 || robot.gyro.getHeading()>imaginaryAngle+1) && (imaginaryAngle-1==-1 && robot.gyro.getHeading() != 359 || imaginaryAngle-1!=-1) && (imaginaryAngle+1==360 && robot.gyro.getHeading()!=0 || imaginaryAngle+1!=360) && INPUT_TIMER+5000>runTime.milliseconds()){
+				stopMoving();
+				FRONT_LEFT=robot.frontLeft.getTargetPosition()-robot.frontLeft.getCurrentPosition();
+				FRONT_RIGHT=robot.frontRight.getTargetPosition()-robot.frontRight.getCurrentPosition();
+				BACK_LEFT=robot.backLeft.getTargetPosition()-robot.backLeft.getCurrentPosition();
+				BACK_RIGHT=robot.backRight.getTargetPosition()-robot.backRight.getCurrentPosition();
+				straighten();
+				robot.frontLeft.setTargetPosition(FRONT_LEFT);
+				robot.frontRight.setTargetPosition(FRONT_RIGHT);
+				robot.backLeft.setTargetPosition(BACK_LEFT);
+				robot.backRight.setTargetPosition(BACK_RIGHT);
+			}*/
 			telemetry();
 			sleep(10);
 		}
@@ -375,10 +387,10 @@ public class AutoByrdMK2 extends LinearOpMode {
 	private void straighten() throws InterruptedException {
 		//Inputs into the turn function the angle that the robot is supposed to be in
 		resetTimer();
-		while(robot.gyro.getHeading()<imaginaryAngle-1 || robot.gyro.getHeading()>imaginaryAngle+1) && (imaginaryAngle-1==-1 && robot.gyro.getHeading() != 359 || imaginaryAngle-1!=-1) && (imaginaryAngle+1==360 && robot.gyro.getHeading()!=0 || imaginaryAngle+1!=360) && INPUT_TIMER+10000>runTime.milliseconds()){
+		//while((robot.gyro.getHeading()<imaginaryAngle-1 || robot.gyro.getHeading()>imaginaryAngle+1) && (imaginaryAngle-1==-1 && robot.gyro.getHeading() != 359 || imaginaryAngle-1!=-1) && (imaginaryAngle+1==360 && robot.gyro.getHeading()!=0 || imaginaryAngle+1!=360) && INPUT_TIMER+10000>runTime.milliseconds()){
 			turn(imaginaryAngle,.28);
 			sleep(500);
-		}
+		//}
 	}
 
 	private void telemetry(){
