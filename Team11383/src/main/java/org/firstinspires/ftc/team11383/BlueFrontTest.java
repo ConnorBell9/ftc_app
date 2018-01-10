@@ -54,8 +54,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Fortissimus: Blue Front", group="Fortissimus")
-public class FortAutoBlueFront extends LinearOpMode {
+@Autonomous(name="Fortissimus: Blue Front Test", group="Fortissimus")
+public class BlueFrontTest extends LinearOpMode {
 
     /* Declare OpMode members. */
     private HardwareFortissimus2 robot   = new HardwareFortissimus2();   // Use Bellatorum's hardware
@@ -124,15 +124,16 @@ public class FortAutoBlueFront extends LinearOpMode {
             if (!opModeIsActive()) {robot.stopMoving(); return;} // Stop and return
         }
         // Displace the blue color ball
-        if (robot.c.blue() >= 1) turnAngle -= 20;
-        if (robot.c.red() >= 1) turnAngle += 20;
+        if (robot.c.blue() >= 1) robot.colorh.setPosition(-.2);
+        if (robot.c.red() >= 1) robot.colorh.setPosition(.2);
+        robot.colorh.setPosition(0);
 
         // Turn the other way to displace thr
-        if(color == robot.COLOR_RED) turnAngle*=-1; // Turn the other way
+      /*  if(color == robot.COLOR_RED) turnAngle*=-1; // Turn the other way
 
         turn(turnAngle); // Turn to knock off the jewel
         robot.armUp();   // Raise the arm
-        turn(-turnAngle);// Turn back
+        turn(-turnAngle);// Turn back*/
         robot.armUp();
     }
     void redTeamJewel(){ displaceJewel(robot.COLOR_BLUE);}

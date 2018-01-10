@@ -23,6 +23,7 @@ public class OmniTeleOp extends OpMode {
     Servo armleft;
     Servo armright;
     Servo color;
+    Servo colorh;
 
     ModernRoboticsI2cGyro gyro; // Gyroscope Sensor //
     ModernRoboticsI2cColorSensor c; // Color Sensor //
@@ -38,6 +39,7 @@ public class OmniTeleOp extends OpMode {
         armright = hardwareMap.servo.get("ar");
         armleft = hardwareMap.servo.get("al");
         color = hardwareMap.servo.get("ac");
+        colorh = hardwareMap.servo.get("ach");
         track.setDirection(DcMotor.Direction.REVERSE);
         reel.setDirection(DcMotor.Direction.REVERSE);
 

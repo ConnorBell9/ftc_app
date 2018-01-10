@@ -159,7 +159,7 @@ public class FortAutoRedFront extends LinearOpMode {
 
         displaceJewel(robot.COLOR_RED); // Knock of the jewel opposite this color
 
-        move(robot.RIGHT, 3, 1); // Move left 3 feet
+        move(robot.RIGHT, 4, 1); // Move left 3 feet
        /* turn(robot.AROUND); // Turn 180 degrees
         move(robot.FORWARD, 1); // Move forward 1 foot
 

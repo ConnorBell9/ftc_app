@@ -41,6 +41,7 @@ class HardwareFortissimus2
     Servo    armleft   = null;
     Servo    armright  = null;
     Servo    color = null;
+    Servo   colorh = null;
     ColorSensor c;
 
     final double ARM_LEFT_OPEN  =  0.4;
@@ -116,7 +117,9 @@ class HardwareFortissimus2
         armleft.setPosition(ARM_LEFT_OPEN);
         armright.setPosition(ARM_RIGHT_OPEN);
         color = hwMap.servo.get("ac");
+        colorh = hwMap.servo.get("ach");
         color.setPosition(ARM_UP);
+        colorh.setPosition(0);
 
         // get a reference to our colorSensor
         c = hwMap.get(ColorSensor.class, "c");
