@@ -9,6 +9,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.FRONT_LEFT;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.FRONT_RIGHT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IDOL_Z_DELTA_POSITION;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INPUT_TIMER;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_BLOCK_GRAB;
@@ -102,20 +104,22 @@ DebugMechByrdMK2 extends OpMode{
 		}
 
 		if(gamepad2.dpad_up && System.currentTimeMillis() > INPUT_TIMER+500){
-			robot.frontLeft.setPower(.01+robot.frontLeft.getPower());
-			robot.frontRight.setPower(-.01+robot.frontRight.getPower());
-			robot.backLeft.setPower(.01+robot.backLeft.getPower());
-			robot.backRight.setPower(-.01+robot.backRight.getPower());
+			FRONT_LEFT+=.01;
+			FRONT_RIGHT-=.01;
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
 		if(gamepad2.dpad_down && System.currentTimeMillis() > INPUT_TIMER+500){
-			robot.frontLeft.setPower(-.01+robot.frontLeft.getPower());
-			robot.frontRight.setPower(.01+robot.frontRight.getPower());
-			robot.backLeft.setPower(-.01+robot.backLeft.getPower());
-			robot.backRight.setPower(.01+robot.backRight.getPower());
+			FRONT_LEFT-=.01;
+			FRONT_RIGHT+=.01;
 			INPUT_TIMER = System.currentTimeMillis();
 		}
+
+		robot.frontLeft.setPower(FRONT_LEFT);
+		robot.frontRight.setPower(FRONT_RIGHT);
+		robot.backLeft.setPower(FRONT_LEFT);
+		robot.backRight.setPower(FRONT_RIGHT);
+
 
 	    if(gamepad2.a && System.currentTimeMillis() > INPUT_TIMER+500){
 			IS_BLOCK_GRAB=!IS_BLOCK_GRAB;

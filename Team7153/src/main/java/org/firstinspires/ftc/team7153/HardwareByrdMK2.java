@@ -144,8 +144,8 @@ class HardwareByrdMK2
     static boolean SLOT_1 = false;
     static boolean SLOT_2 = false;
     static boolean SLOT_3 = false;
-    static boolean OFFSET_LEFT  = false;
-    static boolean OFFSET_RIGHT = false;
+    static double OFFSET_LEFT  = 0;
+    static double OFFSET_RIGHT = 0;
 
 
     static boolean VUFORIA_ENABLED  = true;

@@ -24,6 +24,8 @@ import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_GYRO_ON;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_CLOSE;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_OPEN;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.MOVE_LEFT;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.MOVE_RIGHT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.OFFSET_LEFT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.OFFSET_RIGHT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RED;
@@ -270,53 +272,97 @@ public class AutoByrdMK2 extends LinearOpMode {
 		robot.backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 	}
 
-	void moveToCubby(double direction, boolean mode) throws InterruptedException {
+	void moveToCubby(boolean color, boolean mode) throws InterruptedException {
 		if (isStopRequested()) {
 			return;
 		}
 		straighten();
-		clamp(CLAMP_POSITION_1);
 		//While the hammer is not detecting any color or the time-out hasn't occurred the robot will move towards a cubby slot
 		if(!SLOT_2 && !mode){
-			moveWithoutStopping(direction - 90, 1);
+			SLOT_2=true;
+			/*moveWithEncoders(14.5,.3,color);
 			SLOT_2 = true;
-			sleep(1500);
-			turn(direction+45,.3);
-			moveWithoutStopping(direction+45,.3);
+			if(color==RED){
+				turn(TURN_LEFT-45,.3);
+			} else {
+				turn(TURN_RIGHT+45,.3);
+			}
+			clamp(CLAMP_POSITION_1);
+			moveWithEncoders(16,.3,FORWARDS);
+			if(color==RED){
+				moveWithoutStopping(MOVE_LEFT-45,.3);
+			} else {
+				moveWithoutStopping(MOVE_RIGHT+45,.3);
+			}
+			grab(false);
 			sleep(1000);
+			stopMoving();*/
+////STRAIGHT AUTO
 		} else if ((relicVuMark == RelicRecoveryVuMark.LEFT && mode) || (!SLOT_1 && !mode)) {
-			moveWithoutStopping(direction - 90, 1);
 			SLOT_1 = true;
-			OFFSET_LEFT = true;
-			sleep(750);
-			turn(direction+45,.3);
-			moveWithoutStopping(direction+45,.3);
+			OFFSET_LEFT = 7.25;
+			/*moveWithEncoders(7.25,.3,!color);
+			if(color==RED){
+				turn(TURN_LEFT+45,.3);
+			} else {
+				turn(TURN_RIGHT-45,.3);
+			}
+			clamp(CLAMP_POSITION_1);
+			moveWithEncoders(16,.3,FORWARDS);
+			if(color==RED){
+				moveWithoutStopping(MOVE_LEFT+45,.3);
+			} else {
+				moveWithoutStopping(MOVE_RIGHT-45,.3);
+			}
+			grab(false);
 			sleep(1000);
+			stopMoving();*/
+			///STRAIGHT AUTO
+			moveWithEncoders(7.25,.3,color);
+
 		} else if ((relicVuMark == RelicRecoveryVuMark.RIGHT && mode) || (!SLOT_3 && !mode)) {
-			moveWithoutStopping(direction + 90, 1);
 			SLOT_3 = true;
-			OFFSET_RIGHT = true;
-			sleep(750);
-			turn(direction-45,.3);
-			moveWithoutStopping(direction-45,.3);
+			OFFSET_RIGHT = 7.25;
+			/*moveWithEncoders(7.25,.3,color);
+			SLOT_2 = true;
+			if(color==RED){
+				turn(TURN_LEFT-45,.3);
+			} else {
+				turn(TURN_RIGHT+45,.3);
+			}
+			clamp(CLAMP_POSITION_1);
+			moveWithEncoders(16,.3,FORWARDS);
+			if(color==RED){
+				moveWithoutStopping(MOVE_LEFT-45,.3);
+			} else {
+				moveWithoutStopping(MOVE_RIGHT+45,.3);
+			}
+			grab(false);
 			sleep(1000);
+			stopMoving();*/
+			////STRAIGHT AUTO
+			moveWithEncoders(7.25,.3,!color);
 		} else if (mode) {
 			SLOT_2 = true;
 		}
+		if(color==RED){
+			turn(TURN_LEFT,.3);
+		} else {
+			turn(TURN_RIGHT,.3);
+		}
+		clamp(CLAMP_POSITION_1);
+		sleep(1000);
+		grab(false);
+		if(color==RED){
+			moveWithoutStopping(MOVE_LEFT,.3);
+		} else {
+			moveWithoutStopping(MOVE_RIGHT,.3);
+		}
+		sleep(1000);
 		stopMoving();
 		straighten();
 		grab(false);
-		moveWithoutStopping(direction+180,1);
-		sleep(1000);
-		if (OFFSET_LEFT) {
-			moveWithoutStopping(direction - 90, 1);
-			OFFSET_LEFT = false;
-			sleep(750);
-		} else if (OFFSET_RIGHT) {
-			moveWithoutStopping(direction + 90, 1);
-			OFFSET_RIGHT = false;
-			sleep(750);
-		}
+		moveWithEncoders(12,.3,BACKWARDS);
 		stopMoving();
 	}
 
