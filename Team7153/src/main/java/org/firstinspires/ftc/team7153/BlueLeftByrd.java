@@ -29,7 +29,7 @@ public class BlueLeftByrd extends AutoByrdMK2 {
             moveToCubby(BLUE, VUFORIA_ENABLED);
             while(runTime.milliseconds()<20000 && opModeIsActive()){
             	harvest(60,24);
-            	moveToCubby(MOVE_BACKWARDS, VUFORIA_DISABLED);
+            	moveToCubby(BLUE, VUFORIA_DISABLED);
 			}
 			stopMoving();
             intake(false);
