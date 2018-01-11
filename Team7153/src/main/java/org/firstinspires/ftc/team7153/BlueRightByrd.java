@@ -24,9 +24,8 @@ public class BlueRightByrd extends AutoByrdMK2 {
 			clamp(CLAMP_POSITION_2);
 			hammer(BLUE);
             moveWithEncoders(36,.3,FORWARDS);
-            turn(TURN_LEFT,.3);
             moveToCubby(BLUE, VUFORIA_ENABLED);
-            while(runTime.milliseconds()<25000 && opModeIsActive()){
+            while(runTime.milliseconds()<20000 && opModeIsActive()){
             	harvest(0,44);
             	moveToCubby(BLUE, VUFORIA_DISABLED);
 			}
