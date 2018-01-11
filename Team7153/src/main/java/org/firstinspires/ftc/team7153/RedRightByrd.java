@@ -29,7 +29,7 @@ public class RedRightByrd extends AutoByrdMK2 {
             turn(TURN_RIGHT,.3);
             moveWithEncoders(14,.3,FORWARDS);
             moveToCubby(RED, VUFORIA_ENABLED);
-            while(runTime.milliseconds()<25000 && opModeIsActive()){
+            while(runTime.milliseconds()<20000 && opModeIsActive()){
             	harvest(60,24);
             	moveToCubby(RED, VUFORIA_DISABLED);
 			}
