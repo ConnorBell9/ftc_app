@@ -62,7 +62,7 @@ class HardwareFortissimus2
     final double AROUND = 180.0;
     final double DEGREES_PER_SEC = 340+.0;
     final double TURN_START_SECS = 0.2;
-    final double ARM_UP = 0.25;
+    final double ARM_UP = 0.18;
     final double ARM_DOWN = 115;
     final int COLOR_RED = 1;
     final int COLOR_BLUE = 2;
@@ -75,8 +75,6 @@ class HardwareFortissimus2
     HardwareFortissimus2(){
 
     }
-
-
 
     /* Initialize standard Hardware interfaces */
     void init(HardwareMap ahwMap) {
@@ -114,12 +112,12 @@ class HardwareFortissimus2
         // Define and initialize ALL installed servos.
         armleft = hwMap.servo.get("al");
         armright = hwMap.servo.get("ar");
-        armleft.setPosition(ARM_LEFT_OPEN);
-        armright.setPosition(ARM_RIGHT_OPEN);
+        armleft.setPosition(ARM_LEFT_CLOSED);
+        armright.setPosition(ARM_RIGHT_CLOSED);
         color = hwMap.servo.get("ac");
         colorh = hwMap.servo.get("ach");
         color.setPosition(ARM_UP);
-        colorh.setPosition(0);
+        colorh.setPosition(.5);
 
         // get a reference to our colorSensor
         c = hwMap.get(ColorSensor.class, "c");

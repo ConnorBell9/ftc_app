@@ -124,17 +124,21 @@ public class BlueFrontTest extends LinearOpMode {
             if (!opModeIsActive()) {robot.stopMoving(); return;} // Stop and return
         }
         // Displace the blue color ball
-        if (robot.c.blue() >= 1) robot.colorh.setPosition(-.2);
-        if (robot.c.red() >= 1) robot.colorh.setPosition(.2);
-        robot.colorh.setPosition(0);
+        if (robot.c.blue() >= 1) robot.colorh.setPosition(.6);
+        sleep(1000);
+
+        if (robot.c.red() >= 1) robot.colorh.setPosition(.4);
+        sleep(1000);
+        robot.colorh.setPosition(.5);
 
         // Turn the other way to displace thr
       /*  if(color == robot.COLOR_RED) turnAngle*=-1; // Turn the other way
 
-        turn(turnAngle); // Turn to knock off the jewel
-        robot.armUp();   // Raise the arm
-        turn(-turnAngle);// Turn back*/
-        robot.armUp();
+        turn(turnAngle); // Turn to knock off the jewel*/
+      robot.color.setPosition(.18);// Raise the arm//
+        sleep(1000);
+        robot.colorh.setPosition(.5);
+       /* turn(-turnAngle);// Turn back*/
     }
     void redTeamJewel(){ displaceJewel(robot.COLOR_BLUE);}
     void blueTeamJewel() {displaceJewel(robot.COLOR_RED);}
@@ -160,8 +164,10 @@ public class BlueFrontTest extends LinearOpMode {
         //liftUp(1); // Raise the lift in ft
 
         displaceJewel(robot.COLOR_BLUE); // Knock of the jewel opposite this color
-        robot.armUp();
-        move(robot.LEFT, 4, 1); // Move left 3 feet
+        robot.colorh.setPosition(.5);
+        robot.color.setPosition(.2);
+        sleep(2000);
+        move(robot.LEFT, 5, 1); // Move left 5 feet
        /* turn(robot.AROUND); // Turn 180 degrees
         move(robot.FORWARD, 1); // Move forward 1 foot
 

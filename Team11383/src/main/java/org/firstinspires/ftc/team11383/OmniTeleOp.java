@@ -46,6 +46,7 @@ public class OmniTeleOp extends OpMode {
         color.setPosition(.2);
         armright.setPosition(.5);
         armleft.setPosition(-.5);
+        colorh.setPosition(.5);
     }
     @Override
     public void loop() {
