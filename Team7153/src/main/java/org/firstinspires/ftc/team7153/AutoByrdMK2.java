@@ -300,7 +300,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 ////STRAIGHT AUTO
 		} else if ((relicVuMark == RelicRecoveryVuMark.LEFT && mode) || (!SLOT_1 && !mode)) {
 			SLOT_1 = true;
-			OFFSET = -7.25;
+			OFFSET = -7.63;
 			/*moveWithEncoders(7.25,.3,!color);
 			if(color==RED){
 				turn(TURN_LEFT+45,.3);
@@ -318,11 +318,11 @@ public class AutoByrdMK2 extends LinearOpMode {
 			sleep(1000);
 			stopMoving();*/
 			///STRAIGHT AUTO
-			moveWithEncoders(7.25,.3,color);
+			moveWithEncoders(7.63,.3,color);
 
 		} else if ((relicVuMark == RelicRecoveryVuMark.RIGHT && mode) || (!SLOT_3 && !mode)) {
 			SLOT_3 = true;
-			OFFSET = 7.25;
+			OFFSET = 7.63;
 			/*moveWithEncoders(7.25,.3,color);
 			SLOT_2 = true;
 			if(color==RED){
@@ -341,7 +341,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 			sleep(1000);
 			stopMoving();*/
 			////STRAIGHT AUTO
-			moveWithEncoders(7.25,.3,!color);
+			moveWithEncoders(7.63,.3,!color);
 		} else if (mode) {
 			SLOT_2 = true;
 		}
