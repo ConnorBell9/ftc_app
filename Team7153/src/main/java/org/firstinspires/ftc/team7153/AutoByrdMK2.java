@@ -26,8 +26,7 @@ import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_CLOSE;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_OPEN;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.MOVE_LEFT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.MOVE_RIGHT;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.OFFSET_LEFT;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.OFFSET_RIGHT;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.OFFSET;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RED;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RIGHT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RIGHT_CLAMP_CLOSE;
@@ -179,6 +178,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 	}
 
 	void harvest(double X_AXIS, double Y_AXIS) throws InterruptedException{
+		X_AXIS+=OFFSET;
 		turn(TURN_RIGHT,.3);
 		grab(false);
 		intake(true);
@@ -300,7 +300,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 ////STRAIGHT AUTO
 		} else if ((relicVuMark == RelicRecoveryVuMark.LEFT && mode) || (!SLOT_1 && !mode)) {
 			SLOT_1 = true;
-			OFFSET_LEFT = 7.25;
+			OFFSET = -7.25;
 			/*moveWithEncoders(7.25,.3,!color);
 			if(color==RED){
 				turn(TURN_LEFT+45,.3);
@@ -322,7 +322,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 
 		} else if ((relicVuMark == RelicRecoveryVuMark.RIGHT && mode) || (!SLOT_3 && !mode)) {
 			SLOT_3 = true;
-			OFFSET_RIGHT = 7.25;
+			OFFSET = 7.25;
 			/*moveWithEncoders(7.25,.3,color);
 			SLOT_2 = true;
 			if(color==RED){
