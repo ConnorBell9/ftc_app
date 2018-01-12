@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.BLUE;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.CLAMP_POSITION_2;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.FORWARDS;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.MOVE_FORWARDS;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_FORWARDS;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_RIGHT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.VUFORIA_ENABLED;
@@ -26,11 +27,11 @@ public class BlueLeftByrd extends AutoByrdMK2 {
             moveWithEncoders(24,.3,FORWARDS);
             turn(TURN_RIGHT,.3);
             moveWithEncoders(14,.3,FORWARDS);
-            moveToCubby(BLUE, VUFORIA_ENABLED);
-            while(runTime.milliseconds()<20000 && opModeIsActive()){
+            moveToCubby(MOVE_FORWARDS,TURN_FORWARDS,false, VUFORIA_ENABLED);
+            /*while(runTime.milliseconds()<20000 && opModeIsActive()){
             	harvest(60,24);
-            	moveToCubby(BLUE, VUFORIA_DISABLED);
-			}
+            	moveToCubby(MOVE_FORWARDS,TURN_FORWARDS,BLUE, VUFORIA_DISABLED);
+			}*/
 			stopMoving();
             intake(false);
 		}

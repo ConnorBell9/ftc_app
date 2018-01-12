@@ -24,8 +24,6 @@ import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_GYRO_ON;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_CLOSE;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_OPEN;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.MOVE_LEFT;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.MOVE_RIGHT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.OFFSET;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RED;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RIGHT;
@@ -222,7 +220,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 		clamp(CLAMP_POSITION_2);
 		//Add the offset incurred by placing the cryptoblock
 		X_AXIS-=OFFSET;
-		boolean block=false;
+		block=false;
 		}
 		/* After picking up the block deactivate the intake system.
 		* Then return using the Y_AXIS now going back towards the cryptobox
@@ -300,7 +298,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 		robot.backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 	}
 
-	void moveToCubby(boolean color, boolean mode) throws InterruptedException {
+	void moveToCubby(double moveDirection, double turnDirection, boolean color, boolean mode) throws InterruptedException {
 		if (isStopRequested()) {
 			return;
 		}
@@ -329,7 +327,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 ////STRAIGHT AUTO
 		} else if ((relicVuMark == RelicRecoveryVuMark.LEFT && mode) || (!SLOT_1 && !mode)) {
 			SLOT_1 = true;
-			if(!color){OFFSET = -7.63;}else{OFFSET = 7.63}
+			if(color){OFFSET = -7.63;}else{OFFSET = 7.63;}
 			/*moveWithEncoders(7.25,.3,!color);
 			if(color==RED){
 				turn(TURN_LEFT+45,.3);
@@ -347,11 +345,11 @@ public class AutoByrdMK2 extends LinearOpMode {
 			sleep(1000);
 			stopMoving();*/
 			///STRAIGHT AUTO
-			moveWithEncoders(7.63,.3,color);
+			moveWithEncoders(7.63,.3,!color);
 
 		} else if ((relicVuMark == RelicRecoveryVuMark.RIGHT && mode) || (!SLOT_3 && !mode)) {
 			SLOT_3 = true;
-			if(!color){OFFSET = 7.63;}else{OFFSET = -7.63}
+			if(color){OFFSET = 7.63;}else{OFFSET = -7.63;}
 			/*moveWithEncoders(7.25,.3,color);
 			SLOT_2 = true;
 			if(color==RED){
@@ -370,28 +368,28 @@ public class AutoByrdMK2 extends LinearOpMode {
 			sleep(1000);
 			stopMoving();*/
 			////STRAIGHT AUTO
-			moveWithEncoders(7.63,.3,!color);
+			moveWithEncoders(7.63,.3,color);
 		} else if (mode) {
 			SLOT_2 = true;
 		}
-		if(color==RED){
-			turn(TURN_LEFT,.3);
-		} else {
-			turn(TURN_RIGHT,.3);
-		}
+		turn(turnDirection,.3);
 		clamp(CLAMP_POSITION_1);
 		sleep(1000);
 		grab(false);
-		if(color==RED){
-			moveWithoutStopping(MOVE_LEFT,.3);
-		} else {
-			moveWithoutStopping(MOVE_RIGHT,.3);
-		}
+		moveWithoutStopping(moveDirection,.3);
 		sleep(1000);
+		moveWithoutStopping(moveDirection+80,1);
+		sleep(500);
+		moveWithoutStopping(moveDirection,.3);
+		sleep(250);
+		moveWithoutStopping(moveDirection-80,1);
+		sleep(1000);
+		moveWithoutStopping(moveDirection,.3);
+		sleep(250);
 		stopMoving();
 		straighten();
 		grab(false);
-		moveWithEncoders(12,.3,BACKWARDS);
+		moveWithEncoders(6,.3,BACKWARDS);
 		stopMoving();
 	}
 
@@ -455,7 +453,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 			return;
 		}
 
-		if(relicVuMark == RelicRecoveryVuMark.UNKNOWN){
+		if(RelicRecoveryVuMark.from(relicTemplate) != RelicRecoveryVuMark.UNKNOWN){
 			relicVuMark = RelicRecoveryVuMark.from(relicTemplate);
 		}
 	}

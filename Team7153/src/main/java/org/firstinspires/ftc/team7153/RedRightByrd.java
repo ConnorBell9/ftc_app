@@ -5,10 +5,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.BACKWARDS;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.CLAMP_POSITION_2;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.FORWARDS;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.MOVE_BACKWARDS;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RED;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_BACK;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_RIGHT;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.VUFORIA_DISABLED;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.VUFORIA_ENABLED;
 
 @Autonomous(name="RedRightByrd")
@@ -28,11 +28,11 @@ public class RedRightByrd extends AutoByrdMK2 {
             moveWithEncoders(24,.3,BACKWARDS);
             turn(TURN_RIGHT,.3);
             moveWithEncoders(14,.3,FORWARDS);
-            moveToCubby(RED, VUFORIA_ENABLED);
-            while(runTime.milliseconds()<20000 && opModeIsActive()){
+            moveToCubby(MOVE_BACKWARDS,TURN_BACK,false, VUFORIA_ENABLED);
+           /* while(runTime.milliseconds()<20000 && opModeIsActive()){
             	harvest(60,24);
-            	moveToCubby(RED, VUFORIA_DISABLED);
-			}
+            	moveToCubby(MOVE_BACKWARDS,TURN_BACK,RED, VUFORIA_DISABLED);
+			}*/
 			stopMoving();
             intake(false);
 		}

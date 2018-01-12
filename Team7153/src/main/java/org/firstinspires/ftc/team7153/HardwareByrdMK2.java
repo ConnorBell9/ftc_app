@@ -182,15 +182,6 @@ class HardwareByrdMK2
         idolZ.setDirection(DcMotor.Direction.FORWARD);
         idolY.setDirection(DcMotor.Direction.FORWARD);
 
-        // Set all motors to zero power
-        frontRight.setPower(0);
-        frontLeft.setPower(0);
-        backRight.setPower(0);
-        backLeft.setPower(0);
-        clamp.setPower(0);
-        idolZ.setPower(1);
-        idolY.setPower(0);
-
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -201,6 +192,15 @@ class HardwareByrdMK2
         idolZ.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         idolZ.setTargetPosition((int)IDOL_Z_START_POSITION);
         idolY.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        // Set all motors to zero power
+        frontRight.setPower(0);
+        frontLeft.setPower(0);
+        backRight.setPower(0);
+        backLeft.setPower(0);
+        clamp.setPower(0);
+        idolZ.setPower(1);
+        idolY.setPower(0);
 
         // Define and initialize ALL installed servos.
         armL = hwMap.servo.get("armL");
