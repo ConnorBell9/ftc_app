@@ -307,67 +307,13 @@ public class AutoByrdMK2 extends LinearOpMode {
 		if(!SLOT_2 && !mode){
 			SLOT_2=true;
 			OFFSET = 0;
-			/*moveWithEncoders(14.5,.3,color);
-			SLOT_2 = true;
-			if(color==RED){
-				turn(TURN_LEFT-45,.3);
-			} else {
-				turn(TURN_RIGHT+45,.3);
-			}
-			clamp(CLAMP_POSITION_1);
-			moveWithEncoders(16,.3,FORWARDS);
-			if(color==RED){
-				moveWithoutStopping(MOVE_LEFT-45,.3);
-			} else {
-				moveWithoutStopping(MOVE_RIGHT+45,.3);
-			}
-			grab(false);
-			sleep(1000);
-			stopMoving();*/
-////STRAIGHT AUTO
 		} else if ((relicVuMark == RelicRecoveryVuMark.LEFT && mode) || (!SLOT_1 && !mode)) {
 			SLOT_1 = true;
 			if(color){OFFSET = -7.63;}else{OFFSET = 7.63;}
-			/*moveWithEncoders(7.25,.3,!color);
-			if(color==RED){
-				turn(TURN_LEFT+45,.3);
-			} else {
-				turn(TURN_RIGHT-45,.3);
-			}
-			clamp(CLAMP_POSITION_1);
-			moveWithEncoders(16,.3,FORWARDS);
-			if(color==RED){
-				moveWithoutStopping(MOVE_LEFT+45,.3);
-			} else {
-				moveWithoutStopping(MOVE_RIGHT-45,.3);
-			}
-			grab(false);
-			sleep(1000);
-			stopMoving();*/
-			///STRAIGHT AUTO
 			moveWithEncoders(7.63,.3,!color);
-
 		} else if ((relicVuMark == RelicRecoveryVuMark.RIGHT && mode) || (!SLOT_3 && !mode)) {
 			SLOT_3 = true;
 			if(color){OFFSET = 7.63;}else{OFFSET = -7.63;}
-			/*moveWithEncoders(7.25,.3,color);
-			SLOT_2 = true;
-			if(color==RED){
-				turn(TURN_LEFT-45,.3);
-			} else {
-				turn(TURN_RIGHT+45,.3);
-			}
-			clamp(CLAMP_POSITION_1);
-			moveWithEncoders(16,.3,FORWARDS);
-			if(color==RED){
-				moveWithoutStopping(MOVE_LEFT-45,.3);
-			} else {
-				moveWithoutStopping(MOVE_RIGHT+45,.3);
-			}
-			grab(false);
-			sleep(1000);
-			stopMoving();*/
-			////STRAIGHT AUTO
 			moveWithEncoders(7.63,.3,color);
 		} else if (mode) {
 			SLOT_2 = true;
@@ -381,11 +327,11 @@ public class AutoByrdMK2 extends LinearOpMode {
 		moveWithoutStopping(moveDirection+80,1);
 		sleep(500);
 		moveWithoutStopping(moveDirection,.3);
-		sleep(250);
+		sleep(500);
 		moveWithoutStopping(moveDirection-80,1);
 		sleep(1000);
 		moveWithoutStopping(moveDirection,.3);
-		sleep(250);
+		sleep(500);
 		stopMoving();
 		straighten();
 		grab(false);
@@ -471,7 +417,6 @@ public class AutoByrdMK2 extends LinearOpMode {
 		resetTimer();
 		//while((robot.gyro.getHeading()<imaginaryAngle-1 || robot.gyro.getHeading()>imaginaryAngle+1) && (imaginaryAngle-1==-1 && robot.gyro.getHeading() != 359 || imaginaryAngle-1!=-1) && (imaginaryAngle+1==360 && robot.gyro.getHeading()!=0 || imaginaryAngle+1!=360) && INPUT_TIMER+10000>runTime.milliseconds()){
 			turn(imaginaryAngle,.28);
-			sleep(500);
 		//}
 	}
 
