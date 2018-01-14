@@ -45,7 +45,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 	private HardwareByrdMK2 robot = new HardwareByrdMK2(); //Gets robot from HardwareByrd class
 	private double imaginaryAngle=0;         //Sets the robot's initial angle to 0
 
-	ElapsedTime runTime = new ElapsedTime();
+	private ElapsedTime runTime = new ElapsedTime();
 
 	//Vuforia
 	private VuforiaLocalizer vuforia;
@@ -59,7 +59,8 @@ public class AutoByrdMK2 extends LinearOpMode {
 
 		////////////////////////////////////////////////////////////////////////////////////Hardware////////////////////////////////////////////////////////////////////////////////
 		robot.init(hardwareMap);
-		robot.color.enableLed(false);
+		robot.colorR.enableLed(false);
+		robot.colorL.enableLed(false);
 
 		//Activate Clamps's encoders
 		robot.clamp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -154,23 +155,24 @@ public class AutoByrdMK2 extends LinearOpMode {
 			return;
 		}
 		//Brings the hammer down and turns on the LED
-		robot.color.enableLed(true);
+		robot.colorR.enableLed(true);
+		robot.colorL.enableLed(true);
 		robot.hammerY.setPosition(HAMMER_DOWN);
 		sleep(1000);
 		if(isStopRequested()){
 			return;
 		}
 		/*If the color red is greater than the color blue
-		*then, if the arguement is red it will putt the blue ball off (Left)
+		*then, if the argument is red it will putt the blue ball off (Left)
 		*otherwise it will putt the red ball off (Right)
 		*/
-		if(robot.color.red()>robot.color.blue()){
+		if((robot.colorR.red()!=robot.colorR.blue() || robot.colorL.red()!=robot.colorL.blue()) && robot.colorR.red()>=robot.colorR.blue() && robot.colorL.red()<=robot.colorL.blue()){
 			telemetry.addData("Found Color: ", "red");
 			telemetry();
 			if(colorRemaining==RED){putt(RIGHT);} else {putt(LEFT);}
-		} else if (robot.color.red()<robot.color.blue()){
+		} else if ((robot.colorR.red()!=robot.colorR.blue() || robot.colorL.red()!=robot.colorL.blue()) && robot.colorR.red()<=robot.colorR.blue() && robot.colorL.red()>=robot.colorL.blue()){
 			/*If the color red is less than the color blue
-			*then, if the arguement is red it will putt the blue ball off (Right)
+			*then, if the argument is red it will putt the blue ball off (Right)
 			*otherwise it will putt the red ball off (Left)
 			*/
 			telemetry.addData("Found Color: ", "blue");
@@ -187,7 +189,8 @@ public class AutoByrdMK2 extends LinearOpMode {
 		//Reset the hammer position to up and turn off the LED
 		robot.hammerY.setPosition(HAMMER_UP);
 		robot.hammerX.setPosition(HAMMER_CENTER);
-		robot.color.enableLed(false);
+		robot.colorR.enableLed(false);
+		robot.colorL.enableLed(false);
 	}
 
 	void harvest(double X_AXIS, double Y_AXIS) throws InterruptedException{
@@ -217,15 +220,15 @@ public class AutoByrdMK2 extends LinearOpMode {
 			moveWithEncoders(-X_AXIS,.3,block);
 		}
 		grab(true);
+		intake(false);
 		clamp(CLAMP_POSITION_2);
 		//Add the offset incurred by placing the cryptoblock
 		X_AXIS-=OFFSET;
 		block=false;
 		}
-		/* After picking up the block deactivate the intake system.
-		* Then return using the Y_AXIS now going back towards the cryptobox
+		/*
+		* Return using the Y_AXIS now going back towards the cryptobox
 		*/
-		intake(false);
 		turn(TURN_RIGHT,.3);
 		moveWithEncoders(Y_AXIS,.3,BACKWARDS);
 		turn(TURN_LEFT,.3);
@@ -298,7 +301,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 		robot.backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 	}
 
-	void moveToCubby(double moveDirection, double turnDirection, boolean color, boolean mode) throws InterruptedException {
+	void moveToCubby(double turnDirection, boolean color, boolean mode) throws InterruptedException {
 		if (isStopRequested()) {
 			return;
 		}
@@ -309,12 +312,12 @@ public class AutoByrdMK2 extends LinearOpMode {
 			OFFSET = 0;
 		} else if ((relicVuMark == RelicRecoveryVuMark.LEFT && mode) || (!SLOT_1 && !mode)) {
 			SLOT_1 = true;
-			if(color){OFFSET = -7.63;}else{OFFSET = 7.63;}
-			moveWithEncoders(7.63,.3,!color);
-		} else if ((relicVuMark == RelicRecoveryVuMark.RIGHT && mode) || (!SLOT_3 && !mode)) {
-			SLOT_3 = true;
 			if(color){OFFSET = 7.63;}else{OFFSET = -7.63;}
 			moveWithEncoders(7.63,.3,color);
+		} else if ((relicVuMark == RelicRecoveryVuMark.RIGHT && mode) || (!SLOT_3 && !mode)) {
+			SLOT_3 = true;
+			if(color){OFFSET = -7.63;}else{OFFSET = 7.63;}
+			moveWithEncoders(7.63,.3,!color);
 		} else if (mode) {
 			SLOT_2 = true;
 		}
@@ -322,15 +325,15 @@ public class AutoByrdMK2 extends LinearOpMode {
 		clamp(CLAMP_POSITION_1);
 		sleep(1000);
 		grab(false);
-		moveWithoutStopping(moveDirection,.3);
+		moveWithoutStopping(turnDirection+90,.3);
 		sleep(1000);
-		moveWithoutStopping(moveDirection+80,1);
+		moveWithoutStopping(turnDirection+90+80,1);
 		sleep(500);
-		moveWithoutStopping(moveDirection,.3);
+		moveWithoutStopping(turnDirection+90,.3);
 		sleep(500);
-		moveWithoutStopping(moveDirection-80,1);
+		moveWithoutStopping(turnDirection+90-80,1);
 		sleep(1000);
-		moveWithoutStopping(moveDirection,.3);
+		moveWithoutStopping(turnDirection+90,.3);
 		sleep(500);
 		stopMoving();
 		straighten();
@@ -376,7 +379,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 		if(isStopRequested()){
 			return;
 		}
-		//If the arguement says right or left then the hammer will putt to the respective positions
+		//If the argument says right or left then the hammer will putt to the respective positions
 		if(direction == RIGHT){
 			telemetry.addData("Hammer Position: ", "Right");
 			telemetry();
@@ -424,8 +427,10 @@ public class AutoByrdMK2 extends LinearOpMode {
 		telemetry.addData("/////VUFORIA", "/////");
 		telemetry.addData("VuMark", "%s visible", relicVuMark);
 		telemetry.addData("/////SENSORS", "/////");
-		telemetry.addData("Color Red      ", robot.color.red());
-		telemetry.addData("Color Blue:    ", robot.color.blue());
+		telemetry.addData("ColorR Red      ", robot.colorR.red());
+		telemetry.addData("ColorR Blue:    ", robot.colorR.blue());
+		telemetry.addData("ColorL Red      ", robot.colorL.red());
+		telemetry.addData("ColorL Blue:    ", robot.colorL.blue());
 		telemetry.addData("Current Angle: ", robot.gyro.getIntegratedZValue());
 		telemetry.addData("/////ENCODERS", "////");
 		telemetry.addData("Target Position:  ", robot.frontLeft.getTargetPosition());

@@ -70,8 +70,9 @@ class HardwareByrdMK2
 
     Servo    grabber           = null;
 
-    ModernRoboticsI2cGyro gyro         = null;
-    ModernRoboticsI2cColorSensor color = null;
+    ModernRoboticsI2cGyro gyro          = null;
+    ModernRoboticsI2cColorSensor colorR = null;
+    ModernRoboticsI2cColorSensor colorL = null;
 
     private static final double IDOL_Z_START_POSITION =  0;//300
     static final double IDOL_Z_POSITION       =  0;
@@ -239,9 +240,11 @@ class HardwareByrdMK2
 */
         // Define Sensors
         gyro = hwMap.get(ModernRoboticsI2cGyro.class, "gyro");
-        color = hwMap.get(ModernRoboticsI2cColorSensor.class, "color");
+        colorR = hwMap.get(ModernRoboticsI2cColorSensor.class, "colorR");
+        colorL = hwMap.get(ModernRoboticsI2cColorSensor.class, "colorL");
 
-        color.enableLed(false);
+        colorR.enableLed(false);
+        colorL.enableLed(false);
 
     }
  }

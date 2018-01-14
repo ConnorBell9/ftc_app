@@ -51,7 +51,8 @@ DebugMechByrdMK2 extends OpMode{
 		}
 		IS_GYRO_ON=false;
 		IS_BLOCK_GRAB=true;
-		robot.color.enableLed(true);
+		robot.colorR.enableLed(true);
+		robot.colorL.enableLed(true);
 		relicTrackables.activate();
     }
 
@@ -71,35 +72,35 @@ DebugMechByrdMK2 extends OpMode{
 
 		relicVuMark = RelicRecoveryVuMark.from(relicTemplate);
 
-		if(gamepad1.dpad_right && System.currentTimeMillis() > INPUT_TIMER+500){
-			robot.hammerX.setPosition(-.1+robot.hammerX.getPosition());
+		if(gamepad1.dpad_right && System.currentTimeMillis() > INPUT_TIMER+100){
+			robot.hammerX.setPosition(-.01+robot.hammerX.getPosition());
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
-		if(gamepad1.dpad_left && System.currentTimeMillis() > INPUT_TIMER+500){
-			robot.hammerX.setPosition(.1+robot.hammerX.getPosition());
+		if(gamepad1.dpad_left && System.currentTimeMillis() > INPUT_TIMER+100){
+			robot.hammerX.setPosition(.01+robot.hammerX.getPosition());
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
-		if(gamepad1.dpad_up && System.currentTimeMillis() > INPUT_TIMER+500){
-			robot.hammerY.setPosition(.1+robot.hammerY.getPosition());
+		if(gamepad1.dpad_up && System.currentTimeMillis() > INPUT_TIMER+100){
+			robot.hammerY.setPosition(.01+robot.hammerY.getPosition());
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
-		if(gamepad1.dpad_down && System.currentTimeMillis() > INPUT_TIMER+500){
-			robot.hammerY.setPosition(-.1+robot.hammerY.getPosition());
+		if(gamepad1.dpad_down && System.currentTimeMillis() > INPUT_TIMER+100){
+			robot.hammerY.setPosition(-.01+robot.hammerY.getPosition());
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
-		if(gamepad2.dpad_left && System.currentTimeMillis() > INPUT_TIMER+500){
-			robot.armL.setPosition(-.1+robot.armL.getPosition());
-			robot.armR.setPosition(.1+robot.armR.getPosition());
+		if(gamepad2.dpad_left && System.currentTimeMillis() > INPUT_TIMER+100){
+			robot.armL.setPosition(-.01+robot.armL.getPosition());
+			robot.armR.setPosition(.01+robot.armR.getPosition());
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
-		if(gamepad2.dpad_right && System.currentTimeMillis() > INPUT_TIMER+500){
-			robot.armL.setPosition(.1+robot.armL.getPosition());
-			robot.armR.setPosition(-.1+robot.armR.getPosition());
+		if(gamepad2.dpad_right && System.currentTimeMillis() > INPUT_TIMER+100){
+			robot.armL.setPosition(.01+robot.armL.getPosition());
+			robot.armR.setPosition(-.01+robot.armR.getPosition());
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
@@ -113,7 +114,17 @@ DebugMechByrdMK2 extends OpMode{
 			FRONT_LEFT-=.01;
 			FRONT_RIGHT+=.01;
 			INPUT_TIMER = System.currentTimeMillis();
+		}robot.armT.setPosition(1);
+
+
+		/*if(gamepad2.dpad_up && System.currentTimeMillis() > INPUT_TIMER+100){
+			robot.armT.setPosition(robot.armT.getPosition()+.01);
+			INPUT_TIMER = System.currentTimeMillis();
 		}
+		if(gamepad2.dpad_down && System.currentTimeMillis() > INPUT_TIMER+100){
+			robot.armT.setPosition(robot.armT.getPosition()-.01);
+			INPUT_TIMER = System.currentTimeMillis();
+		}*/
 
 		robot.frontLeft.setPower(FRONT_LEFT);
 		robot.frontRight.setPower(FRONT_RIGHT);
@@ -163,8 +174,6 @@ DebugMechByrdMK2 extends OpMode{
 			robot.grabber.setPosition(IDOL_CLAMP_OPEN);
 		}*/
 
-	    robot.armT.setPosition(1);
-
 		if(gamepad2.left_stick_y>.1) {
 			robot.clamp.setPower(gamepad2.left_stick_y);
 		} else if(gamepad2.left_stick_y <- .1) {
@@ -205,8 +214,10 @@ DebugMechByrdMK2 extends OpMode{
 	    telemetry.addData("backLeft", robot.backLeft.getPower());
 	    telemetry.addData("backRight", robot.backRight.getPower());
 	    telemetry.addData("Gyro", robot.gyro.getHeading());
-		telemetry.addData("Color Blue: ", robot.color.blue());
-		telemetry.addData("Color Red: ", robot.color.red());
+		telemetry.addData("ColorR Blue: ", robot.colorR.blue());
+		telemetry.addData("ColorR Red: ", robot.colorR.red());
+		telemetry.addData("ColorL Blue: ", robot.colorL.blue());
+		telemetry.addData("ColorL Red: ", robot.colorL.red());
 	    telemetry.update();
     }
 }

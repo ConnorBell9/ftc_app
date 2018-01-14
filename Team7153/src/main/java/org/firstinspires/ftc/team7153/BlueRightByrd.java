@@ -24,10 +24,10 @@ public class BlueRightByrd extends AutoByrdMK2 {
 			clamp(CLAMP_POSITION_2);
 			hammer(BLUE);
             moveWithEncoders(36,.3,FORWARDS);
-            moveToCubby(MOVE_LEFT,TURN_LEFT,BLUE, VUFORIA_ENABLED);
+            moveToCubby(TURN_LEFT,BLUE, VUFORIA_ENABLED);
             /*while(runTime.milliseconds()<20000 && opModeIsActive()){
             	harvest(0,44);
-            	moveToCubby(MOVE_LEFT,TURN_LEFT,BLUE, VUFORIA_DISABLED);
+            	moveToCubby(TURN_LEFT,BLUE, VUFORIA_DISABLED);
 			}*/
 			stopMoving();
             intake(false);

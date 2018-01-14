@@ -27,10 +27,10 @@ public class BlueLeftByrd extends AutoByrdMK2 {
             moveWithEncoders(24,.3,FORWARDS);
             turn(TURN_RIGHT,.3);
             moveWithEncoders(14,.3,FORWARDS);
-            moveToCubby(MOVE_FORWARDS,TURN_FORWARDS,false, VUFORIA_ENABLED);
+            moveToCubby(TURN_FORWARDS,BLUE, VUFORIA_ENABLED);
             /*while(runTime.milliseconds()<20000 && opModeIsActive()){
             	harvest(60,24);
-            	moveToCubby(MOVE_FORWARDS,TURN_FORWARDS,BLUE, VUFORIA_DISABLED);
+            	moveToCubby(TURN_FORWARDS,BLUE, VUFORIA_DISABLED);
 			}*/
 			stopMoving();
             intake(false);
