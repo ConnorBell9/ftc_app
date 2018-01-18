@@ -355,7 +355,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 		stopMoving();
 	}
 
-	private void moveWithoutStopping(double angle, double power) throws InterruptedException {
+	void moveWithoutStopping(double angle, double power) throws InterruptedException {
 		//See the move function. Just doesn't have the stopMoving() function built in.
 		if(isStopRequested()){
 			return;
