@@ -112,7 +112,7 @@ class HardwareByrdMK2
     static final double  IDOL_CLAMP_OPEN   =     0;
     static final double  IDOL_CLAMP_CLOSED =     1;
 
-    static boolean       IS_GYRO_ON        = false;
+    static boolean IS_GYRO_ON = false;
 
     static double INPUT_TIMER = 0;
 
@@ -142,10 +142,13 @@ class HardwareByrdMK2
     static int BACK_LEFT   = 0;
     static int BACK_RIGHT  = 0;
 
+    static final double DELTA_RAMP = .1;
+    static double       RAMP       = 0;
+
     static boolean SLOT_1 = false;
     static boolean SLOT_2 = false;
     static boolean SLOT_3 = false;
-    static double OFFSET = 0;
+    static double  OFFSET = 0;
 
 
     static boolean VUFORIA_ENABLED  = true;

@@ -11,9 +11,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.BACKWARDS;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.BACK_LEFT;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.BACK_RIGHT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.CLAMP_POSITION_1;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.CLAMP_POSITION_2;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DELTA_RAMP;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.FORWARDS;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.FRONT_LEFT;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.FRONT_RIGHT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_CENTER;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_DOWN;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_LEFT;
@@ -25,6 +30,7 @@ import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_CLOSE;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_OPEN;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.OFFSET;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RAMP;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RED;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RIGHT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RIGHT_CLAMP_CLOSE;
@@ -267,11 +273,6 @@ public class AutoByrdMK2 extends LinearOpMode {
 		robot.backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 		robot.backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-		robot.frontLeft.setPower(power);
-		robot.frontRight.setPower(power);
-		robot.backLeft.setPower(power);
-		robot.backRight.setPower(power);
-
 		resetTimer();
 
 		while(robot.frontLeft.getTargetPosition()!=robot.frontLeft.getCurrentPosition() && INPUT_TIMER+5000>runTime.milliseconds()){
@@ -279,18 +280,30 @@ public class AutoByrdMK2 extends LinearOpMode {
 				stopMoving();
 				return;
 			}
-			/*while((robot.gyro.getHeading()<imaginaryAngle-1 || robot.gyro.getHeading()>imaginaryAngle+1) && (imaginaryAngle-1==-1 && robot.gyro.getHeading() != 359 || imaginaryAngle-1!=-1) && (imaginaryAngle+1==360 && robot.gyro.getHeading()!=0 || imaginaryAngle+1!=360) && INPUT_TIMER+5000>runTime.milliseconds()){
-				stopMoving();
-				FRONT_LEFT=robot.frontLeft.getTargetPosition()-robot.frontLeft.getCurrentPosition();
-				FRONT_RIGHT=robot.frontRight.getTargetPosition()-robot.frontRight.getCurrentPosition();
-				BACK_LEFT=robot.backLeft.getTargetPosition()-robot.backLeft.getCurrentPosition();
-				BACK_RIGHT=robot.backRight.getTargetPosition()-robot.backRight.getCurrentPosition();
-				straighten();
-				robot.frontLeft.setTargetPosition(FRONT_LEFT);
-				robot.frontRight.setTargetPosition(FRONT_RIGHT);
-				robot.backLeft.setTargetPosition(BACK_LEFT);
-				robot.backRight.setTargetPosition(BACK_RIGHT);
-			}*/
+			while((robot.gyro.getHeading()<imaginaryAngle-TURN_ERROR || robot.gyro.getHeading()>imaginaryAngle+TURN_ERROR) && (imaginaryAngle-TURN_ERROR<=-1 && robot.gyro.getHeading() != 360-TURN_ERROR || imaginaryAngle-TURN_ERROR>-1) && (imaginaryAngle+TURN_ERROR>=360 && robot.gyro.getHeading()>TURN_ERROR-1 || imaginaryAngle+TURN_ERROR<360) && INPUT_TIMER+5000>runTime.milliseconds()){
+				if(isStopRequested()) {
+					stopMoving();
+					return;
+				}
+					stopMoving();
+					FRONT_LEFT=robot.frontLeft.getTargetPosition()-robot.frontLeft.getCurrentPosition();
+					FRONT_RIGHT=robot.frontRight.getTargetPosition()-robot.frontRight.getCurrentPosition();
+					BACK_LEFT=robot.backLeft.getTargetPosition()-robot.backLeft.getCurrentPosition();
+					BACK_RIGHT=robot.backRight.getTargetPosition()-robot.backRight.getCurrentPosition();
+					straighten();
+					robot.frontLeft.setTargetPosition(FRONT_LEFT);
+					robot.frontRight.setTargetPosition(FRONT_RIGHT);
+					robot.backLeft.setTargetPosition(BACK_LEFT);
+					robot.backRight.setTargetPosition(BACK_RIGHT);
+					telemetry();
+			}
+			if(RAMP<power){
+				RAMP+=DELTA_RAMP;
+				robot.frontLeft.setPower(RAMP);
+				robot.frontRight.setPower(RAMP);
+				robot.backLeft.setPower(RAMP);
+				robot.backRight.setPower(RAMP);
+			}
 			telemetry();
 			sleep(10);
 		}
@@ -418,9 +431,16 @@ public class AutoByrdMK2 extends LinearOpMode {
 	private void straighten() throws InterruptedException {
 		//Inputs into the turn function the angle that the robot is supposed to be in
 		resetTimer();
-		//while((robot.gyro.getHeading()<imaginaryAngle-1 || robot.gyro.getHeading()>imaginaryAngle+1) && (imaginaryAngle-1==-1 && robot.gyro.getHeading() != 359 || imaginaryAngle-1!=-1) && (imaginaryAngle+1==360 && robot.gyro.getHeading()!=0 || imaginaryAngle+1!=360) && INPUT_TIMER+10000>runTime.milliseconds()){
+
+		while((robot.gyro.getHeading()<imaginaryAngle-TURN_ERROR || robot.gyro.getHeading()>imaginaryAngle+TURN_ERROR) && (imaginaryAngle-TURN_ERROR<=-1 && robot.gyro.getHeading() != 360-TURN_ERROR || imaginaryAngle-TURN_ERROR>-1) && (imaginaryAngle+TURN_ERROR>=360 && robot.gyro.getHeading()>TURN_ERROR-1 || imaginaryAngle+TURN_ERROR<360) && INPUT_TIMER+5000>runTime.milliseconds()){
+			if(isStopRequested()) {
+				stopMoving();
+				return;
+			}
+			stopMoving();
 			turn(imaginaryAngle,.28);
-		//}
+			telemetry();
+		}
 	}
 
 	private void telemetry(){
