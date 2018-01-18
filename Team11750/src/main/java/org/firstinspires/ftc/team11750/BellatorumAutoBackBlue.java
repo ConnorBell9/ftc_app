@@ -80,12 +80,12 @@ public class BellatorumAutoBackBlue extends BellatorumAuto {
         displaceJewel(robot.COLOR_RED); // Knock off the jewel of this color
 
         move(robot.LEFT, 2.5, 1); // Move in feet
-        turn(robot.RIGHT/6, 0.8); turn(robot.FORWARD, 0.8 ); // Wiggle off the platform
+        //  turn(robot.RIGHT/6); turn(robot.FORWARD);  Wiggle off the platform
         move(robot.RIGHT, 1.0, 0.2); // Move back to align with platform
         move(robot.LEFT, 0.25); // Move 1/4 foot
 
         // Move the robot according to the relic VuMark
-        double relicMove = 0.334; // Default to move in feet
+        double relicMove = 0; // Default to move in feet
         if (relicVuMark == RelicRecoveryVuMark.LEFT) { relicMove -= 7.63/12; } // 7.63" shorter
         if (relicVuMark == RelicRecoveryVuMark.RIGHT) { relicMove += 7.63/12; } // 7.63" further
         move(robot.FORWARD, relicMove); // Move forward relicMove feet
