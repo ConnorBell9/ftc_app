@@ -1,0 +1,15 @@
+gamepad1.left_stick_x and gamepad1.left_stick_y - Movement
+gamepad1.right_stick_x - Turn
+gamepad1.b - Plate
+gamepad1.y - Activate Gyro Mode
+
+gamepad2.left_stick_y - Move forkY
+gamepad2.dpad_right   - Move grabber out
+gamepad2.dpad_left   - Move grabber in
+gamepad2.a - Grab Block
+gamepad2.x - Activate Idol Grab
+gamepad2.y - Change Idol Speed
+gamepad2.right_trigger - move idolY out
+gamepad2.left_trigger  - move idolY in
+gamepad2.right_bumper  - move idolZ up
+gamepad2.left_bumper   - move idolZ down
