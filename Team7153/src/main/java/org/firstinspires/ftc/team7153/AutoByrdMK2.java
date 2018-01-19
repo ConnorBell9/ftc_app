@@ -172,6 +172,9 @@ public class AutoByrdMK2 extends LinearOpMode {
 		*then, if the argument is red it will putt the blue ball off (Left)
 		*otherwise it will putt the red ball off (Right)
 		*/
+		for(increment=0; robot.colorR.red()==robot.colorR.blue() && robot.colorL.red()==robot.colorL.blue(); increment+=.01){
+			robot.hammerX.setPosition(HAMMER_CENTER+increment);
+		}
 		if((robot.colorR.red()!=robot.colorR.blue() || robot.colorL.red()!=robot.colorL.blue()) && robot.colorR.red()>=robot.colorR.blue() && robot.colorL.red()<=robot.colorL.blue()){
 			telemetry.addData("Found Color: ", "red");
 			telemetry();
@@ -406,6 +409,10 @@ public class AutoByrdMK2 extends LinearOpMode {
 
 	private void resetTimer(){
 		INPUT_TIMER = runTime.milliseconds();
+	}
+	
+	private void scan(){
+		
 	}
 
 	private void statusCheck() throws InterruptedException{
