@@ -98,8 +98,8 @@ class HardwareByrdMK2
     static final int     CLAMP_POSITION_3  = (13*1440)/3;
     static final int     CLAMP_POSITION_4  = (19*1440)/3;
 
-    static final double  HAMMER_DOWN    =    .96;
-    static final double  HAMMER_UP      =    .26;
+    static final double  HAMMER_DOWN    =     .96;
+    static final double  HAMMER_UP      =   .28;
     static final double  HAMMER_LEFT    =    .6;
     static final double  HAMMER_RIGHT   =    .2;
     static final double  HAMMER_CENTER  =    .4;
