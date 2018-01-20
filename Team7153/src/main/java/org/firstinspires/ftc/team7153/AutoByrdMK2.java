@@ -283,7 +283,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 				stopMoving();
 				return;
 			}
-			while((robot.gyro.getHeading()<imaginaryAngle-TURN_ERROR || robot.gyro.getHeading()>imaginaryAngle+TURN_ERROR) && (imaginaryAngle-TURN_ERROR<=-1 && robot.gyro.getHeading() != 360-TURN_ERROR || imaginaryAngle-TURN_ERROR>-1) && (imaginaryAngle+TURN_ERROR>=360 && robot.gyro.getHeading()>TURN_ERROR-1 || imaginaryAngle+TURN_ERROR<360) && INPUT_TIMER+5000>runTime.milliseconds()){
+			/*while((robot.gyro.getHeading()<imaginaryAngle-TURN_ERROR || robot.gyro.getHeading()>imaginaryAngle+TURN_ERROR) && (imaginaryAngle-TURN_ERROR<=-1 && robot.gyro.getHeading() != 360-TURN_ERROR || imaginaryAngle-TURN_ERROR>-1) && (imaginaryAngle+TURN_ERROR>=360 && robot.gyro.getHeading()>TURN_ERROR-1 || imaginaryAngle+TURN_ERROR<360) && INPUT_TIMER+5000>runTime.milliseconds()){
 				if(isStopRequested()) {
 					stopMoving();
 					return;
@@ -299,7 +299,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 					robot.backLeft.setTargetPosition(BACK_LEFT);
 					robot.backRight.setTargetPosition(BACK_RIGHT);
 					telemetry();
-			}
+			}*/
 			if(RAMP<power){
 				RAMP+=DELTA_RAMP;
 				robot.frontLeft.setPower(RAMP);
@@ -317,7 +317,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 		robot.backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 	}
 
-	void moveToCubby(double turnDirection, boolean color, boolean mode) throws InterruptedException {
+	void moveToCubby(double turnDirection, boolean mode) throws InterruptedException {
 		if (isStopRequested()) {
 			return;
 		}
@@ -328,12 +328,12 @@ public class AutoByrdMK2 extends LinearOpMode {
 			OFFSET = 0;
 		} else if ((relicVuMark == RelicRecoveryVuMark.LEFT && mode) || (!SLOT_1 && !mode)) {
 			SLOT_1 = true;
-			if(color){OFFSET = 7.63;}else{OFFSET = -7.63;}
-			moveWithEncoders(7.63,.3,color);
+			OFFSET = -7.63;
+			moveWithEncoders(7.63,.3,BACKWARDS);
 		} else if ((relicVuMark == RelicRecoveryVuMark.RIGHT && mode) || (!SLOT_3 && !mode)) {
 			SLOT_3 = true;
-			if(color){OFFSET = -7.63;}else{OFFSET = 7.63;}
-			moveWithEncoders(7.63,.3,!color);
+			OFFSET = 7.63;
+			moveWithEncoders(7.63,.3,FORWARDS);
 		} else if (mode) {
 			SLOT_2 = true;
 		}
