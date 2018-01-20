@@ -11,14 +11,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.BACKWARDS;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.BACK_LEFT;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.BACK_RIGHT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.CLAMP_POSITION_1;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.CLAMP_POSITION_2;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DELTA_RAMP;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.FORWARDS;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.FRONT_LEFT;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.FRONT_RIGHT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_CENTER;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_DOWN;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_LEFT;
@@ -30,7 +25,6 @@ import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_CLOSE;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_OPEN;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.OFFSET;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RAMP;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RED;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RIGHT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RIGHT_CLAMP_CLOSE;
@@ -43,7 +37,6 @@ import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TOP_CLAMP_OPEN;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_BACK;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_ERROR;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_FORWARDS;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_LEFT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_RIGHT;
 
 
@@ -51,7 +44,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 	private HardwareByrdMK2 robot = new HardwareByrdMK2(); //Gets robot from HardwareByrd class
 	private double imaginaryAngle=0;         //Sets the robot's initial angle to 0
 
-	private ElapsedTime runTime = new ElapsedTime();
+	ElapsedTime runTime = new ElapsedTime();
 
 	//Vuforia
 	private VuforiaLocalizer vuforia;
@@ -172,14 +165,15 @@ public class AutoByrdMK2 extends LinearOpMode {
 		*then, if the argument is red it will putt the blue ball off (Left)
 		*otherwise it will putt the red ball off (Right)
 		*/
-		for(double increment=0; (robot.colorR.red()==robot.colorR.blue() && robot.colorL.red()==robot.colorL.blue()) && increment<2; increment+=.01){
+		for(double increment=0; robot.colorR.red()==robot.colorR.blue() && increment<2; increment+=.01){
 			robot.hammerX.setPosition(HAMMER_CENTER+increment);
+			sleep(50);
 		}
-		if((robot.colorR.red()!=robot.colorR.blue() || robot.colorL.red()!=robot.colorL.blue()) && robot.colorR.red()>=robot.colorR.blue() && robot.colorL.red()<=robot.colorL.blue()){
+		if(robot.colorR.red()>=robot.colorR.blue()){
 			telemetry.addData("Found Color: ", "red");
 			telemetry();
 			if(colorRemaining==RED){putt(RIGHT);} else {putt(LEFT);}
-		} else if ((robot.colorR.red()!=robot.colorR.blue() || robot.colorL.red()!=robot.colorL.blue()) && robot.colorR.red()<=robot.colorR.blue() && robot.colorL.red()>=robot.colorL.blue()){
+		} else if (robot.colorR.red()<=robot.colorR.blue()){
 			/*If the color red is less than the color blue
 			*then, if the argument is red it will putt the blue ball off (Right)
 			*otherwise it will putt the red ball off (Left)
@@ -202,7 +196,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 		robot.colorL.enableLed(false);
 	}
 
-	void harvest(double X_AXIS, double Y_AXIS) throws InterruptedException{
+	void harvest(double X_AXIS, double Y_AXIS,double END_DIRECTION) throws InterruptedException{
 		turn(TURN_RIGHT,.3);
 		//Open up the clamp and activate the intake in preparation of blocks.
 		grab(false);
@@ -240,7 +234,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 		*/
 		turn(TURN_RIGHT,.3);
 		moveWithEncoders(Y_AXIS,.3,BACKWARDS);
-		turn(TURN_LEFT,.3);
+		turn(END_DIRECTION,.3);
 
 	}
 
@@ -300,17 +294,21 @@ public class AutoByrdMK2 extends LinearOpMode {
 					robot.backRight.setTargetPosition(BACK_RIGHT);
 					telemetry();
 			}*/
-			if(RAMP<power){
+			/*if(RAMP<power){
 				RAMP+=DELTA_RAMP;
 				robot.frontLeft.setPower(RAMP);
 				robot.frontRight.setPower(RAMP);
 				robot.backLeft.setPower(RAMP);
 				robot.backRight.setPower(RAMP);
-			}
+			}*/
+			robot.frontLeft.setPower(power);
+			robot.frontRight.setPower(power);
+			robot.backLeft.setPower(power);
+			robot.backRight.setPower(power);
 			telemetry();
 			sleep(10);
 		}
-		sleep(500);
+		sleep(100);
 		robot.frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 		robot.frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 		robot.backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -342,7 +340,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 		sleep(1000);
 		grab(false);
 		moveWithoutStopping(turnDirection+90,.3);
-		sleep(1000);
+		sleep(1250);
 		moveWithoutStopping(turnDirection+90+80,1);
 		sleep(500);
 		moveWithoutStopping(turnDirection+90,.3);
@@ -446,7 +444,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 		}
 	}
 
-	private void telemetry(){
+	void telemetry(){
 		telemetry.addData("/////VUFORIA", "/////");
 		telemetry.addData("VuMark", "%s visible", relicVuMark);
 		telemetry.addData("/////SENSORS", "/////");

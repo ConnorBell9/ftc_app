@@ -98,7 +98,7 @@ class HardwareByrdMK2
     static final int     CLAMP_POSITION_3  = (13*1440)/3;
     static final int     CLAMP_POSITION_4  = (19*1440)/3;
 
-    static final double  HAMMER_DOWN    =     .96;
+    static final double  HAMMER_DOWN    =     .98;
     static final double  HAMMER_UP      =   .28;
     static final double  HAMMER_LEFT    =    .6;
     static final double  HAMMER_RIGHT   =    .2;
@@ -109,7 +109,9 @@ class HardwareByrdMK2
     static final double  PUSH_PLATE_UP   =     1;
 
     static boolean       IS_IDOL_GRAB      = false;
+    static boolean       IS_IDOL_TILT      = false;
     static final double  IDOL_CLAMP_OPEN   =     0;
+    static final double  IDOL_CLAMP_AJAR   =    .3;
     static final double  IDOL_CLAMP_CLOSED =     1;
 
     static boolean IS_GYRO_ON = false;

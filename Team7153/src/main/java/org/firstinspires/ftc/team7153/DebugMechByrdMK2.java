@@ -49,6 +49,8 @@ DebugMechByrdMK2 extends OpMode{
 			robot.gyro.calibrate();
 			IS_GYRO_ON=true;
 		}
+		FRONT_LEFT=0;
+		FRONT_RIGHT=0;
 		IS_GYRO_ON=false;
 		IS_BLOCK_GRAB=true;
 		robot.colorR.enableLed(true);
@@ -95,36 +97,30 @@ DebugMechByrdMK2 extends OpMode{
 		if(gamepad2.dpad_left && System.currentTimeMillis() > INPUT_TIMER+100){
 			robot.armL.setPosition(-.01+robot.armL.getPosition());
 			robot.armR.setPosition(.01+robot.armR.getPosition());
+			robot.armT.setPosition(robot.armR.getPosition());
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
 		if(gamepad2.dpad_right && System.currentTimeMillis() > INPUT_TIMER+100){
 			robot.armL.setPosition(.01+robot.armL.getPosition());
 			robot.armR.setPosition(-.01+robot.armR.getPosition());
+			robot.armT.setPosition(robot.armR.getPosition());
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
-		if(gamepad2.dpad_up && System.currentTimeMillis() > INPUT_TIMER+500){
-			FRONT_LEFT+=.01;
-			FRONT_RIGHT-=.01;
+		if(gamepad2.dpad_up && System.currentTimeMillis() > INPUT_TIMER+100){
+			/*FRONT_LEFT-=.01;
+			FRONT_RIGHT+=.01;*/
+			robot.grabber.setPosition(.01+robot.grabber.getPosition());
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
-		if(gamepad2.dpad_down && System.currentTimeMillis() > INPUT_TIMER+500){
-			FRONT_LEFT-=.01;
-			FRONT_RIGHT+=.01;
-			INPUT_TIMER = System.currentTimeMillis();
-		}robot.armT.setPosition(1);
-
-
-		/*if(gamepad2.dpad_up && System.currentTimeMillis() > INPUT_TIMER+100){
-			robot.armT.setPosition(robot.armT.getPosition()+.01);
-			INPUT_TIMER = System.currentTimeMillis();
-		}
 		if(gamepad2.dpad_down && System.currentTimeMillis() > INPUT_TIMER+100){
-			robot.armT.setPosition(robot.armT.getPosition()-.01);
+			/*FRONT_LEFT+=.01;
+			FRONT_RIGHT-=.01;*/
+			robot.grabber.setPosition(-.01+robot.grabber.getPosition());
 			INPUT_TIMER = System.currentTimeMillis();
-		}*/
+		}
 
 		robot.frontLeft.setPower(FRONT_LEFT);
 		robot.frontRight.setPower(FRONT_RIGHT);
@@ -203,6 +199,7 @@ DebugMechByrdMK2 extends OpMode{
 		telemetry.addData("ArmT is at:       ", robot.armT.getPosition());
 		telemetry.addData("HammerX is at:    ", robot.hammerX.getPosition());
 		telemetry.addData("HammerY is at:    ", robot.hammerY.getPosition());
+		telemetry.addData("Grabber is at:    ", robot.grabber.getPosition());
 	    telemetry.addData("forkY Running to: ", robot.clamp.getTargetPosition());
 		telemetry.addData("forkY Running at: ", robot.clamp.getCurrentPosition());
 		telemetry.addData("idolY Running to: ", robot.idolY.getTargetPosition());

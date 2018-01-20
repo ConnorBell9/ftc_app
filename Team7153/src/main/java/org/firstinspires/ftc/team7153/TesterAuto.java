@@ -13,25 +13,11 @@ public class TesterAuto extends AutoByrdMK2 {
 		autonomousStart();
 		if (!isStopRequested()) {
 			moveWithoutStopping(MOVE_FORWARDS,.1);
-			sleep(1000);
-			moveWithoutStopping(MOVE_FORWARDS,.2);
-			sleep(1000);
-			moveWithoutStopping(MOVE_FORWARDS,.21);
-			sleep(1000);
-			moveWithoutStopping(MOVE_FORWARDS,.22);
-			sleep(1000);
-			moveWithoutStopping(MOVE_FORWARDS,.23);
-			sleep(1000);
-			moveWithoutStopping(MOVE_FORWARDS,.24);
-			sleep(1000);
-			moveWithoutStopping(MOVE_FORWARDS,.25);
-			sleep(1000);
-			moveWithoutStopping(MOVE_FORWARDS,.26);
-			sleep(1000);
-			moveWithoutStopping(MOVE_FORWARDS,.27);
-			sleep(1000);
-			moveWithoutStopping(MOVE_FORWARDS,.28);
-			sleep(1000);
+			while(!isStopRequested()){
+				telemetry();
+				sleep(50);
+			}
+			stopMoving();
 		}
 	}
 }
