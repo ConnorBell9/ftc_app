@@ -13,6 +13,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.BACKWARDS;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.CLAMP_POSITION_1;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.CLAMP_POSITION_2;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DEFAULT_MOVE_SPEED;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DEFAULT_TURN_SPEED;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.FORWARDS;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_CENTER;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_DOWN;
@@ -20,6 +22,8 @@ import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_LEFT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_RIGHT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_UP;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INPUT_TIMER;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INTAKE_OFF;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INTAKE_ON;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_GYRO_ON;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_CLOSE;
@@ -40,16 +44,12 @@ import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_FORWARDS;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_RIGHT;
 
 
-public class AutoByrdMK2 extends LinearOpMode {
+public class AutoByrdMK3 extends LinearOpMode {
 	private HardwareByrdMK2 robot = new HardwareByrdMK2(); //Gets robot from HardwareByrd class
 	private double imaginaryAngle=0;         //Sets the robot's initial angle to 0
 
 	ElapsedTime runTime = new ElapsedTime();
 
-	//Vuforia
-	private VuforiaLocalizer vuforia;
-	private VuforiaLocalizer.Parameters parameters;
-	private VuforiaTrackables relicTrackables;
 	private VuforiaTrackable relicTemplate;
 	private RelicRecoveryVuMark relicVuMark = RelicRecoveryVuMark.UNKNOWN;
 	//
@@ -58,8 +58,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 
 		////////////////////////////////////////////////////////////////////////////////////Hardware////////////////////////////////////////////////////////////////////////////////
 		robot.init(hardwareMap);
-		robot.colorR.enableLed(false);
-		robot.colorL.enableLed(false);
+		robot.color.enableLed(false);
 
 		//Activate Clamps's encoders
 		robot.clamp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -82,17 +81,17 @@ public class AutoByrdMK2 extends LinearOpMode {
 
 		//Get the view for the camera monitor
 		int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-		parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+		VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
 		//Use Vindicem license key
 		parameters.vuforiaLicenseKey = "ARK0G5D/////AAAAGTNyS/9bI0eKk0BiZlza4w8qOLSfAS/JLHbvWMY95VY7PgFNgH178LKZTQVDke1Eu9JzX/o9QWeyU5ottyCSuPaRr98YId9QUZtfX918roLvNx3n5bXekGlcKSoxgw+UcH3HN+c8V57B3fFhNMt0uyKEWNAXYmAx1OkvoFUSSurH82uzsGg+aBZ3nlVfj043RPXSDyiJO7uDZmwVH14LPjdhP92Qj6byGdICOqc5dxKG1rVFdNgAWJjYVWbz53K1qNWyO9fYgE0lIjwgNopM2GCFVR2ycS0JHx5UW3Bk2m47kDoFCFJP+A8fWxfLyrtgH02JOzNyHb0VoKv4ZDan5Czl7Wcs+ItJBby3qyEmPRkf";
 
 		//Assign which camera is to be used
 		parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
-		this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+		VuforiaLocalizer vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
 		//Load the VuMarks
-		relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+		VuforiaTrackables relicTrackables = vuforia.loadTrackablesFromAsset("RelicVuMark");
 		relicTemplate = relicTrackables.get(0);
 
 		relicTemplate.setName("relicVuMarkTemplate");
@@ -154,10 +153,9 @@ public class AutoByrdMK2 extends LinearOpMode {
 			return;
 		}
 		//Brings the hammer down and turns on the LED
-		robot.colorR.enableLed(true);
-		robot.colorL.enableLed(true);
+		robot.color.enableLed(true);
 		robot.hammerY.setPosition(HAMMER_DOWN);
-		sleep(1000);
+		sleep(500);
 		if(isStopRequested()){
 			return;
 		}
@@ -165,15 +163,15 @@ public class AutoByrdMK2 extends LinearOpMode {
 		*then, if the argument is red it will putt the blue ball off (Left)
 		*otherwise it will putt the red ball off (Right)
 		*/
-		for(double increment=0; robot.colorR.red()==robot.colorR.blue() && increment<2; increment+=.01){
+		for(double increment=0; robot.color.red()==robot.color.blue() && increment<2; increment+=.01){
 			robot.hammerX.setPosition(HAMMER_CENTER+increment);
 			sleep(50);
 		}
-		if(robot.colorR.red()>=robot.colorR.blue()){
+		if(robot.color.red()>=robot.color.blue()){
 			telemetry.addData("Found Color: ", "red");
 			telemetry();
 			if(colorRemaining==RED){putt(RIGHT);} else {putt(LEFT);}
-		} else if (robot.colorR.red()<=robot.colorR.blue()){
+		} else if (robot.color.red()<=robot.color.blue()){
 			/*If the color red is less than the color blue
 			*then, if the argument is red it will putt the blue ball off (Right)
 			*otherwise it will putt the red ball off (Left)
@@ -187,22 +185,21 @@ public class AutoByrdMK2 extends LinearOpMode {
 			telemetry();
 		}
 		statusCheck();
-		sleep(1000);
+		sleep(500);
 		statusCheck();
 		//Reset the hammer position to up and turn off the LED
 		robot.hammerY.setPosition(HAMMER_UP);
 		robot.hammerX.setPosition(HAMMER_CENTER);
-		robot.colorR.enableLed(false);
-		robot.colorL.enableLed(false);
+		robot.color.enableLed(false);
 	}
 
 	void harvest(double X_AXIS, double Y_AXIS,double END_DIRECTION) throws InterruptedException{
-		turn(TURN_RIGHT,.3);
+		turn(TURN_RIGHT,DEFAULT_TURN_SPEED);
 		//Open up the clamp and activate the intake in preparation of blocks.
 		grab(false);
 		intake(true);
 		//Move away from the wall for Y_AXIS inches.
-		moveWithEncoders(Y_AXIS,.3,FORWARDS);
+		moveWithEncoders(Y_AXIS,DEFAULT_MOVE_SPEED,FORWARDS);
 		/* X_AXIS is based off of the bot's forward direction.
 		* Forwards is positive.
 		* Backwards is negative.
@@ -213,33 +210,35 @@ public class AutoByrdMK2 extends LinearOpMode {
 		* After looping the first time it will then correct for the bot's offset.
 		*
 		*/
-		boolean block=true;
-		for(int i=0; i<2; i++){
 		if(X_AXIS>0){
-			turn(TURN_FORWARDS,.3);
-			moveWithEncoders(X_AXIS,.3,block);
+			turn(TURN_FORWARDS,DEFAULT_TURN_SPEED);
+			moveWithEncoders(X_AXIS,DEFAULT_MOVE_SPEED,FORWARDS);
+			grab(true);
+			intake(false);
+			moveWithEncoders(X_AXIS,DEFAULT_MOVE_SPEED,BACKWARDS);
 		} else if (X_AXIS<0) {
-			turn(TURN_BACK,.3);
-			moveWithEncoders(-X_AXIS,.3,block);
+			turn(TURN_BACK,DEFAULT_TURN_SPEED);
+			moveWithEncoders(-X_AXIS,DEFAULT_MOVE_SPEED,FORWARDS);
+			grab(true);
+			intake(false);
+			moveWithEncoders(-X_AXIS,DEFAULT_MOVE_SPEED,BACKWARDS);
 		}
 		grab(true);
 		intake(false);
 		clamp(CLAMP_POSITION_2);
 		//Add the offset incurred by placing the cryptoblock
-		X_AXIS-=OFFSET;
-		block=false;
-		}
 		/*
 		* Return using the Y_AXIS now going back towards the cryptobox
 		*/
-		turn(TURN_RIGHT,.3);
-		moveWithEncoders(Y_AXIS,.3,BACKWARDS);
-		turn(END_DIRECTION,.3);
-
+		turn(TURN_RIGHT,DEFAULT_TURN_SPEED);
+		moveWithEncoders(Y_AXIS,DEFAULT_MOVE_SPEED,BACKWARDS);
+		turn(END_DIRECTION,DEFAULT_TURN_SPEED);
+		moveWithEncoders(OFFSET,DEFAULT_MOVE_SPEED,FORWARDS);
+		OFFSET = 0;
 	}
 
 	void intake(boolean mode){
-		/*if(mode){
+		if(mode){
 			robot.intakeTopLeft.setPower(INTAKE_ON);
 			robot.intakeTopRight.setPower(INTAKE_ON);
 			robot.intakeBottomLeft.setPower(INTAKE_ON);
@@ -249,7 +248,7 @@ public class AutoByrdMK2 extends LinearOpMode {
 			robot.intakeTopRight.setPower(INTAKE_OFF);
 			robot.intakeBottomLeft.setPower(INTAKE_OFF);
 			robot.intakeBottomRight.setPower(INTAKE_OFF);
-		}*/
+		}
 	}
 
 
@@ -327,36 +326,59 @@ public class AutoByrdMK2 extends LinearOpMode {
 		} else if ((relicVuMark == RelicRecoveryVuMark.LEFT && mode) || (!SLOT_1 && !mode)) {
 			SLOT_1 = true;
 			OFFSET = -7.63;
-			moveWithEncoders(7.63,.3,BACKWARDS);
+			moveWithEncoders(7.63,DEFAULT_MOVE_SPEED,BACKWARDS);
 		} else if ((relicVuMark == RelicRecoveryVuMark.RIGHT && mode) || (!SLOT_3 && !mode)) {
 			SLOT_3 = true;
 			OFFSET = 7.63;
-			moveWithEncoders(7.63,.3,FORWARDS);
+			moveWithEncoders(7.63,DEFAULT_MOVE_SPEED,FORWARDS);
 		} else if (mode) {
 			SLOT_2 = true;
 		}
-		turn(turnDirection,.3);
+		turn(turnDirection,DEFAULT_TURN_SPEED);
 		clamp(CLAMP_POSITION_1);
+		straighten();
 		sleep(1000);
 		grab(false);
-		moveWithoutStopping(turnDirection+90,.3);
+		double DELTA_POSITION = robot.frontLeft.getCurrentPosition();
+		moveWithoutStopping(turnDirection+90,.15);
 		sleep(1250);
-		moveWithoutStopping(turnDirection+90+80,1);
-		sleep(500);
-		moveWithoutStopping(turnDirection+90,.3);
-		sleep(500);
-		moveWithoutStopping(turnDirection+90-80,1);
-		sleep(1000);
-		moveWithoutStopping(turnDirection+90,.3);
-		sleep(500);
+		if(robot.frontLeft.getCurrentPosition()-480<=DELTA_POSITION){
+			if(OFFSET>=0){
+				moveWithoutStopping(turnDirection+90+80,1);
+				sleep(500);
+				DELTA_POSITION = robot.frontLeft.getCurrentPosition();
+				moveWithoutStopping(turnDirection+90,.15);
+				sleep(1000);
+				if(robot.frontLeft.getCurrentPosition()-200<=DELTA_POSITION){
+					moveWithoutStopping(turnDirection+90-80,1);
+					sleep(1000);
+					moveWithoutStopping(turnDirection+90,.15);
+					sleep(500);
+				}
+				stopMoving();
+			} else if(OFFSET<=0){
+				moveWithoutStopping(turnDirection+90-80,1);
+				sleep(500);
+				DELTA_POSITION = robot.frontLeft.getCurrentPosition();
+				moveWithoutStopping(turnDirection+90,.15);
+				sleep(1000);
+				if(robot.frontLeft.getCurrentPosition()-200<=DELTA_POSITION){
+					moveWithoutStopping(turnDirection+90+80,1);
+					sleep(1000);
+					moveWithoutStopping(turnDirection+90,.15);
+					sleep(500);
+				}
+				stopMoving();
+			}
+		}
 		stopMoving();
 		straighten();
 		grab(false);
-		moveWithEncoders(6,.3,BACKWARDS);
+		moveWithEncoders(8,DEFAULT_MOVE_SPEED,BACKWARDS);
 		stopMoving();
 	}
 
-	void moveWithoutStopping(double angle, double power) throws InterruptedException {
+	private void moveWithoutStopping(double angle, double power) throws InterruptedException {
 		//See the move function. Just doesn't have the stopMoving() function built in.
 		if(isStopRequested()){
 			return;
@@ -439,19 +461,17 @@ public class AutoByrdMK2 extends LinearOpMode {
 				return;
 			}
 			stopMoving();
-			turn(imaginaryAngle,.28);
+			turn(imaginaryAngle,DEFAULT_TURN_SPEED);
 			telemetry();
 		}
 	}
 
-	void telemetry(){
+	private void telemetry(){
 		telemetry.addData("/////VUFORIA", "/////");
 		telemetry.addData("VuMark", "%s visible", relicVuMark);
 		telemetry.addData("/////SENSORS", "/////");
-		telemetry.addData("ColorR Red      ", robot.colorR.red());
-		telemetry.addData("ColorR Blue:    ", robot.colorR.blue());
-		telemetry.addData("ColorL Red      ", robot.colorL.red());
-		telemetry.addData("ColorL Blue:    ", robot.colorL.blue());
+		telemetry.addData("Color Red:     ", robot.color.red());
+		telemetry.addData("Color Blue:    ", robot.color.blue());
 		telemetry.addData("Current Angle: ", robot.gyro.getIntegratedZValue());
 		telemetry.addData("/////ENCODERS", "////");
 		telemetry.addData("Target Position:  ", robot.frontLeft.getTargetPosition());
