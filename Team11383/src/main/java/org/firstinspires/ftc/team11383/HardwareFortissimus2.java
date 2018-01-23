@@ -155,6 +155,9 @@ class HardwareFortissimus2
         rightBackMotor.setPower(-power * Math.sin((Math.PI / 180) * angle));
     }
 
+    long timer = 0;
+    boolean FlipDrive = true;
+
     // Set the clamp to the specified open angle
     void clampOpen(double angle){
         armleft.setPosition(ARM_LEFT_CLOSED - angle/2/180);
