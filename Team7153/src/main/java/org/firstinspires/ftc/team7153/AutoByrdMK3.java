@@ -45,7 +45,7 @@ import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_RIGHT;
 
 
 public class AutoByrdMK3 extends LinearOpMode {
-	private HardwareByrdMK2 robot = new HardwareByrdMK2(); //Gets robot from HardwareByrd class
+	HardwareByrdMK2 robot = new HardwareByrdMK2(); //Gets robot from HardwareByrd class
 	private double imaginaryAngle=0;         //Sets the robot's initial angle to 0
 
 	ElapsedTime runTime = new ElapsedTime();
@@ -194,12 +194,12 @@ public class AutoByrdMK3 extends LinearOpMode {
 	}
 
 	void harvest(double X_AXIS, double Y_AXIS,double END_DIRECTION) throws InterruptedException{
-		turn(TURN_RIGHT,DEFAULT_TURN_SPEED);
+		turn(TURN_RIGHT,.5);
 		//Open up the clamp and activate the intake in preparation of blocks.
 		grab(false);
 		intake(true);
 		//Move away from the wall for Y_AXIS inches.
-		moveWithEncoders(Y_AXIS,DEFAULT_MOVE_SPEED,FORWARDS);
+		moveWithEncoders(Y_AXIS,.6,FORWARDS);
 		/* X_AXIS is based off of the bot's forward direction.
 		* Forwards is positive.
 		* Backwards is negative.
@@ -212,16 +212,16 @@ public class AutoByrdMK3 extends LinearOpMode {
 		*/
 		if(X_AXIS>0){
 			turn(TURN_FORWARDS,DEFAULT_TURN_SPEED);
-			moveWithEncoders(X_AXIS,DEFAULT_MOVE_SPEED,FORWARDS);
+			moveWithEncoders(X_AXIS,.4,FORWARDS);
 			grab(true);
 			intake(false);
-			moveWithEncoders(X_AXIS,DEFAULT_MOVE_SPEED,BACKWARDS);
+			moveWithEncoders(X_AXIS,.4,BACKWARDS);
 		} else if (X_AXIS<0) {
 			turn(TURN_BACK,DEFAULT_TURN_SPEED);
-			moveWithEncoders(-X_AXIS,DEFAULT_MOVE_SPEED,FORWARDS);
+			moveWithEncoders(-X_AXIS,.4,FORWARDS);
 			grab(true);
 			intake(false);
-			moveWithEncoders(-X_AXIS,DEFAULT_MOVE_SPEED,BACKWARDS);
+			moveWithEncoders(-X_AXIS,.4,BACKWARDS);
 		}
 		grab(true);
 		intake(false);
@@ -231,9 +231,13 @@ public class AutoByrdMK3 extends LinearOpMode {
 		* Return using the Y_AXIS now going back towards the cryptobox
 		*/
 		turn(TURN_RIGHT,DEFAULT_TURN_SPEED);
-		moveWithEncoders(Y_AXIS,DEFAULT_MOVE_SPEED,BACKWARDS);
+		moveWithEncoders(Y_AXIS,.6,BACKWARDS);
 		turn(END_DIRECTION,DEFAULT_TURN_SPEED);
-		moveWithEncoders(OFFSET,DEFAULT_MOVE_SPEED,FORWARDS);
+		if(OFFSET>0) {
+			moveWithEncoders(OFFSET, DEFAULT_MOVE_SPEED, FORWARDS);
+		} else {
+			moveWithEncoders(-OFFSET,DEFAULT_MOVE_SPEED,FORWARDS);
+		}
 		OFFSET = 0;
 	}
 
@@ -341,14 +345,21 @@ public class AutoByrdMK3 extends LinearOpMode {
 		grab(false);
 		double DELTA_POSITION = robot.frontLeft.getCurrentPosition();
 		moveWithoutStopping(turnDirection+90,.15);
-		sleep(1250);
-		if(robot.frontLeft.getCurrentPosition()-480<=DELTA_POSITION){
+		resetTimer();
+		while(robot.frontLeft.getCurrentPosition()-840<=DELTA_POSITION && INPUT_TIMER+1500>System.currentTimeMillis()){
+			telemetry();
+			sleep(10);
+		}
+		if(robot.frontLeft.getCurrentPosition()-840<=DELTA_POSITION){
 			if(OFFSET>=0){
 				moveWithoutStopping(turnDirection+90+80,1);
 				sleep(500);
 				DELTA_POSITION = robot.frontLeft.getCurrentPosition();
 				moveWithoutStopping(turnDirection+90,.15);
-				sleep(1000);
+				while(robot.frontLeft.getCurrentPosition()-200<DELTA_POSITION && INPUT_TIMER+1000>System.currentTimeMillis()){
+					telemetry();
+					sleep(10);
+				}
 				if(robot.frontLeft.getCurrentPosition()-200<=DELTA_POSITION){
 					moveWithoutStopping(turnDirection+90-80,1);
 					sleep(1000);
@@ -361,7 +372,10 @@ public class AutoByrdMK3 extends LinearOpMode {
 				sleep(500);
 				DELTA_POSITION = robot.frontLeft.getCurrentPosition();
 				moveWithoutStopping(turnDirection+90,.15);
-				sleep(1000);
+				while(robot.frontLeft.getCurrentPosition()-200<DELTA_POSITION && INPUT_TIMER+1000>System.currentTimeMillis()){
+					telemetry();
+					sleep(10);
+				}
 				if(robot.frontLeft.getCurrentPosition()-200<=DELTA_POSITION){
 					moveWithoutStopping(turnDirection+90+80,1);
 					sleep(1000);
@@ -461,12 +475,12 @@ public class AutoByrdMK3 extends LinearOpMode {
 				return;
 			}
 			stopMoving();
-			turn(imaginaryAngle,DEFAULT_TURN_SPEED);
+			turn(imaginaryAngle,.24);
 			telemetry();
 		}
 	}
 
-	private void telemetry(){
+	void telemetry(){
 		telemetry.addData("/////VUFORIA", "/////");
 		telemetry.addData("VuMark", "%s visible", relicVuMark);
 		telemetry.addData("/////SENSORS", "/////");

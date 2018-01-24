@@ -2,20 +2,31 @@ package org.firstinspires.ftc.team7153;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.MOVE_FORWARDS;
-
 @Autonomous(name="TesterAuto")
-public class TesterAuto extends AutoByrdMK2 {
+public class TesterAuto extends AutoByrdMK3 {
 	@Override
 	public void runOpMode() throws InterruptedException {
 		autonomousInit();
 		waitForStart();
 		autonomousStart();
 		if (!isStopRequested()) {
-			moveWithoutStopping(MOVE_FORWARDS,.1);
 			while(!isStopRequested()){
-				telemetry();
-				sleep(50);
+				for(double x=0,y=0; x<.5 && y>-.5; x+=.01, y-=.01){
+					robot.frontLeft.setPower(y);
+					robot.frontRight.setPower(x);
+					robot.backLeft.setPower(y);
+					robot.backRight.setPower(x);
+					telemetry();
+					sleep(1000);
+				}
+				for(double x=0,y=0; x>0 && y<0; x-=.01, y+=.01){
+					robot.frontLeft.setPower(y);
+					robot.frontRight.setPower(x);
+					robot.backLeft.setPower(y);
+					robot.backRight.setPower(x);
+					telemetry();
+					sleep(1000);
+				}
 			}
 			stopMoving();
 		}
