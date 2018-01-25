@@ -31,6 +31,7 @@ package org.firstinspires.ftc.team7153;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -72,8 +73,9 @@ class HardwareByrdMK2
 
     Servo    grabber           = null;
 
-    ModernRoboticsI2cGyro gyro          = null;
+    ModernRoboticsI2cGyro gyro         = null;
     ModernRoboticsI2cColorSensor color = null;
+    ModernRoboticsI2cRangeSensor range = null;
 
     private static final double IDOL_Z_START_POSITION =  0;//300
     static final double IDOL_Z_POSITION       =  0;
@@ -250,6 +252,7 @@ class HardwareByrdMK2
         // Define Sensors
         gyro = hwMap.get(ModernRoboticsI2cGyro.class, "gyro");
         color = hwMap.get(ModernRoboticsI2cColorSensor.class, "color");
+        range = hwMap.get(ModernRoboticsI2cRangeSensor.class, "range");
 
         color.enableLed(false);
 

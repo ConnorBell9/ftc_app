@@ -141,6 +141,8 @@ public class RelativeMechByrdMK3 extends OpMode{
 	    telemetry.addData("Gyro:       ", robot.gyro.getHeading());
 		telemetry.addData("Color Blue: ", robot.color.blue());
 		telemetry.addData("Color Red:  ", robot.color.red());
+		telemetry.addData("Range Optic:", robot.range.cmOptical());
+		telemetry.addData("Range Sonic:", robot.range.cmUltrasonic());
 	    telemetry.update();
     }
 }

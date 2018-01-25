@@ -346,21 +346,21 @@ public class AutoByrdMK3 extends LinearOpMode {
 		double DELTA_POSITION = robot.frontLeft.getCurrentPosition();
 		moveWithoutStopping(turnDirection+90,.15);
 		resetTimer();
-		while(robot.frontLeft.getCurrentPosition()-840<=DELTA_POSITION && INPUT_TIMER+1500>System.currentTimeMillis()){
+		while(robot.frontLeft.getCurrentPosition()-420<=DELTA_POSITION && INPUT_TIMER+1500>System.currentTimeMillis()){
 			telemetry();
 			sleep(10);
 		}
-		if(robot.frontLeft.getCurrentPosition()-840<=DELTA_POSITION){
+		if(robot.frontLeft.getCurrentPosition()-280<=DELTA_POSITION){
 			if(OFFSET>=0){
 				moveWithoutStopping(turnDirection+90+80,1);
 				sleep(500);
 				DELTA_POSITION = robot.frontLeft.getCurrentPosition();
 				moveWithoutStopping(turnDirection+90,.15);
-				while(robot.frontLeft.getCurrentPosition()-200<DELTA_POSITION && INPUT_TIMER+1000>System.currentTimeMillis()){
+				while(robot.frontLeft.getCurrentPosition()-140<DELTA_POSITION && INPUT_TIMER+1000>System.currentTimeMillis()){
 					telemetry();
 					sleep(10);
 				}
-				if(robot.frontLeft.getCurrentPosition()-200<=DELTA_POSITION){
+				if(robot.frontLeft.getCurrentPosition()-140<=DELTA_POSITION){
 					moveWithoutStopping(turnDirection+90-80,1);
 					sleep(1000);
 					moveWithoutStopping(turnDirection+90,.15);
@@ -372,11 +372,11 @@ public class AutoByrdMK3 extends LinearOpMode {
 				sleep(500);
 				DELTA_POSITION = robot.frontLeft.getCurrentPosition();
 				moveWithoutStopping(turnDirection+90,.15);
-				while(robot.frontLeft.getCurrentPosition()-200<DELTA_POSITION && INPUT_TIMER+1000>System.currentTimeMillis()){
+				while(robot.frontLeft.getCurrentPosition()-140<DELTA_POSITION && INPUT_TIMER+1000>System.currentTimeMillis()){
 					telemetry();
 					sleep(10);
 				}
-				if(robot.frontLeft.getCurrentPosition()-200<=DELTA_POSITION){
+				if(robot.frontLeft.getCurrentPosition()-140<=DELTA_POSITION){
 					moveWithoutStopping(turnDirection+90+80,1);
 					sleep(1000);
 					moveWithoutStopping(turnDirection+90,.15);
@@ -392,7 +392,7 @@ public class AutoByrdMK3 extends LinearOpMode {
 		stopMoving();
 	}
 
-	private void moveWithoutStopping(double angle, double power) throws InterruptedException {
+	void moveWithoutStopping(double angle, double power) throws InterruptedException {
 		//See the move function. Just doesn't have the stopMoving() function built in.
 		if(isStopRequested()){
 			return;
@@ -499,36 +499,39 @@ public class AutoByrdMK3 extends LinearOpMode {
 	}
 
 	void turn(double angle, double speed) throws InterruptedException {
-		if(isStopRequested()){
+		if (isStopRequested()) {
 			return;
 		}
 		//Sets the angle that the robot is supposed to be in to the angle arguement
 		imaginaryAngle = angle;
 		//While the angel is > the gyroscope+TURN_ERROR or < the gyroscope-TURN_ERROR
 		resetTimer();
-		while((robot.gyro.getHeading()<angle-TURN_ERROR || robot.gyro.getHeading()>angle+TURN_ERROR) && (angle-TURN_ERROR<=-1 && robot.gyro.getHeading() != 360-TURN_ERROR || angle-TURN_ERROR>-1) && (angle+TURN_ERROR>=360 && robot.gyro.getHeading()>TURN_ERROR-1 || angle+TURN_ERROR<360) && INPUT_TIMER+5000>runTime.milliseconds()){
-			if(isStopRequested()){
+		while ((robot.gyro.getHeading() < angle - TURN_ERROR || robot.gyro.getHeading() > angle + TURN_ERROR) && (angle - TURN_ERROR <= -1 && robot.gyro.getHeading() != 360 - TURN_ERROR || angle - TURN_ERROR > -1) && (angle + TURN_ERROR >= 360 && robot.gyro.getHeading() > TURN_ERROR - 1 || angle + TURN_ERROR < 360) && INPUT_TIMER + 5000 > runTime.milliseconds()) {
+			if (isStopRequested()) {
 				stopMoving();
 				return;
 			}
 			//Checks to see if turning left or right
-		    if((angle>robot.gyro.getHeading() && angle<robot.gyro.getHeading()+181) || (angle<robot.gyro.getHeading()-180)){
-                	robot.frontLeft.setPower(-speed);
-                	robot.frontRight.setPower(speed);
-                	robot.backLeft.setPower(-speed);
-                	robot.backRight.setPower(speed);
-		    } else {
-                	robot.frontLeft.setPower(speed);
-                	robot.frontRight.setPower(-speed);
-                	robot.backLeft.setPower(speed);
-                	robot.backRight.setPower(-speed);
-            }
+			if ((angle > robot.gyro.getHeading() && angle < robot.gyro.getHeading() + 181) || (angle < robot.gyro.getHeading() - 180)) {
+				robot.frontLeft.setPower(-speed);
+				robot.frontRight.setPower(speed);
+				robot.backLeft.setPower(-speed);
+				robot.backRight.setPower(speed);
+			} else {
+				robot.frontLeft.setPower(speed);
+				robot.frontRight.setPower(-speed);
+				robot.backLeft.setPower(speed);
+				robot.backRight.setPower(-speed);
+			}
 			telemetry.addData("Function: ", "Turn");
 			telemetry.addData("Target Angle:  ", angle);
 			telemetry.addData("Current Speed: ", speed);
 			telemetry();
-            }
+		}
 		stopMoving();
+		if ((robot.gyro.getHeading() < angle - TURN_ERROR || robot.gyro.getHeading() > angle + TURN_ERROR) && (angle - TURN_ERROR <= -1 && robot.gyro.getHeading() != 360 - TURN_ERROR || angle - TURN_ERROR > -1) && (angle + TURN_ERROR >= 360 && robot.gyro.getHeading() > TURN_ERROR - 1 || angle + TURN_ERROR < 360) && INPUT_TIMER + 5000 > runTime.milliseconds()) {
+			straighten();
+		}
 	}
 
 	@Override
