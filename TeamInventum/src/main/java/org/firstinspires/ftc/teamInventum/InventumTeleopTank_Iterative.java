@@ -126,8 +126,11 @@ public class InventumTeleopTank_Iterative extends OpMode{
             robot.armMotor.setPower(robot.ARM_OUT_POWER);
         else if (gamepad1.a)
             robot.armMotor.setPower(robot.ARM_IN_POWER);
+        else if (gamepad1.a)
+            robot.FrontarmMotor.setPower(robot.ARM_IN_POWER);
         else
             robot.armMotor.setPower(0.0);
+            robot.FrontarmMotor.setPower(0.0);
 
         // Send telemetry message to signify robot running;
         telemetry.addData("claw",  "Offset = %.2f", clawOffset);
