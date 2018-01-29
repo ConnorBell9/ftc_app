@@ -31,6 +31,7 @@ public class HardwareInventum
     public DcMotor  armMotor    = null;
     public Servo    leftClaw    = null;
     public Servo    rightClaw   = null;
+    public DcMotor  FrontarmMotor= null;
 
     public static final double MID_SERVO       =  0.5 ;
     public static final double ARM_UP_POWER    =  0.20 ;
@@ -56,6 +57,7 @@ public class HardwareInventum
         leftMotor   = hwMap.dcMotor.get("left_drive");
         rightMotor  = hwMap.dcMotor.get("right_drive");
         armMotor    = hwMap.dcMotor.get("left_arm");
+	FrontarmMotor  = hwMap.dcMotor.get("left_arm");
         leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
 
@@ -63,12 +65,14 @@ public class HardwareInventum
         leftMotor.setPower(0);
         rightMotor.setPower(0);
         armMotor.setPower(0);
+	FrontarmMotor.setPower(0);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
         leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+	FrontarmMotor.setMode(DcMotor.RunMode.RUN_WITHOUT-ENCODER);
 
         // Define and initialize ALL installed servos.
         leftClaw = hwMap.servo.get("left_hand");
