@@ -31,7 +31,10 @@ package org.firstinspires.ftc.team7153;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -57,12 +60,12 @@ class HardwareByrdMK2
     Servo    armL              = null;
     Servo    armR              = null;
     Servo    armT              = null;
-/*
+
     CRServo  intakeTopLeft     = null;
     CRServo  intakeTopRight    = null;
     CRServo  intakeBottomLeft  = null;
     CRServo  intakeBottomRight = null;
-*/
+
     Servo    hammerY           = null;
     Servo    hammerX           = null;
 
@@ -70,9 +73,9 @@ class HardwareByrdMK2
 
     Servo    grabber           = null;
 
-    ModernRoboticsI2cGyro gyro          = null;
-    ModernRoboticsI2cColorSensor colorR = null;
-    ModernRoboticsI2cColorSensor colorL = null;
+    ModernRoboticsI2cGyro gyro         = null;
+    ModernRoboticsI2cColorSensor color = null;
+    ModernRoboticsI2cRangeSensor range = null;
 
     private static final double IDOL_Z_START_POSITION =  0;//300
     static final double IDOL_Z_POSITION       =  0;
@@ -98,7 +101,7 @@ class HardwareByrdMK2
     static final int     CLAMP_POSITION_3  = (13*1440)/3;
     static final int     CLAMP_POSITION_4  = (19*1440)/3;
 
-    static final double  HAMMER_DOWN    =     .96;
+    static final double  HAMMER_DOWN    =     .98;
     static final double  HAMMER_UP      =   .28;
     static final double  HAMMER_LEFT    =    .6;
     static final double  HAMMER_RIGHT   =    .2;
@@ -109,7 +112,9 @@ class HardwareByrdMK2
     static final double  PUSH_PLATE_UP   =     1;
 
     static boolean       IS_IDOL_GRAB      = false;
+    static boolean       IS_IDOL_TILT      = false;
     static final double  IDOL_CLAMP_OPEN   =     0;
+    static final double  IDOL_CLAMP_AJAR   =    .3;
     static final double  IDOL_CLAMP_CLOSED =     1;
 
     static boolean IS_GYRO_ON = false;
@@ -135,12 +140,15 @@ class HardwareByrdMK2
     static final double TURN_RIGHT    = 270;
     static final double TURN_BACK     = 180;
 
-    static final int TURN_ERROR = 2;
+    static final int TURN_ERROR = 1;
 
     static int FRONT_LEFT  = 0;
     static int FRONT_RIGHT = 0;
     static int BACK_LEFT   = 0;
     static int BACK_RIGHT  = 0;
+
+    static double DEFAULT_MOVE_SPEED = .3;
+    static double DEFAULT_TURN_SPEED = .3;
 
     static final double DELTA_RAMP = .1;
     static double       RAMP       = 0;
@@ -210,7 +218,7 @@ class HardwareByrdMK2
         armL = hwMap.servo.get("armL");
         armR = hwMap.servo.get("armR");
         armT = hwMap.servo.get("armT");
-/*
+
         intakeTopLeft     = hwMap.crservo.get("intakeTopLeft");
         intakeTopRight    = hwMap.crservo.get("intakeTopRight");
         intakeBottomLeft  = hwMap.crservo.get("intakeBottomLeft");
@@ -220,7 +228,7 @@ class HardwareByrdMK2
         intakeTopRight.setDirection(DcMotorSimple.Direction.FORWARD);
         intakeBottomLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         intakeBottomRight.setDirection(DcMotorSimple.Direction.REVERSE);
-*/
+
         hammerY = hwMap.servo.get("hammerY");
         hammerX = hwMap.servo.get("hammerX");
 
@@ -235,19 +243,18 @@ class HardwareByrdMK2
         hammerX.setPosition(HAMMER_CENTER);
         plate.setPosition(PUSH_PLATE_UP);
         grabber.setPosition(IDOL_CLAMP_OPEN);
-/*
+
         intakeTopLeft.setPower(INTAKE_OFF);
         intakeTopRight.setPower(INTAKE_OFF);
         intakeBottomLeft.setPower(INTAKE_OFF);
         intakeBottomRight.setPower(INTAKE_OFF);
-*/
+
         // Define Sensors
         gyro = hwMap.get(ModernRoboticsI2cGyro.class, "gyro");
-        colorR = hwMap.get(ModernRoboticsI2cColorSensor.class, "colorR");
-        colorL = hwMap.get(ModernRoboticsI2cColorSensor.class, "colorL");
+        color = hwMap.get(ModernRoboticsI2cColorSensor.class, "color");
+        range = hwMap.get(ModernRoboticsI2cRangeSensor.class, "range");
 
-        colorR.enableLed(false);
-        colorL.enableLed(false);
+        color.enableLed(false);
 
     }
  }

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.team7153;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IDOL_CLAMP_AJAR;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IDOL_CLAMP_CLOSED;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IDOL_CLAMP_OPEN;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IDOL_Z_DELTA_POSITION;
@@ -10,6 +11,7 @@ import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INPUT_TIMER;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_BLOCK_GRAB;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_GYRO_ON;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_IDOL_GRAB;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_IDOL_TILT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_PLATE;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_CLOSE;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_OPEN;
@@ -74,6 +76,11 @@ public class RelativeMechByrdMK3 extends OpMode{
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
+		if(gamepad2.b && System.currentTimeMillis() > INPUT_TIMER+500){
+			IS_IDOL_TILT=!IS_IDOL_TILT;
+			INPUT_TIMER = System.currentTimeMillis();
+		}
+
 	    if(IS_BLOCK_GRAB){
 		    robot.armL.setPosition(LEFT_CLAMP_CLOSE);
 			robot.armR.setPosition(RIGHT_CLAMP_CLOSE);
@@ -91,7 +98,9 @@ public class RelativeMechByrdMK3 extends OpMode{
 		}
 
 		if(IS_IDOL_GRAB){
-			robot.grabber.setPosition(IDOL_CLAMP_CLOSED);
+			if(IS_IDOL_TILT){
+				robot.grabber.setPosition(IDOL_CLAMP_AJAR);
+			} else{robot.grabber.setPosition(IDOL_CLAMP_CLOSED);}
 		} else {
 			robot.grabber.setPosition(IDOL_CLAMP_OPEN);
 		}
@@ -130,10 +139,10 @@ public class RelativeMechByrdMK3 extends OpMode{
 	    telemetry.addData("backLeft:   ", robot.backLeft.getPower());
 	    telemetry.addData("backRight:  ", robot.backRight.getPower());
 	    telemetry.addData("Gyro:       ", robot.gyro.getHeading());
-		telemetry.addData("ColorR Blue: ", robot.colorR.blue());
-		telemetry.addData("ColorR Red:  ", robot.colorR.red());
-		telemetry.addData("ColorL Blue: ", robot.colorL.blue());
-		telemetry.addData("ColorL Red:  ", robot.colorL.red());
+		telemetry.addData("Color Blue: ", robot.color.blue());
+		telemetry.addData("Color Red:  ", robot.color.red());
+		telemetry.addData("Range Optic:", robot.range.cmOptical());
+		telemetry.addData("Range Sonic:", robot.range.cmUltrasonic());
 	    telemetry.update();
     }
 }

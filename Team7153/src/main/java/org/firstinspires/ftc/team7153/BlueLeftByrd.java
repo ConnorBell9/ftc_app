@@ -10,7 +10,7 @@ import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_RIGHT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.VUFORIA_ENABLED;
 
 @Autonomous(name="BlueLeftByrd")
-public class BlueLeftByrd extends AutoByrdMK2 {
+public class BlueLeftByrd extends AutoByrdMK3 {
 	@Override
 	public void runOpMode() throws InterruptedException {
 		autonomousInit();
@@ -26,7 +26,7 @@ public class BlueLeftByrd extends AutoByrdMK2 {
             moveWithEncoders(24,.3,FORWARDS);
             turn(TURN_RIGHT,.3);
             moveWithEncoders(14,.3,FORWARDS);
-            moveToCubby(TURN_FORWARDS,BLUE, VUFORIA_ENABLED);
+            moveToCubby(TURN_FORWARDS, VUFORIA_ENABLED);
             /*while(runTime.milliseconds()<20000 && opModeIsActive()){
             	harvest(60,24);
             	moveToCubby(TURN_FORWARDS,BLUE, VUFORIA_DISABLED);
