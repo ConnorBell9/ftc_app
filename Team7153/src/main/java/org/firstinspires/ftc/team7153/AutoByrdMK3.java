@@ -28,6 +28,7 @@ import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_GYRO_ON;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_CLOSE;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_OPEN;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.MOVE_BACKWARDS;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.OFFSET;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RED;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RIGHT;
@@ -41,6 +42,7 @@ import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TOP_CLAMP_OPEN;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_BACK;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_ERROR;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_FORWARDS;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_LEFT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_RIGHT;
 
 
@@ -390,6 +392,19 @@ public class AutoByrdMK3 extends LinearOpMode {
 		grab(false);
 		moveWithEncoders(8,DEFAULT_MOVE_SPEED,BACKWARDS);
 		stopMoving();
+	}
+	void moveToCubby2() throws InterruptedException{
+		turn(TURN_LEFT,.3);
+		for(int x=0; x<3;x++) {
+			double distance = robot.range.cmUltrasonic();
+			moveWithoutStopping(MOVE_BACKWARDS, 1);
+			while (robot.range.cmUltrasonic() > distance - 5) {
+				telemetry();
+				sleep(10);
+			}
+			stopMoving();
+			sleep(5000);
+		}
 	}
 
 	void moveWithoutStopping(double angle, double power) throws InterruptedException {
