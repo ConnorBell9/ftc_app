@@ -1,6 +1,7 @@
 //package org.firstinspires.ftc.robotcontroller.external.samples;
 package org.firstinspires.ftc.teamInventum;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -31,13 +32,22 @@ public class HardwareInventum
     public DcMotor  armMotor    = null;
     public Servo    leftClaw    = null;
     public Servo    rightClaw   = null;
-    public DcMotor  FrontarmMotor= null;
+    public Servo    hammer      = null;
 
+
+    public ModernRoboticsI2cColorSensor color = null;
+
+
+    public static final double LEFT_CLAMP_CLOSE=0;
+    public static final double RIGHT_CLAMP_CLOSE=0;
+    public static final double LEFT_CLAMP_OPEN=0;
+    public static final double RIGHT_CLAMP_OPEN=0;
     public static final double MID_SERVO       =  0.5 ;
     public static final double ARM_UP_POWER    =  0.20 ;
     public static final double ARM_DOWN_POWER  = -0.20 ;
     public static final double ARM_OUT_POWER    =  0.20 ;
     public static final double ARM_IN_POWER  = -0.20 ;
+    public final double INPUT_TIMER = 0;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -77,8 +87,12 @@ public class HardwareInventum
         // Define and initialize ALL installed servos.
         leftClaw = hwMap.servo.get("left_hand");
         rightClaw = hwMap.servo.get("right_hand");
+        hammer = hwMap.servo.get("hammer");
         leftClaw.setPosition(MID_SERVO);
         rightClaw.setPosition(MID_SERVO);
+
+        color = hwMap.get(ModernRoboticsI2cColorSensor.class, "color");
+        color.enableLed(false);
     }
 
     /***

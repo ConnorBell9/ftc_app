@@ -80,6 +80,7 @@ public class BellatorumAutoBackBlue extends BellatorumAuto {
         displaceJewel(robot.COLOR_RED); // Knock off the jewel of this color
 
         move(robot.LEFT, 2.5, 1); // Move in feet
+        turn(robot.RIGHT/6, 0.8); turn(robot.FORWARD, 0.8 ); // Wiggle off the platform
         move(robot.RIGHT, 1.0, 0.2); // Move back to align with platform
         move(robot.LEFT, 0.25); // Move 1/4 foot
 
