@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamInventum;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -30,7 +31,8 @@ class HardwareInventum
 	/*no change needed for inventum*/
     DcMotor  leftMotor   = null;
     DcMotor  rightMotor  = null;
-    DcMotor  armMotor    = null;
+    DcMotor  backClamp   = null;
+    DcMotor  frontClamp  = null;
     Servo    leftClaw    = null;
     Servo    rightClaw   = null;
     Servo    hammer      = null;
@@ -49,8 +51,8 @@ class HardwareInventum
     static final double LEFT_CLAMP_OPEN   =  0.4;
     static final double RIGHT_CLAMP_OPEN  =  0.6;
 
-    static final double HAMMER_DOWN       =  0;
-    static final double HAMMER_UP         =  0;
+    static final double HAMMER_DOWN       =  .95;
+    static final double HAMMER_UP         =  .3;
 
     static final double TURN_ERROR        =  1;
     static double       INPUT_TIMER       =  0;
@@ -75,20 +77,26 @@ class HardwareInventum
         // Define and Initialize Motors
         leftMotor   = hwMap.dcMotor.get("left_drive");
         rightMotor  = hwMap.dcMotor.get("right_drive");
-        armMotor    = hwMap.dcMotor.get("left_arm");
+        frontClamp    = hwMap.dcMotor.get("front_clamp");
+        backClamp    = hwMap.dcMotor.get("back_clamp");
         leftMotor.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         rightMotor.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
+
+        frontClamp.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
+        backClamp.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
 
         // Set all motors to zero power
         leftMotor.setPower(0);
         rightMotor.setPower(0);
-        armMotor.setPower(0);
+        frontClamp.setPower(0);
+        backClamp.setPower(0);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
         leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontClamp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backClamp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Define and initialize ALL installed servos.
         leftClaw = hwMap.servo.get("left_hand");
@@ -96,6 +104,7 @@ class HardwareInventum
         hammer = hwMap.servo.get("hammer");
         leftClaw.setPosition(LEFT_CLAMP_OPEN);
         rightClaw.setPosition(RIGHT_CLAMP_OPEN);
+        hammer.setPosition(HAMMER_UP);
 
         gyro = hwMap.get(ModernRoboticsI2cGyro.class, "gyro");
         color = hwMap.get(ModernRoboticsI2cColorSensor.class, "color");
