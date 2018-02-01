@@ -22,8 +22,8 @@ public class DebugMechByrdMK2 extends OpMode{
 	    final double y=gamepad1.left_stick_y;
 		final double x=gamepad1.left_stick_x;
 
-		robot.leftMotor.setPower(y-x);
-		robot.rightMotor.setPower(y+x);
+		robot.leftMotor.setPower(y+x);
+		robot.rightMotor.setPower(y-x);
 
 	    /*if(gamepad2.a && System.currentTimeMillis() > INPUT_TIMER+500){
 			IS_BLOCK_GRAB=!IS_BLOCK_GRAB;
@@ -34,17 +34,17 @@ public class DebugMechByrdMK2 extends OpMode{
 
 		}*/
 	    if(gamepad2.right_stick_y>.02){
-	    	robot.armMotor.setPower(gamepad1.right_stick_y*.45);
+	    	robot.armMotor.setPower(gamepad1.right_stick_y*1);
 		} else if(gamepad1.right_stick_y<-.02){
-			robot.armMotor.setPower(gamepad1.right_stick_y*.2);
+			robot.armMotor.setPower(gamepad1.right_stick_y*1);
 		}
 
 		if(gamepad1.dpad_up){
 			robot.rightClaw.setPosition(.01+robot.rightClaw.getPosition());
 			robot.leftClaw.setPosition(-.01+robot.leftClaw.getPosition());
 		} else if (gamepad1.dpad_up){
-			robot.rightClaw.setPosition(.01+robot.rightClaw.getPosition());
-			robot.leftClaw.setPosition(-.01+robot.leftClaw.getPosition());
+			robot.rightClaw.setPosition(-.01+robot.rightClaw.getPosition());
+			robot.leftClaw.setPosition(.01+robot.leftClaw.getPosition());
 		}
 		if(gamepad1.dpad_left){
 			robot.hammer.setPosition(.01+robot.hammer.getPosition());
