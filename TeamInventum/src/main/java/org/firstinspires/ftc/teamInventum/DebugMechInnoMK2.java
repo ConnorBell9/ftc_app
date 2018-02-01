@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamInventum;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name="DebugMechByrdMK2")
-public class DebugMechByrdMK2 extends OpMode{
+@TeleOp(name="DebugMechInnoMK2")
+public class DebugMechInnoMK2 extends OpMode{
 	private HardwareInventum robot = new HardwareInventum();
     @Override
     public void init() {
@@ -37,6 +37,8 @@ public class DebugMechByrdMK2 extends OpMode{
 	    	robot.armMotor.setPower(gamepad1.right_stick_y*1);
 		} else if(gamepad1.right_stick_y<-.02){
 			robot.armMotor.setPower(gamepad1.right_stick_y*1);
+		} else {
+			robot.armMotor.setPower(0);
 		}
 
 		if(gamepad1.dpad_up){

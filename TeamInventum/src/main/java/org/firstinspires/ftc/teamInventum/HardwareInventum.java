@@ -2,8 +2,8 @@
 package org.firstinspires.ftc.teamInventum;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -24,42 +24,51 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Servo channel:  Servo to open left claw:  "left_hand"
  * Servo channel:  Servo to open right claw: "right_hand"
  */
-public class HardwareInventum
+class HardwareInventum
 {
-    /* Public OpMode members. */
+    /* OpMode members. */
 	/*no change needed for inventum*/
-    public DcMotor  leftMotor   = null;
-    public DcMotor  rightMotor  = null;
-    public DcMotor  armMotor    = null;
-    public Servo    leftClaw    = null;
-    public Servo    rightClaw   = null;
-    public Servo    hammer      = null;
+    DcMotor  leftMotor   = null;
+    DcMotor  rightMotor  = null;
+    DcMotor  armMotor    = null;
+    Servo    leftClaw    = null;
+    Servo    rightClaw   = null;
+    Servo    hammer      = null;
 
-    public ModernRoboticsI2cColorSensor color = null;
+    ModernRoboticsI2cColorSensor color = null;
+    ModernRoboticsI2cGyro        gyro  = null;
 
 
-    public static final double LEFT_CLAMP_CLOSE=0;
-    public static final double RIGHT_CLAMP_CLOSE=1;
-    public static final double LEFT_CLAMP_OPEN=0.4;
-    public static final double RIGHT_CLAMP_OPEN=0.6;
-    public static final double MID_SERVO       =  0.5 ;
-    public static final double ARM_UP_POWER    =  0.45 ;
-    public static final double ARM_DOWN_POWER  = -0.20 ;
-    public static final double ARM_OUT_POWER    =  0.45 ;
-    public static final double ARM_IN_POWER  = -0.20 ;
-    public final double INPUT_TIMER = 0;
+    static final double TURN_FORWARDS = 0;
+    static final double TURN_LEFT     = 90;
+    static final double TURN_RIGHT    = 270;
+    static final double TURN_BACK     = 180;
+
+    static final double LEFT_CLAMP_CLOSE  =  0;
+    static final double RIGHT_CLAMP_CLOSE =  1;
+    static final double LEFT_CLAMP_OPEN   =  0.4;
+    static final double RIGHT_CLAMP_OPEN  =  0.6;
+
+    static final double HAMMER_DOWN       =  0;
+    static final double HAMMER_UP         =  0;
+
+    static final double TURN_ERROR        =  1;
+    static double       INPUT_TIMER       =  0;
+
+    static final boolean RED  = true;
+    static final boolean BLUE = false;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
-    public HardwareInventum(){
+    HardwareInventum(){
 
     }
 
     /* Initialize standard Hardware interfaces */
-    public void init(HardwareMap ahwMap) {
+    void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
         hwMap = ahwMap;
 
@@ -85,9 +94,10 @@ public class HardwareInventum
         leftClaw = hwMap.servo.get("left_hand");
         rightClaw = hwMap.servo.get("right_hand");
         hammer = hwMap.servo.get("hammer");
-        leftClaw.setPosition(MID_SERVO);
-        rightClaw.setPosition(MID_SERVO);
+        leftClaw.setPosition(LEFT_CLAMP_OPEN);
+        rightClaw.setPosition(RIGHT_CLAMP_OPEN);
 
+        gyro = hwMap.get(ModernRoboticsI2cGyro.class, "gyro");
         color = hwMap.get(ModernRoboticsI2cColorSensor.class, "color");
         color.enableLed(false);
     }
@@ -100,7 +110,7 @@ public class HardwareInventum
      *
      * @param periodMs  Length of wait cycle in mSec.
      */
-    public void waitForTick(long periodMs) {
+    void waitForTick(long periodMs) {
 
         long  remaining = periodMs - (long)period.milliseconds();
 
