@@ -43,14 +43,14 @@ public class TankInnoMK2 extends OpMode{
 			robot.rightClaw.setPosition(RIGHT_CLAMP_OPEN);
 		}
 
-		if(-gamepad2.right_stick_y>.02){
-			if(robot.backClamp.getCurrentPosition()<8/1.25*280) {
+		if(-gamepad2.right_stick_y<-.02){
+			if(robot.backClamp.getCurrentPosition()<(16/1.25)*280) {//(inches to travel/circumference)*PPR
 				robot.backClamp.setPower(gamepad2.right_stick_y * 1);
 			} else {robot.backClamp.setPower(0);}
-			if(robot.frontClamp.getCurrentPosition()<7/1.25*280) {
+			if(robot.frontClamp.getCurrentPosition()<(14/1.25)*280) {//(inches to travel/circumference)*PPR
 				robot.frontClamp.setPower(gamepad2.right_stick_y * 1);
 			} else {robot.frontClamp.setPower(0);}
-		} else if(-gamepad2.right_stick_y<-.02){
+		} else if(-gamepad2.right_stick_y>.02){
 			if(robot.backClamp.getCurrentPosition()>0) {
 				robot.backClamp.setPower(gamepad2.right_stick_y * 1);
 			} else {robot.backClamp.setPower(0);}

@@ -118,14 +118,14 @@ public class AutoInnoMK3 extends LinearOpMode {
 		robot.hammer.setPosition(HAMMER_DOWN);
 		robot.color.enableLed(true);
 		sleep(1000);
-		if(robot.color.blue()>robot.color.red()){
-			if(COLOR_REMAINING == RED){move(.2,250);}else{move(-.2,250);}
-		} else if (robot.color.blue()<robot.color.red()){
-			if(COLOR_REMAINING == BLUE){move(.2,250);}else{move(-.2,250);}
+		if(robot.color.blue()<robot.color.red()){
+			if(COLOR_REMAINING == RED){move(.1,250);}else{move(-.1,250);}
+		} else if (robot.color.blue()>robot.color.red()){
+			if(COLOR_REMAINING == BLUE){move(.1,250);}else{move(-.1,250);}
 		}
 		robot.hammer.setPosition(HAMMER_UP);
 		robot.color.enableLed(false);
-		sleep(250);
+		sleep(1000);
 	}
 
 
