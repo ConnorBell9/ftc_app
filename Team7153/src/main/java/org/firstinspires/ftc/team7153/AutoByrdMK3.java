@@ -348,6 +348,17 @@ public class AutoByrdMK3 extends LinearOpMode {
 		double DELTA_POSITION = robot.frontLeft.getCurrentPosition();
 		moveWithoutStopping(turnDirection+90,.15);
 		resetTimer();
+		/*
+		sleep(1000);
+		moveWithoutStopping(turnDirection,.3);
+		sleep(500);
+		moveWithoutStopping(turnDirection+90,.3);
+		sleep(500);
+		moveWithoutStopping(turnDirection-90,.3);
+		sleep(1000);
+		moveWithoutStopping(turnDirection+90,.15);
+		sleep(500);
+		 */
 		while(robot.frontLeft.getCurrentPosition()-420<=DELTA_POSITION && INPUT_TIMER+1500>System.currentTimeMillis()){
 			telemetry();
 			sleep(10);

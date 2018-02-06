@@ -21,7 +21,7 @@ public class RedLeftByrd extends AutoByrdMK3 {
 			sleep(100);
 			clamp(CLAMP_POSITION_2);
 			hammer(RED);
-            moveWithEncoders(36,DEFAULT_MOVE_SPEED,BACKWARDS);
+            moveWithEncoders(24,DEFAULT_MOVE_SPEED,BACKWARDS);//36 is previous value
             /*moveToCubby(TURN_LEFT, VUFORIA_ENABLED);
             while(runTime.milliseconds()<20000 && opModeIsActive()){
             	harvest(0,30,TURN_FORWARDS);
