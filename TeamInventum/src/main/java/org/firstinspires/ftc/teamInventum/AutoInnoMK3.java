@@ -119,9 +119,9 @@ public class AutoInnoMK3 extends LinearOpMode {
 		robot.color.enableLed(true);
 		sleep(1000);
 		if(robot.color.blue()<robot.color.red()){
-			if(COLOR_REMAINING == RED){move(.1,250);}else{move(-.1,250);}
+			if(COLOR_REMAINING == RED){move(.1,350);}else{move(-.1,500);}
 		} else if (robot.color.blue()>robot.color.red()){
-			if(COLOR_REMAINING == BLUE){move(.1,250);}else{move(-.1,250);}
+			if(COLOR_REMAINING == BLUE){move(.1,350);}else{move(-.1,500);}
 		}
 		robot.hammer.setPosition(HAMMER_UP);
 		robot.color.enableLed(false);

@@ -51,7 +51,7 @@ class HardwareInventum
     static final double LEFT_CLAMP_OPEN   =  0.4;
     static final double RIGHT_CLAMP_OPEN  =  0.6;
 
-    static final double HAMMER_DOWN       =  .95;
+    static final double HAMMER_DOWN       =  1.0;
     static final double HAMMER_UP         =  .3;
 
     static final double TURN_ERROR        =  1;
