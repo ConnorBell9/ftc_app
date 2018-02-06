@@ -50,7 +50,6 @@ class HardwareBellatorum
     final double CLAMP_LEFT_CLOSED  = 1.0;
     final double CLAMP_RIGHT_CLOSED = 0.0;
     final double CLAMP_TOP_CLOSED = 1.0;
-    final double CLAMP_TOP_CLOSED = 1.0;
 
     final double LIFT_UP_POWER    =  0.25 ;
     final double LIFT_DOWN_POWER  = -0.13 ;
