@@ -48,8 +48,8 @@ public class OmniTeleOpTest extends OpMode {
 
 
         color.setPosition(.2);
-        armright.setPosition(.5);
-        armleft.setPosition(-.5);
+        armright.setPosition(.35);
+        armleft.setPosition(-.3);
         colorh.setPosition(.5);
     }
     @Override
@@ -64,12 +64,12 @@ public class OmniTeleOpTest extends OpMode {
         track.setPower(v*.3);
 
         if (gamepad2.x) {
-            armleft.setPosition(-.5);
-            armright.setPosition(.5);
+            armleft.setPosition(-.4);
+            armright.setPosition(.4);
         }
         else if (gamepad2.b) {
-            armleft.setPosition(.4);
-            armright.setPosition(-.4);
+            armleft.setPosition(.3);
+            armright.setPosition(-.3);
         }
         if (gamepad1.y &&System.currentTimeMillis() > timer+500) {
             FlipDrive = !FlipDrive;
