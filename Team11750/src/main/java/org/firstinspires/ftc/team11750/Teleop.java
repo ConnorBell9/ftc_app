@@ -60,7 +60,7 @@ public class Teleop extends OpMode{
     HardwareBellatorum robot       = new HardwareBellatorum(); // use the class created to define a Pushbot's hardware
                                                          // could also use HardwarePushbotMatrix class.
     double          clampOffset  = 0.0 ;                  // Servo mid position
-    final double    CLAMP_SPEED  = 0.02 ;                 // sets rate to move servo
+    final double    CLAMP_SPEED  = 0.05 ;                 // sets rate to move servo
     private boolean drill=false; // Initially disable drill mode
     ModernRoboticsI2cGyro gyro; // Gyroscope Sensor //
 
@@ -75,7 +75,7 @@ public class Teleop extends OpMode{
         robot.init(hardwareMap);
         gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
 
-        // make sure the gyro is calibrated before continuing
+     /*   // make sure the gyro is calibrated before continuing
         // Calibrate the gyro
         telemetry.addData(">", "Gyro Calibrating. Do Not move!");
         telemetry.update();
@@ -86,7 +86,7 @@ public class Teleop extends OpMode{
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
-        }
+        } */
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Say", "Hello Driver");    //
@@ -127,10 +127,11 @@ public class Teleop extends OpMode{
         float r = desens(gamepad1.right_stick_x)/(float)1.5; // Read the rotation from the right stick
 
         // Robot Translate/Slide mode
-        if(gamepad1.x) {
+        if(gamepad1.y) {
             drill = true; // Toggle drill mode
             gyro.resetZAxisIntegrator(); // Re-orient the bot
         }
+        if(gamepad1.x) drill=true; // Enable drill mode
         if(gamepad1.b) drill=false; // Disable drill mode
         if(drill) {
             double z=-Math.toRadians(gyro.getIntegratedZValue()); // Get anchor heading
@@ -160,6 +161,11 @@ public class Teleop extends OpMode{
                 || (gamepad2.right_stick_x > 0.1)) {
             clampOffset -= CLAMP_SPEED;
         }
+
+        // Use controller 2's directional pad to control the top arm
+        if (gamepad2.dpad_up) { robot.topClamp.setPosition(robot.CLAMP_TOP_OPEN); }
+        if (gamepad2.dpad_down) { robot.topClamp.setPosition(robot.CLAMP_TOP_CLOSED); }
+
 
         // Move both servos to new position.  Assume servos are mirror image of each other.
         clampOffset = Range.clip(clampOffset, -0.75, 0.75);

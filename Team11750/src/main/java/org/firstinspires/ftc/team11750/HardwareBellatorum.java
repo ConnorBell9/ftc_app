@@ -26,6 +26,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Motor channel:  Back Lift Drive motor:    "back_lift_arm"
  * Servo channel:  Servo to move left clamp: "left_hand"
  * Servo channel:  Servo to move right clamp:"right_hand"
+ * Servo channel:  Servo to move top clamp:  "top_hand"
  */
 class HardwareBellatorum
 {
@@ -38,14 +39,19 @@ class HardwareBellatorum
     DcMotor  backLiftMotor    = null;
     Servo    leftClamp   = null;
     Servo    rightClamp  = null;
+    Servo    topClamp = null;
     Servo    colorArm = null;
     ColorSensor colorSensor;
     boolean clampInstalled=true; // Set to false to run without clamp installed, true to run with
 
     final double CLAMP_LEFT_OPEN  =  0.35;
     final double CLAMP_RIGHT_OPEN = 0.75;
+    final double CLAMP_TOP_OPEN = -0.25;
     final double CLAMP_LEFT_CLOSED  = 1.0;
     final double CLAMP_RIGHT_CLOSED = 0.0;
+    final double CLAMP_TOP_CLOSED = 1.0;
+    final double CLAMP_TOP_CLOSED = 1.0;
+
     final double LIFT_UP_POWER    =  0.25 ;
     final double LIFT_DOWN_POWER  = -0.13 ;
     final double LIFT_FEET_PER_SEC = 5;
@@ -112,8 +118,10 @@ class HardwareBellatorum
 
             leftClamp = hwMap.servo.get("left_hand");
             rightClamp = hwMap.servo.get("right_hand");
+            topClamp = hwMap.servo.get("top_hand");
             leftClamp.setPosition(0.2);
             rightClamp.setPosition(0.8);
+            topClamp.setPosition(CLAMP_TOP_OPEN);
         }
         colorArm = hwMap.servo.get("color_arm");
         colorArm.setPosition(ARM_UP);
