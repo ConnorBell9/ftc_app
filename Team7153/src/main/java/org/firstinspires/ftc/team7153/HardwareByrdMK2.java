@@ -82,7 +82,11 @@ class HardwareByrdMK2
     static final int    IDOL_Z_DELTA_POSITION = 50;
     static final double IDOL_Y_POSITION       =  0;
 
+    static double        IS_DUMP           = 0;
     static boolean       IS_BLOCK_GRAB     = false;
+    static final double  DUMP_EXPEL        =    -1;
+    static final double  DUMP_INTAKE       =     1;
+    static final double  DUMP_INACTIVE     =     0;
     static final double  LEFT_CLAMP_CLOSE  =     1;
     static final double  RIGHT_CLAMP_CLOSE =     0;
     static final double  TOP_CLAMP_CLOSE   =   -.2;

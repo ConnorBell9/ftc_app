@@ -73,9 +73,13 @@ ServoMechByrdMK2 extends OpMode{
 	    if(IS_BLOCK_GRAB){
 		    robot.intakeBottomLeft.setPower(1);
 			robot.intakeTopLeft.setPower(1);
+			robot.intakeBottomRight.setPower(1);
+			robot.intakeTopRight.setPower(1);
 	    } else {
-			robot.intakeBottomLeft.setPower(0);
-			robot.intakeTopLeft.setPower(0);
+			robot.intakeBottomLeft.setPower(-1);
+			robot.intakeTopLeft.setPower(-1);
+			robot.intakeBottomRight.setPower(-1);
+			robot.intakeTopRight.setPower(-1);
 	    }
 
 		telemetry.addData("VuMark:   ", relicVuMark);
