@@ -34,7 +34,6 @@ public class RedRightByrd extends AutoByrdMK3 {
             	moveToCubby(TURN_BACK, VUFORIA_DISABLED);
 			}
 			stopMoving();
-            intake(false);
 		}
 	}
 }

@@ -33,7 +33,6 @@ public class BlueLeftByrd extends AutoByrdMK3 {
             	moveToCubby(TURN_FORWARDS,BLUE, VUFORIA_DISABLED);
 			}*/
 			stopMoving();
-            intake(false);
 		}
 	}
 }

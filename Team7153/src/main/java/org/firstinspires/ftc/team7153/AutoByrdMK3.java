@@ -15,6 +15,9 @@ import static org.firstinspires.ftc.team7153.HardwareByrdMK2.CLAMP_POSITION_1;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.CLAMP_POSITION_2;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DEFAULT_MOVE_SPEED;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DEFAULT_TURN_SPEED;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DUMP_EXPEL;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DUMP_INACTIVE;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DUMP_INTAKE;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.FORWARDS;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_CENTER;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_DOWN;
@@ -199,7 +202,7 @@ public class AutoByrdMK3 extends LinearOpMode {
 		turn(TURN_RIGHT,.5);
 		//Open up the clamp and activate the intake in preparation of blocks.
 		grab(false);
-		intake(true);
+		intake(DUMP_INTAKE);
 		//Move away from the wall for Y_AXIS inches.
 		moveWithEncoders(Y_AXIS,.6,FORWARDS);
 		/* X_AXIS is based off of the bot's forward direction.
@@ -216,17 +219,17 @@ public class AutoByrdMK3 extends LinearOpMode {
 			turn(TURN_FORWARDS,DEFAULT_TURN_SPEED);
 			moveWithEncoders(X_AXIS,.4,FORWARDS);
 			grab(true);
-			intake(false);
+			intake(DUMP_INTAKE);
 			moveWithEncoders(X_AXIS,.4,BACKWARDS);
 		} else if (X_AXIS<0) {
 			turn(TURN_BACK,DEFAULT_TURN_SPEED);
 			moveWithEncoders(-X_AXIS,.4,FORWARDS);
 			grab(true);
-			intake(false);
+			intake(DUMP_INTAKE);
 			moveWithEncoders(-X_AXIS,.4,BACKWARDS);
 		}
 		grab(true);
-		intake(false);
+		intake(DUMP_INACTIVE);
 		clamp(CLAMP_POSITION_2);
 		//Add the offset incurred by placing the cryptoblock
 		/*
@@ -243,18 +246,11 @@ public class AutoByrdMK3 extends LinearOpMode {
 		OFFSET = 0;
 	}
 
-	void intake(boolean mode){
-		if(mode){
-			robot.intakeTopLeft.setPower(INTAKE_ON);
-			robot.intakeTopRight.setPower(INTAKE_ON);
-			robot.intakeBottomLeft.setPower(INTAKE_ON);
-			robot.intakeBottomRight.setPower(INTAKE_ON);
-		} else {
-			robot.intakeTopLeft.setPower(INTAKE_OFF);
-			robot.intakeTopRight.setPower(INTAKE_OFF);
-			robot.intakeBottomLeft.setPower(INTAKE_OFF);
-			robot.intakeBottomRight.setPower(INTAKE_OFF);
-		}
+	void intake(double mode) {
+		robot.intakeTopLeft.setPower(mode);
+		robot.intakeTopRight.setPower(mode);
+		robot.intakeBottomLeft.setPower(mode);
+		robot.intakeBottomRight.setPower(mode);
 	}
 
 
@@ -406,7 +402,7 @@ public class AutoByrdMK3 extends LinearOpMode {
 	}
 	void moveToCubby2() throws InterruptedException{
 		turn(TURN_LEFT,.3);
-		for(int x=0; x<3;x++) {
+		for(int x=0; x<2;x++) {
 			double distance = robot.range.cmUltrasonic();
 			moveWithoutStopping(MOVE_BACKWARDS, 1);
 			while (robot.range.cmUltrasonic() > distance - 5) {
@@ -416,6 +412,9 @@ public class AutoByrdMK3 extends LinearOpMode {
 			stopMoving();
 			sleep(5000);
 		}
+		intake(DUMP_EXPEL);
+		sleep(1000);
+		intake(DUMP_INACTIVE);
 	}
 
 	void moveWithoutStopping(double angle, double power) throws InterruptedException {
@@ -474,7 +473,7 @@ public class AutoByrdMK3 extends LinearOpMode {
 	private void statusCheck() throws InterruptedException{
 		if(isStopRequested()){
 			stopMoving();
-			intake(false);
+			intake(DUMP_INACTIVE);
 			return;
 		}
 

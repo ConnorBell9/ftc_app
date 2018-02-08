@@ -84,8 +84,8 @@ class HardwareByrdMK2
 
     static double        IS_DUMP           = 0;
     static boolean       IS_BLOCK_GRAB     = false;
-    static final double  DUMP_EXPEL        =    -1;
-    static final double  DUMP_INTAKE       =     1;
+    static final double  DUMP_EXPEL        =     1;
+    static final double  DUMP_INTAKE       =    -1;
     static final double  DUMP_INACTIVE     =     0;
     static final double  LEFT_CLAMP_CLOSE  =     1;
     static final double  RIGHT_CLAMP_CLOSE =     0;
