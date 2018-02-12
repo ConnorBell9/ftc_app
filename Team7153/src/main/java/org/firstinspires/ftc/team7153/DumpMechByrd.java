@@ -34,9 +34,9 @@ public class DumpMechByrd extends OpMode{
 		double radGyro = (robot.gyro.getHeading() * Math.PI) / 180;
 	    double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
 		double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
-	    if(IS_GYRO_ON){
+	    /*if(IS_GYRO_ON){
 			robotAngle -= radGyro;
-		}
+		}*/
 	    double rightX = gamepad1.right_stick_x;
 	    final double v1 = r * Math.cos(robotAngle) + rightX;
 	    final double v2 = r * Math.sin(robotAngle) - rightX;
@@ -93,6 +93,12 @@ public class DumpMechByrd extends OpMode{
 		} else {
 			robot.plate.setPosition(PUSH_PLATE_UP);
 		}
+	    
+	    if(IS_DUMP){
+	    	robot.DUMP.setPosition(DUMP_UP);
+	    } else {
+	    	robot.DUMP.setPosition(DUMP_DOWN);
+	    }
 
 		if(IS_IDOL_GRAB){
 			if(IS_IDOL_TILT){
@@ -122,8 +128,7 @@ public class DumpMechByrd extends OpMode{
 		}
 
 		telemetry.addData("Plate is: ", IS_PLATE);
-		telemetry.addData("Idol is:  ", IS_IDOL_GRAB);
-		telemetry.addData("Gyro is:  ", IS_GYRO_ON);
+		telemetry.addData("Idol is:  ", IS_IDOL_GRAB); 
 	    telemetry.addData("Intake is:", IS_DUMP);
 	    telemetry.addData("lift Running to:  ", robot.lift.getTargetPosition());
 		telemetry.addData("lift Running at:  ", robot.lift.getCurrentPosition());
