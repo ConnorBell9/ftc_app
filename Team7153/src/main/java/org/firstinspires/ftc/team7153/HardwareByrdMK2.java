@@ -52,7 +52,8 @@ class HardwareByrdMK2
     DcMotor  backRight         = null;
     DcMotor  backLeft          = null;
 
-    DcMotor  clamp             = null;
+    DcMotor  lift              = null;
+    DcMotor  dump              = null;
 
     DcMotor  idolZ             = null;
     DcMotor  idolY             = null;
@@ -77,7 +78,7 @@ class HardwareByrdMK2
     ModernRoboticsI2cColorSensor color = null;
     ModernRoboticsI2cRangeSensor range = null;
 
-    private static final double IDOL_Z_START_POSITION =  0;//300
+    private static final double IDOL_Z_START_POSITION =  0;
     static final double IDOL_Z_POSITION       =  0;
     static final int    IDOL_Z_DELTA_POSITION = 50;
     static final double IDOL_Y_POSITION       =  0;
@@ -100,12 +101,16 @@ class HardwareByrdMK2
     static final double  INTAKE_ON         = 1;
     static final double  INTAKE_OFF        = 0;
 
-    static final int     CLAMP_POSITION_1  =       0;
-    static final int     CLAMP_POSITION_2  =  (7*1440)/3;//(InchesToTravel*1440/InchesPerRevolution)
-    static final int     CLAMP_POSITION_3  = (13*1440)/3;
-    static final int     CLAMP_POSITION_4  = (19*1440)/3;
+    static final int     LIFT_POSITION_1  =           0;
+    static final int     LIFT_POSITION_2  =  (7*1440)/3;//(InchesToTravel*1440/InchesPerRevolution)
+    static final int     LIFT_POSITION_3  = (13*1440)/3;
+    static final int     LIFT_POSITION_4  = (19*1440)/3;
+    
+    static boolean       IS_DUMP   = false;
+    static final int     DUMP_UP   = 4*90; //4 Pulses per Degree
+    static final int     DUMP_DOWN =    0;
 
-    static final double  HAMMER_DOWN    =     .98;
+    static final double  HAMMER_DOWN    =   .98;
     static final double  HAMMER_UP      =   .28;
     static final double  HAMMER_LEFT    =    .6;
     static final double  HAMMER_RIGHT   =    .2;
@@ -120,8 +125,6 @@ class HardwareByrdMK2
     static final double  IDOL_CLAMP_OPEN   =     0;
     static final double  IDOL_CLAMP_AJAR   =    .3;
     static final double  IDOL_CLAMP_CLOSED =     1;
-
-    static boolean IS_GYRO_ON = false;
 
     static double INPUT_TIMER = 0;
 
@@ -185,7 +188,8 @@ class HardwareByrdMK2
         backRight  = hwMap.get(DcMotor.class, "br");
         backLeft   = hwMap.get(DcMotor.class, "bl");
 
-        clamp      = hwMap.get(DcMotor.class, "clamp");
+        lift       = hwMap.get(DcMotor.class, "lift");
+        dump       = hwMap.get(DcMotor.class, "dump");
 
         idolZ      = hwMap.get(DcMotor.class, "idolZ");
         idolY      = hwMap.get(DcMotor.class, "idolY");
@@ -194,19 +198,22 @@ class HardwareByrdMK2
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
         backRight.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.FORWARD);
-        clamp.setDirection(DcMotor.Direction.REVERSE);
+        lift.setDirection(DcMotor.Direction.REVERSE);
+        dump.setDirection(DcMotor.Direction.REVERSE);
         idolZ.setDirection(DcMotor.Direction.FORWARD);
         idolY.setDirection(DcMotor.Direction.FORWARD);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
+        idolZ.setTargetPosition((int)IDOL_Z_START_POSITION);
+        dump.setTargetPosition((int)DUMP_DOWN);
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        clamp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        dump.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         idolZ.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        idolZ.setTargetPosition((int)IDOL_Z_START_POSITION);
         idolY.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Set all motors to zero power
