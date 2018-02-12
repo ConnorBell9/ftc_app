@@ -26,12 +26,6 @@ public class DumpMechByrd extends OpMode{
     @Override
     public void init() {
 		robot.init(hardwareMap);
-		if(!IS_GYRO_ON) {
-			robot.gyro.calibrate();
-			IS_GYRO_ON=true;
-		}
-		IS_GYRO_ON=false;
-		IS_BLOCK_GRAB=true;
     }
 
     @Override
@@ -74,9 +68,8 @@ public class DumpMechByrd extends OpMode{
 			IS_PLATE=!IS_PLATE;
 			INPUT_TIMER = System.currentTimeMillis();
 		}
-
-		if(gamepad1.y && System.currentTimeMillis() > INPUT_TIMER+500){
-			IS_GYRO_ON=!IS_GYRO_ON;
+	    if(gamepad1.a && System.currentTimeMillis() > INPUT_TIMER+500){
+			IS_DUMP!=IS_DUMP
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
@@ -85,7 +78,7 @@ public class DumpMechByrd extends OpMode{
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
-		if(gamepad2.b && System.currentTimeMillis() > INPUT_TIMER+500){
+		if(gamepad2.y && System.currentTimeMillis() > INPUT_TIMER+500){
 			IS_IDOL_TILT=!IS_IDOL_TILT;
 			INPUT_TIMER = System.currentTimeMillis();
 		}
@@ -110,10 +103,10 @@ public class DumpMechByrd extends OpMode{
 		}
 
 		if(gamepad2.left_stick_y>.02) {
-			robot.clamp.setPower(gamepad2.left_stick_y);
+			robot.lift.setPower(gamepad2.left_stick_y);
 		} else if(gamepad2.left_stick_y <- .02) {
-			robot.clamp.setPower(gamepad2.left_stick_y);
-		} else {robot.clamp.setPower(0);}
+			robot.lift.setPower(gamepad2.left_stick_y);
+		} else {robot.lift.setPower(0);}
 
 		if(gamepad2.right_trigger>.02){
 			robot.idolY.setPower(.75*gamepad2.right_trigger);
@@ -128,12 +121,14 @@ public class DumpMechByrd extends OpMode{
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
-	    telemetry.addData("Grab is:  ", IS_BLOCK_GRAB);
 		telemetry.addData("Plate is: ", IS_PLATE);
 		telemetry.addData("Idol is:  ", IS_IDOL_GRAB);
 		telemetry.addData("Gyro is:  ", IS_GYRO_ON);
-	    telemetry.addData("clamp Running to: ", robot.clamp.getTargetPosition());
-		telemetry.addData("clamp Running at: ", robot.clamp.getCurrentPosition());
+	    telemetry.addData("Intake is:", IS_DUMP);
+	    telemetry.addData("lift Running to:  ", robot.lift.getTargetPosition());
+		telemetry.addData("lift Running at:  ", robot.lift.getCurrentPosition());
+	    telemetry.addData("dump Running to:  ", robot.dump.getTargetPosition());
+		telemetry.addData("dump Running at:  ", robot.dump.getCurrentPosition());
 		telemetry.addData("idolY Running to: ", robot.idolY.getTargetPosition());
 		telemetry.addData("idolY Running at: ", robot.idolY.getCurrentPosition());
 		telemetry.addData("idolZ Running to: ", robot.idolZ.getTargetPosition());
