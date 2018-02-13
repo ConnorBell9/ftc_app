@@ -62,10 +62,10 @@ class HardwareByrdMK2
     Servo    armR              = null;
     Servo    armT              = null;
 
-    CRServo  intakeTopLeft     = null;
-    CRServo  intakeTopRight    = null;
-    CRServo  intakeBottomLeft  = null;
-    CRServo  intakeBottomRight = null;
+    CRServo  intakeFrontLeft   = null;
+    CRServo  intakeFrontRight  = null;
+    CRServo  intakeBackLeft    = null;
+    CRServo  intakeBackRight   = null;
 
     Servo    hammerY           = null;
     Servo    hammerX           = null;
@@ -83,7 +83,7 @@ class HardwareByrdMK2
     static final int    IDOL_Z_DELTA_POSITION = 50;
     static final double IDOL_Y_POSITION       =  0;
 
-    static double        IS_DUMP           = 0;
+    static double        DUMP_INTAKE_MODE  = 0;
     static boolean       IS_BLOCK_GRAB     = false;
     static final double  DUMP_EXPEL        =     1;
     static final double  DUMP_INTAKE       =    -1;
@@ -221,7 +221,7 @@ class HardwareByrdMK2
         frontLeft.setPower(0);
         backRight.setPower(0);
         backLeft.setPower(0);
-        clamp.setPower(0);
+        lift.setPower(0);
         idolZ.setPower(1);
         idolY.setPower(0);
 
@@ -230,15 +230,15 @@ class HardwareByrdMK2
         armR = hwMap.servo.get("armR");
         armT = hwMap.servo.get("armT");
 
-        intakeTopLeft     = hwMap.crservo.get("intakeTopLeft");
-        intakeTopRight    = hwMap.crservo.get("intakeTopRight");
-        intakeBottomLeft  = hwMap.crservo.get("intakeBottomLeft");
-        intakeBottomRight = hwMap.crservo.get("intakeBottomRight");
+        intakeFrontLeft     = hwMap.crservo.get("intakeFrontLeft");
+        intakeFrontRight    = hwMap.crservo.get("intakeFrontRight");
+        intakeBackLeft  = hwMap.crservo.get("intakeBackLeft");
+        intakeBackRight = hwMap.crservo.get("intakeBackRight");
 
-        intakeTopLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        intakeTopRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        intakeBottomLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        intakeBottomRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeFrontRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        intakeBackLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        intakeBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         hammerY = hwMap.servo.get("hammerY");
         hammerX = hwMap.servo.get("hammerX");
@@ -255,10 +255,10 @@ class HardwareByrdMK2
         plate.setPosition(PUSH_PLATE_UP);
         grabber.setPosition(IDOL_CLAMP_OPEN);
 
-        intakeTopLeft.setPower(INTAKE_OFF);
-        intakeTopRight.setPower(INTAKE_OFF);
-        intakeBottomLeft.setPower(INTAKE_OFF);
-        intakeBottomRight.setPower(INTAKE_OFF);
+        intakeFrontLeft.setPower(INTAKE_OFF);
+        intakeFrontRight.setPower(INTAKE_OFF);
+        intakeBackLeft.setPower(INTAKE_OFF);
+        intakeBackRight.setPower(INTAKE_OFF);
 
         // Define Sensors
         gyro = hwMap.get(ModernRoboticsI2cGyro.class, "gyro");

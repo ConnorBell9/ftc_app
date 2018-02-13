@@ -3,17 +3,18 @@ package org.firstinspires.ftc.team7153;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DUMP_DOWN;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DUMP_EXPEL;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DUMP_INACTIVE;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DUMP_INTAKE;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DUMP_INTAKE_MODE;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DUMP_UP;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_DUMP;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IDOL_CLAMP_AJAR;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IDOL_CLAMP_CLOSED;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IDOL_CLAMP_OPEN;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IDOL_Z_DELTA_POSITION;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INPUT_TIMER;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_BLOCK_GRAB;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_GYRO_ON;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_IDOL_GRAB;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_IDOL_TILT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_PLATE;
@@ -49,17 +50,17 @@ public class DumpMechByrd extends OpMode{
 		robot.backRight.setPower(v4*maxSpeed);
 
 	    if(gamepad2.a && System.currentTimeMillis() > INPUT_TIMER+500){
-			if(IS_DUMP==DUMP_INTAKE){
-				IS_DUMP=DUMP_INACTIVE;
+			if(DUMP_INTAKE_MODE==DUMP_INTAKE){
+				DUMP_INTAKE_MODE=DUMP_INACTIVE;
 			}else{
-				IS_DUMP=DUMP_INTAKE;
+				DUMP_INTAKE_MODE=DUMP_INTAKE;
 			}
 			INPUT_TIMER = System.currentTimeMillis();
 	    } else if (gamepad2.b && System.currentTimeMillis() > INPUT_TIMER+500){
-			if(IS_DUMP==DUMP_EXPEL){
-				IS_DUMP=DUMP_INACTIVE;
+			if(DUMP_INTAKE_MODE==DUMP_EXPEL){
+				DUMP_INTAKE_MODE=DUMP_INACTIVE;
 			}else{
-				IS_DUMP=DUMP_EXPEL;
+				DUMP_INTAKE_MODE=DUMP_EXPEL;
 			}
 			INPUT_TIMER = System.currentTimeMillis();
 		}
@@ -69,7 +70,7 @@ public class DumpMechByrd extends OpMode{
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 	    if(gamepad1.a && System.currentTimeMillis() > INPUT_TIMER+500){
-			IS_DUMP!=IS_DUMP
+			IS_DUMP=!IS_DUMP;
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
@@ -83,10 +84,10 @@ public class DumpMechByrd extends OpMode{
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
-		robot.intakeTopLeft.setPower(IS_DUMP);
-		robot.intakeTopRight.setPower(IS_DUMP);
-		robot.intakeBottomLeft.setPower(IS_DUMP);
-		robot.intakeBottomRight.setPower(IS_DUMP);
+		robot.intakeFrontLeft.setPower(DUMP_INTAKE_MODE);
+		robot.intakeBackRight.setPower(DUMP_INTAKE_MODE);
+		robot.intakeBackLeft.setPower(DUMP_INTAKE_MODE);
+		robot.intakeBackRight.setPower(DUMP_INTAKE_MODE);
 
 	    if(IS_PLATE){
 			robot.plate.setPosition(PUSH_PLATE_DOWN);
@@ -95,9 +96,9 @@ public class DumpMechByrd extends OpMode{
 		}
 	    
 	    if(IS_DUMP){
-	    	robot.DUMP.setPosition(DUMP_UP);
+	    	robot.dump.setTargetPosition(DUMP_UP);
 	    } else {
-	    	robot.DUMP.setPosition(DUMP_DOWN);
+	    	robot.dump.setTargetPosition(DUMP_DOWN);
 	    }
 
 		if(IS_IDOL_GRAB){

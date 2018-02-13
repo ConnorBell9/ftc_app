@@ -11,8 +11,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.BACKWARDS;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.CLAMP_POSITION_1;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.CLAMP_POSITION_2;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LIFT_POSITION_1;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LIFT_POSITION_2;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DEFAULT_MOVE_SPEED;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DEFAULT_TURN_SPEED;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DUMP_EXPEL;
@@ -27,7 +27,6 @@ import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_UP;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INPUT_TIMER;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INTAKE_OFF;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INTAKE_ON;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_GYRO_ON;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_CLOSE;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_OPEN;
@@ -66,8 +65,8 @@ public class AutoByrdMK3 extends LinearOpMode {
 		robot.color.enableLed(false);
 
 		//Activate Clamps's encoders
-		robot.clamp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-		robot.clamp.setPower(1);
+		robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+		robot.lift.setPower(1);
 
 		//Calibrate the Gyroscope
 		telemetry.addData("Gyro", " Calibrating. Do Not move!");
@@ -116,9 +115,6 @@ public class AutoByrdMK3 extends LinearOpMode {
 		//Reset the timer to 0
 		runTime.reset();
 
-		//Tell the robot that the Gyroscope has been correctly calibrated (Not used yet)
-		IS_GYRO_ON = true;
-
 		statusCheck();
 	}
 
@@ -127,12 +123,12 @@ public class AutoByrdMK3 extends LinearOpMode {
 			return;
 		}
 		/* Moves the clamp to either
-		*CLAMP_POSITION_1 (Which is ground level)
-		*CLAMP_POSITION_2 (Which is the position for the second block)
-		*CLAMP_POSITION_3 (Which is the position for the third block)
-		*CLAMP_POSITION_4 (Which is the position for the fourth block)
+		*LIFT_POSITION_1 (Which is ground level)
+		*LIFT_POSITION_2 (Which is the position for the second block)
+		*LIFT_POSITION_3 (Which is the position for the third block)
+		*LIFT_POSITION_4 (Which is the position for the fourth block)
 		*/
-		robot.clamp.setTargetPosition(position);
+		robot.lift.setTargetPosition(position);
 	}
 	
 	void grab(boolean grab) {
@@ -230,7 +226,7 @@ public class AutoByrdMK3 extends LinearOpMode {
 		}
 		grab(true);
 		intake(DUMP_INACTIVE);
-		clamp(CLAMP_POSITION_2);
+		clamp(LIFT_POSITION_2);
 		//Add the offset incurred by placing the cryptoblock
 		/*
 		* Return using the Y_AXIS now going back towards the cryptobox
@@ -247,10 +243,10 @@ public class AutoByrdMK3 extends LinearOpMode {
 	}
 
 	void intake(double mode) {
-		robot.intakeTopLeft.setPower(mode);
-		robot.intakeTopRight.setPower(mode);
-		robot.intakeBottomLeft.setPower(mode);
-		robot.intakeBottomRight.setPower(mode);
+		robot.intakeFrontLeft.setPower(mode);
+		robot.intakeFrontRight.setPower(mode);
+		robot.intakeBackLeft.setPower(mode);
+		robot.intakeBackRight.setPower(mode);
 	}
 
 
@@ -337,7 +333,7 @@ public class AutoByrdMK3 extends LinearOpMode {
 			SLOT_2 = true;
 		}
 		turn(turnDirection,DEFAULT_TURN_SPEED);
-		clamp(CLAMP_POSITION_1);
+		clamp(LIFT_POSITION_1);
 		straighten();
 		sleep(1000);
 		grab(false);
