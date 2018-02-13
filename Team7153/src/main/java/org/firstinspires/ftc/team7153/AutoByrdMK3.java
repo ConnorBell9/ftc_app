@@ -139,13 +139,13 @@ public class AutoByrdMK3 extends LinearOpMode {
 		*otherwise they will move to their respective open positions
 		*/
 		if (grab) {
-			robot.armL.setPosition(LEFT_CLAMP_CLOSE);
+			/*robot.armL.setPosition(LEFT_CLAMP_CLOSE);
 			robot.armR.setPosition(RIGHT_CLAMP_CLOSE);
-			robot.armT.setPosition(TOP_CLAMP_CLOSE);
+			robot.armT.setPosition(TOP_CLAMP_CLOSE);*/
 		} else {
-			robot.armL.setPosition(LEFT_CLAMP_OPEN);
+			/*robot.armL.setPosition(LEFT_CLAMP_OPEN);
 			robot.armR.setPosition(RIGHT_CLAMP_OPEN);
-			robot.armT.setPosition(TOP_CLAMP_OPEN);
+			robot.armT.setPosition(TOP_CLAMP_OPEN);*/
 		}
 	}
 	

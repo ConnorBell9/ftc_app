@@ -85,7 +85,7 @@ public class DumpMechByrd extends OpMode{
 		}
 
 		robot.intakeFrontLeft.setPower(DUMP_INTAKE_MODE);
-		robot.intakeBackRight.setPower(DUMP_INTAKE_MODE);
+		robot.intakeFrontRight.setPower(DUMP_INTAKE_MODE);
 		robot.intakeBackLeft.setPower(DUMP_INTAKE_MODE);
 		robot.intakeBackRight.setPower(DUMP_INTAKE_MODE);
 

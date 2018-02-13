@@ -58,10 +58,6 @@ class HardwareByrdMK2
     DcMotor  idolZ             = null;
     DcMotor  idolY             = null;
 
-    Servo    armL              = null;
-    Servo    armR              = null;
-    Servo    armT              = null;
-
     CRServo  intakeFrontLeft   = null;
     CRServo  intakeFrontRight  = null;
     CRServo  intakeBackLeft    = null;
@@ -226,19 +222,19 @@ class HardwareByrdMK2
         idolY.setPower(0);
 
         // Define and initialize ALL installed servos.
-        armL = hwMap.servo.get("armL");
+/*        armL = hwMap.servo.get("armL");
         armR = hwMap.servo.get("armR");
-        armT = hwMap.servo.get("armT");
+        armT = hwMap.servo.get("armT");*/
 
-        intakeFrontLeft     = hwMap.crservo.get("intakeFrontLeft");
-        intakeFrontRight    = hwMap.crservo.get("intakeFrontRight");
+        intakeFrontLeft = hwMap.crservo.get("intakeFrontLeft");
+        intakeFrontRight= hwMap.crservo.get("intakeFrontRight");
         intakeBackLeft  = hwMap.crservo.get("intakeBackLeft");
         intakeBackRight = hwMap.crservo.get("intakeBackRight");
 
         intakeFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         intakeFrontRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        intakeBackLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        intakeBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeBackLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeBackRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
         hammerY = hwMap.servo.get("hammerY");
         hammerX = hwMap.servo.get("hammerX");
@@ -247,9 +243,9 @@ class HardwareByrdMK2
 
         grabber = hwMap.servo.get("grabber");
 
-        armL.setPosition(LEFT_CLAMP_INIT);
+/*        armL.setPosition(LEFT_CLAMP_INIT);
         armR.setPosition(RIGHT_CLAMP_INIT);
-        armT.setPosition(TOP_CLAMP_INIT);
+        armT.setPosition(TOP_CLAMP_INIT);*/
         hammerY.setPosition(HAMMER_UP);
         hammerX.setPosition(HAMMER_CENTER);
         plate.setPosition(PUSH_PLATE_UP);
