@@ -24,19 +24,13 @@ import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_RIGHT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_UP;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INPUT_TIMER;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_CLOSE;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_OPEN;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.MOVE_BACKWARDS;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.OFFSET;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RED;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RIGHT;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RIGHT_CLAMP_CLOSE;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RIGHT_CLAMP_OPEN;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.SLOT_1;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.SLOT_2;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.SLOT_3;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TOP_CLAMP_CLOSE;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TOP_CLAMP_OPEN;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_BACK;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_ERROR;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_FORWARDS;
@@ -44,7 +38,7 @@ import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_LEFT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_RIGHT;
 
 
-public class AutoByrdMK3 extends LinearOpMode {
+public class AutoByrd extends LinearOpMode {
 	HardwareByrdMK2 robot = new HardwareByrdMK2(); //Gets robot from HardwareByrd class
 	private double imaginaryAngle=0;         //Sets the robot's initial angle to 0
 
@@ -114,34 +108,9 @@ public class AutoByrdMK3 extends LinearOpMode {
 		statusCheck();
 	}
 
-	void clamp(int position){
-		if(isStopRequested()){
-			return;
-		}
-		/* Moves the clamp to either
-		*LIFT_POSITION_1 (Which is ground level)
-		*LIFT_POSITION_2 (Which is the position for the second block)
-		*LIFT_POSITION_3 (Which is the position for the third block)
-		*LIFT_POSITION_4 (Which is the position for the fourth block)
-		*/
-		robot.lift.setTargetPosition(position);
-	}
-	
-	void grab(boolean grab) {
-		if(isStopRequested()){
-			return;
-		}
-		/*If grab is true then the clamps will move to their respective close positions
-		*otherwise they will move to their respective open positions
-		*/
-		if (grab) {
-			/*robot.armL.setPosition(LEFT_CLAMP_CLOSE);
-			robot.armR.setPosition(RIGHT_CLAMP_CLOSE);
-			robot.armT.setPosition(TOP_CLAMP_CLOSE);*/
-		} else {
-			/*robot.armL.setPosition(LEFT_CLAMP_OPEN);
-			robot.armR.setPosition(RIGHT_CLAMP_OPEN);
-			robot.armT.setPosition(TOP_CLAMP_OPEN);*/
+	void dump(boolean mode) throws InterruptedException{
+		if(mode){
+			robot.dump.setTargetPosition(0);
 		}
 	}
 	
@@ -193,7 +162,6 @@ public class AutoByrdMK3 extends LinearOpMode {
 	void harvest(double X_AXIS, double Y_AXIS,double END_DIRECTION) throws InterruptedException{
 		turn(TURN_RIGHT,.5);
 		//Open up the clamp and activate the intake in preparation of blocks.
-		grab(false);
 		intake(DUMP_INTAKE);
 		//Move away from the wall for Y_AXIS inches.
 		moveWithEncoders(Y_AXIS,.6,FORWARDS);
@@ -210,17 +178,14 @@ public class AutoByrdMK3 extends LinearOpMode {
 		if(X_AXIS>0){
 			turn(TURN_FORWARDS,DEFAULT_TURN_SPEED);
 			moveWithEncoders(X_AXIS,.4,FORWARDS);
-			grab(true);
 			intake(DUMP_INTAKE);
 			moveWithEncoders(X_AXIS,.4,BACKWARDS);
 		} else if (X_AXIS<0) {
 			turn(TURN_BACK,DEFAULT_TURN_SPEED);
 			moveWithEncoders(-X_AXIS,.4,FORWARDS);
-			grab(true);
 			intake(DUMP_INTAKE);
 			moveWithEncoders(-X_AXIS,.4,BACKWARDS);
 		}
-		grab(true);
 		intake(DUMP_INACTIVE);
 		//Add the offset incurred by placing the cryptoblock
 		/*
@@ -330,7 +295,6 @@ public class AutoByrdMK3 extends LinearOpMode {
 		turn(turnDirection,DEFAULT_TURN_SPEED);
 		straighten();
 		sleep(1000);
-		grab(false);
 		double DELTA_POSITION = robot.frontLeft.getCurrentPosition();
 		moveWithoutStopping(turnDirection+90,.15);
 		resetTimer();
@@ -386,7 +350,6 @@ public class AutoByrdMK3 extends LinearOpMode {
 		}
 		stopMoving();
 		straighten();
-		grab(false);
 		moveWithEncoders(8,DEFAULT_MOVE_SPEED,BACKWARDS);
 		stopMoving();
 	}

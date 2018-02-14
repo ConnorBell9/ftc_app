@@ -79,11 +79,8 @@ class HardwareByrdMK2
     static final int    IDOL_Z_DELTA_POSITION = 50;
     static final double IDOL_Y_POSITION       =  0;
 
-    static double        DUMP_INTAKE_MODE  = 0;
+    static double        INTAKE_SPEED      =     0;
     static boolean       IS_BLOCK_GRAB     = false;
-    static final double  DUMP_EXPEL        =     1;
-    static final double  DUMP_INTAKE       =    -1;
-    static final double  DUMP_INACTIVE     =     0;
     static final double  LEFT_CLAMP_CLOSE  =     1;
     static final double  RIGHT_CLAMP_CLOSE =     0;
     static final double  TOP_CLAMP_CLOSE   =   -.2;
@@ -94,16 +91,16 @@ class HardwareByrdMK2
     private static final double  RIGHT_CLAMP_INIT  =    .6;
     private static final double  TOP_CLAMP_INIT    =    -1;
 
-    static final double  INTAKE_ON         = 1;
-    static final double  INTAKE_OFF        = 0;
+    static boolean       IS_LIFT   =  false;
+    static final double  LIFT_DOWN =  0;
+    static final double  LIFT_UP   =  8.5*240/(.75*Math.PI);//(InchesToTravel*1440/InchesPerRevolution)
 
-    static final int     LIFT_POSITION_1  =           0;
-    static final int     LIFT_POSITION_2  =  (7*1440)/3;//(InchesToTravel*1440/InchesPerRevolution)
-    static final int     LIFT_POSITION_3  = (13*1440)/3;
-    static final int     LIFT_POSITION_4  = (19*1440)/3;
+    static final int DUMP_INTAKE   = -1;
+    static final int DUMP_EXPEL    =  1;
+    static final int DUMP_INACTIVE =  0;
     
     static boolean       IS_DUMP   = false;
-    static final int     DUMP_UP   = 4*90; //4 Pulses per Degree
+    static final int     DUMP_UP   = 4*100; //4 Pulses per Degree
     static final int     DUMP_DOWN =    0;
 
     static final double  HAMMER_DOWN    =   .98;
@@ -116,8 +113,6 @@ class HardwareByrdMK2
     static final double  PUSH_PLATE_DOWN =     0;
     static final double  PUSH_PLATE_UP   =     1;
 
-    static boolean       IS_IDOL_GRAB      = false;
-    static boolean       IS_IDOL_TILT      = false;
     static final double  IDOL_CLAMP_OPEN   =     0;
     static final double  IDOL_CLAMP_AJAR   =    .3;
     static final double  IDOL_CLAMP_CLOSED =     1;
@@ -194,7 +189,7 @@ class HardwareByrdMK2
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
         backRight.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.FORWARD);
-        lift.setDirection(DcMotor.Direction.REVERSE);
+        lift.setDirection(DcMotor.Direction.FORWARD);
         dump.setDirection(DcMotor.Direction.REVERSE);
         idolZ.setDirection(DcMotor.Direction.FORWARD);
         idolY.setDirection(DcMotor.Direction.FORWARD);
@@ -202,7 +197,7 @@ class HardwareByrdMK2
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
         idolZ.setTargetPosition((int)IDOL_Z_START_POSITION);
-        dump.setTargetPosition((int)DUMP_DOWN);
+        dump.setTargetPosition(DUMP_DOWN);
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -251,10 +246,10 @@ class HardwareByrdMK2
         plate.setPosition(PUSH_PLATE_UP);
         grabber.setPosition(IDOL_CLAMP_OPEN);
 
-        intakeFrontLeft.setPower(INTAKE_OFF);
-        intakeFrontRight.setPower(INTAKE_OFF);
-        intakeBackLeft.setPower(INTAKE_OFF);
-        intakeBackRight.setPower(INTAKE_OFF);
+        intakeFrontLeft.setPower(0);
+        intakeFrontRight.setPower(0);
+        intakeBackLeft.setPower(0);
+        intakeBackRight.setPower(0);
 
         // Define Sensors
         gyro = hwMap.get(ModernRoboticsI2cGyro.class, "gyro");

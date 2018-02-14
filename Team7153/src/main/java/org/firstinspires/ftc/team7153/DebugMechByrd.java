@@ -5,13 +5,13 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DUMP_DOWN;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DUMP_UP;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INTAKE_SPEED;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_DUMP;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IDOL_CLAMP_AJAR;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IDOL_CLAMP_CLOSED;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IDOL_CLAMP_OPEN;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IDOL_Z_DELTA_POSITION;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INPUT_TIMER;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INTAKE_SPEED;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_DUMP;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_LIFT;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_PLATE;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LIFT_DOWN;
@@ -20,7 +20,7 @@ import static org.firstinspires.ftc.team7153.HardwareByrdMK2.PUSH_PLATE_DOWN;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.PUSH_PLATE_UP;
 
 @TeleOp(name="DumpMechByrdMK3")
-public class DumpMechByrd extends OpMode{
+public class DebugMechByrd extends OpMode{
 	private HardwareByrdMK2 robot = new HardwareByrdMK2();
     @Override
     public void init() {
