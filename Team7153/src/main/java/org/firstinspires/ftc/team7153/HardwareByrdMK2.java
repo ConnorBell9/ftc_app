@@ -72,24 +72,24 @@ class HardwareByrdMK2
 
     ModernRoboticsI2cGyro gyro         = null;
     ModernRoboticsI2cColorSensor color = null;
-    ModernRoboticsI2cRangeSensor range = null;
+    ModernRoboticsI2cRangeSensor cubbyRange = null;
+    ModernRoboticsI2cRangeSensor blockRange = null;
 
     private static final double IDOL_Z_START_POSITION =  0;
-    static final double IDOL_Z_POSITION       =  0;
     static final int    IDOL_Z_DELTA_POSITION = 50;
-    static final double IDOL_Y_POSITION       =  0;
 
     static double        INTAKE_SPEED      =     0;
-    static boolean       IS_BLOCK_GRAB     = false;
+    static double        INTAKE_OFFSET     =     0;
+    //static boolean       IS_BLOCK_GRAB     = false;
     static final double  LEFT_CLAMP_CLOSE  =     1;
     static final double  RIGHT_CLAMP_CLOSE =     0;
     static final double  TOP_CLAMP_CLOSE   =   -.2;
     static final double  LEFT_CLAMP_OPEN   =    .6;
     static final double  RIGHT_CLAMP_OPEN  =    .4;
     static final double  TOP_CLAMP_OPEN    =     1;
-    private static final double  LEFT_CLAMP_INIT   =    .4;
+    /*private static final double  LEFT_CLAMP_INIT   =    .4;
     private static final double  RIGHT_CLAMP_INIT  =    .6;
-    private static final double  TOP_CLAMP_INIT    =    -1;
+    private static final double  TOP_CLAMP_INIT    =    -1;*/
 
     static boolean       IS_LIFT   =  false;
     static final double  LIFT_DOWN =  0;
@@ -118,6 +118,7 @@ class HardwareByrdMK2
     static final double  IDOL_CLAMP_CLOSED =     1;
 
     static double INPUT_TIMER = 0;
+    static boolean GYRO_MOVE  = false;
 
     static final boolean LEFT  = false;
     static final boolean RIGHT = true;
@@ -140,16 +141,8 @@ class HardwareByrdMK2
 
     static final int TURN_ERROR = 1;
 
-    static int FRONT_LEFT  = 0;
-    static int FRONT_RIGHT = 0;
-    static int BACK_LEFT   = 0;
-    static int BACK_RIGHT  = 0;
-
     static double DEFAULT_MOVE_SPEED = .3;
     static double DEFAULT_TURN_SPEED = .3;
-
-    static final double DELTA_RAMP = .1;
-    static double       RAMP       = 0;
 
     static boolean SLOT_1 = false;
     static boolean SLOT_2 = false;
@@ -226,8 +219,8 @@ class HardwareByrdMK2
         intakeBackLeft  = hwMap.crservo.get("intakeBackLeft");
         intakeBackRight = hwMap.crservo.get("intakeBackRight");
 
-        intakeFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        intakeFrontRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        intakeFrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        intakeFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         intakeBackLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         intakeBackRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
@@ -254,7 +247,8 @@ class HardwareByrdMK2
         // Define Sensors
         gyro = hwMap.get(ModernRoboticsI2cGyro.class, "gyro");
         color = hwMap.get(ModernRoboticsI2cColorSensor.class, "color");
-        range = hwMap.get(ModernRoboticsI2cRangeSensor.class, "range");
+        cubbyRange = hwMap.get(ModernRoboticsI2cRangeSensor.class, "cubbyRange");
+        blockRange = hwMap.get(ModernRoboticsI2cRangeSensor.class, "blockRange");
 
         color.enableLed(false);
 

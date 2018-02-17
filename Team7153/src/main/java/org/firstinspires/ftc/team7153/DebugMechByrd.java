@@ -121,7 +121,7 @@ public class DebugMechByrd extends OpMode{
 	    telemetry.addData("Gyro:       ", robot.gyro.getHeading());
 		telemetry.addData("Color Blue: ", robot.color.blue());
 		telemetry.addData("Color Red:  ", robot.color.red());
-		telemetry.addData("Range Sonic:", robot.range.cmUltrasonic());
+		telemetry.addData("Range Sonic:", robot.blockRange.cmUltrasonic());
 	    telemetry.update();
     }
 }

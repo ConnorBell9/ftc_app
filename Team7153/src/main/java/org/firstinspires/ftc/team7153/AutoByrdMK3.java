@@ -393,9 +393,9 @@ public class AutoByrdMK3 extends LinearOpMode {
 	void moveToCubby2() throws InterruptedException{
 		turn(TURN_LEFT,.3);
 		for(int x=0; x<2;x++) {
-			double distance = robot.range.cmUltrasonic();
+			double distance = robot.cubbyRange.cmUltrasonic();
 			moveWithoutStopping(MOVE_BACKWARDS, 1);
-			while (robot.range.cmUltrasonic() > distance - 5) {
+			while (robot.cubbyRange.cmUltrasonic() > distance - 5) {
 				telemetry();
 				sleep(10);
 			}

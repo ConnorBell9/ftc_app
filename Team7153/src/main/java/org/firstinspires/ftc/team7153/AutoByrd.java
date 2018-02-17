@@ -13,10 +13,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.BACKWARDS;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DEFAULT_MOVE_SPEED;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DEFAULT_TURN_SPEED;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DUMP_DOWN;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DUMP_EXPEL;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DUMP_INACTIVE;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DUMP_INTAKE;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DUMP_UP;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.FORWARDS;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.GYRO_MOVE;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_CENTER;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_DOWN;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_LEFT;
@@ -53,10 +56,6 @@ public class AutoByrd extends LinearOpMode {
 		////////////////////////////////////////////////////////////////////////////////////Hardware////////////////////////////////////////////////////////////////////////////////
 		robot.init(hardwareMap);
 		robot.color.enableLed(false);
-
-		//Activate Clamps's encoders
-		robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-		robot.lift.setPower(1);
 
 		//Calibrate the Gyroscope
 		telemetry.addData("Gyro", " Calibrating. Do Not move!");
@@ -108,9 +107,11 @@ public class AutoByrd extends LinearOpMode {
 		statusCheck();
 	}
 
-	void dump(boolean mode) throws InterruptedException{
+	private void dump(boolean mode) throws InterruptedException{
 		if(mode){
-			robot.dump.setTargetPosition(0);
+			robot.dump.setTargetPosition(DUMP_UP);
+		} else{
+			robot.dump.setTargetPosition(DUMP_DOWN);
 		}
 	}
 	
@@ -160,6 +161,7 @@ public class AutoByrd extends LinearOpMode {
 	}
 
 	void harvest(double X_AXIS, double Y_AXIS,double END_DIRECTION) throws InterruptedException{
+		GYRO_MOVE=true;
 		turn(TURN_RIGHT,.5);
 		//Open up the clamp and activate the intake in preparation of blocks.
 		intake(DUMP_INTAKE);
@@ -178,12 +180,10 @@ public class AutoByrd extends LinearOpMode {
 		if(X_AXIS>0){
 			turn(TURN_FORWARDS,DEFAULT_TURN_SPEED);
 			moveWithEncoders(X_AXIS,.4,FORWARDS);
-			intake(DUMP_INTAKE);
 			moveWithEncoders(X_AXIS,.4,BACKWARDS);
 		} else if (X_AXIS<0) {
 			turn(TURN_BACK,DEFAULT_TURN_SPEED);
 			moveWithEncoders(-X_AXIS,.4,FORWARDS);
-			intake(DUMP_INTAKE);
 			moveWithEncoders(-X_AXIS,.4,BACKWARDS);
 		}
 		intake(DUMP_INACTIVE);
@@ -234,30 +234,23 @@ public class AutoByrd extends LinearOpMode {
 				stopMoving();
 				return;
 			}
-			/*while((robot.gyro.getHeading()<imaginaryAngle-TURN_ERROR || robot.gyro.getHeading()>imaginaryAngle+TURN_ERROR) && (imaginaryAngle-TURN_ERROR<=-1 && robot.gyro.getHeading() != 360-TURN_ERROR || imaginaryAngle-TURN_ERROR>-1) && (imaginaryAngle+TURN_ERROR>=360 && robot.gyro.getHeading()>TURN_ERROR-1 || imaginaryAngle+TURN_ERROR<360) && INPUT_TIMER+5000>runTime.milliseconds()){
+			while((robot.gyro.getHeading()<imaginaryAngle-TURN_ERROR || robot.gyro.getHeading()>imaginaryAngle+TURN_ERROR) && (imaginaryAngle-TURN_ERROR<=-1 && robot.gyro.getHeading() != 360-TURN_ERROR || imaginaryAngle-TURN_ERROR>-1) && (imaginaryAngle+TURN_ERROR>=360 && robot.gyro.getHeading()>TURN_ERROR-1 || imaginaryAngle+TURN_ERROR<360) && INPUT_TIMER+5000>runTime.milliseconds()){
 				if(isStopRequested()) {
 					stopMoving();
 					return;
 				}
-					stopMoving();
-					FRONT_LEFT=robot.frontLeft.getTargetPosition()-robot.frontLeft.getCurrentPosition();
-					FRONT_RIGHT=robot.frontRight.getTargetPosition()-robot.frontRight.getCurrentPosition();
-					BACK_LEFT=robot.backLeft.getTargetPosition()-robot.backLeft.getCurrentPosition();
-					BACK_RIGHT=robot.backRight.getTargetPosition()-robot.backRight.getCurrentPosition();
-					straighten();
-					robot.frontLeft.setTargetPosition(FRONT_LEFT);
-					robot.frontRight.setTargetPosition(FRONT_RIGHT);
-					robot.backLeft.setTargetPosition(BACK_LEFT);
-					robot.backRight.setTargetPosition(BACK_RIGHT);
-					telemetry();
-			}*/
-			/*if(RAMP<power){
-				RAMP+=DELTA_RAMP;
-				robot.frontLeft.setPower(RAMP);
-				robot.frontRight.setPower(RAMP);
-				robot.backLeft.setPower(RAMP);
-				robot.backRight.setPower(RAMP);
-			}*/
+				stopMoving();
+				int FRONT_LEFT=robot.frontLeft.getTargetPosition()-robot.frontLeft.getCurrentPosition();
+				int FRONT_RIGHT=robot.frontRight.getTargetPosition()-robot.frontRight.getCurrentPosition();
+				int BACK_LEFT=robot.backLeft.getTargetPosition()-robot.backLeft.getCurrentPosition();
+				int BACK_RIGHT=robot.backRight.getTargetPosition()-robot.backRight.getCurrentPosition();
+				straighten();
+				robot.frontLeft.setTargetPosition(FRONT_LEFT);
+				robot.frontRight.setTargetPosition(FRONT_RIGHT);
+				robot.backLeft.setTargetPosition(BACK_LEFT);
+				robot.backRight.setTargetPosition(BACK_RIGHT);
+				telemetry();
+			}
 			robot.frontLeft.setPower(power);
 			robot.frontRight.setPower(power);
 			robot.backLeft.setPower(power);
@@ -266,10 +259,10 @@ public class AutoByrd extends LinearOpMode {
 			sleep(10);
 		}
 		sleep(100);
-		robot.frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-		robot.frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-		robot.backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-		robot.backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+		robot.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+		robot.frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+		robot.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+		robot.backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 	}
 
 	void moveToCubby(double turnDirection, boolean mode) throws InterruptedException {
@@ -295,11 +288,9 @@ public class AutoByrd extends LinearOpMode {
 		turn(turnDirection,DEFAULT_TURN_SPEED);
 		straighten();
 		sleep(1000);
-		double DELTA_POSITION = robot.frontLeft.getCurrentPosition();
-		moveWithoutStopping(turnDirection+90,.15);
-		resetTimer();
-		/*
-		sleep(1000);
+		moveWithEncoders(8,.15,BACKWARDS);
+		dump(true);
+		/*sleep(1000);
 		moveWithoutStopping(turnDirection,.3);
 		sleep(500);
 		moveWithoutStopping(turnDirection+90,.3);
@@ -307,58 +298,18 @@ public class AutoByrd extends LinearOpMode {
 		moveWithoutStopping(turnDirection-90,.3);
 		sleep(1000);
 		moveWithoutStopping(turnDirection+90,.15);
-		sleep(500);
-		 */
-		while(robot.frontLeft.getCurrentPosition()-420<=DELTA_POSITION && INPUT_TIMER+1500>System.currentTimeMillis()){
-			telemetry();
-			sleep(10);
-		}
-		if(robot.frontLeft.getCurrentPosition()-280<=DELTA_POSITION){
-			if(OFFSET>=0){
-				moveWithoutStopping(turnDirection+90+80,1);
-				sleep(500);
-				DELTA_POSITION = robot.frontLeft.getCurrentPosition();
-				moveWithoutStopping(turnDirection+90,.15);
-				while(robot.frontLeft.getCurrentPosition()-140<DELTA_POSITION && INPUT_TIMER+1000>System.currentTimeMillis()){
-					telemetry();
-					sleep(10);
-				}
-				if(robot.frontLeft.getCurrentPosition()-140<=DELTA_POSITION){
-					moveWithoutStopping(turnDirection+90-80,1);
-					sleep(1000);
-					moveWithoutStopping(turnDirection+90,.15);
-					sleep(500);
-				}
-				stopMoving();
-			} else if(OFFSET<=0){
-				moveWithoutStopping(turnDirection+90-80,1);
-				sleep(500);
-				DELTA_POSITION = robot.frontLeft.getCurrentPosition();
-				moveWithoutStopping(turnDirection+90,.15);
-				while(robot.frontLeft.getCurrentPosition()-140<DELTA_POSITION && INPUT_TIMER+1000>System.currentTimeMillis()){
-					telemetry();
-					sleep(10);
-				}
-				if(robot.frontLeft.getCurrentPosition()-140<=DELTA_POSITION){
-					moveWithoutStopping(turnDirection+90+80,1);
-					sleep(1000);
-					moveWithoutStopping(turnDirection+90,.15);
-					sleep(500);
-				}
-				stopMoving();
-			}
-		}
-		stopMoving();
+		sleep(500);*/
 		straighten();
-		moveWithEncoders(8,DEFAULT_MOVE_SPEED,BACKWARDS);
+		moveWithEncoders(8,DEFAULT_MOVE_SPEED,FORWARDS);
+		dump(false);
 		stopMoving();
 	}
 	void moveToCubby2() throws InterruptedException{
 		turn(TURN_LEFT,.3);
 		for(int x=0; x<2;x++) {
-			double distance = robot.range.cmUltrasonic();
+			double distance = robot.cubbyRange.cmUltrasonic();
 			moveWithoutStopping(MOVE_BACKWARDS, 1);
-			while (robot.range.cmUltrasonic() > distance - 5) {
+			while (robot.cubbyRange.cmUltrasonic() > distance - 5) {
 				telemetry();
 				sleep(10);
 			}
@@ -370,7 +321,7 @@ public class AutoByrd extends LinearOpMode {
 		intake(DUMP_INACTIVE);
 	}
 
-	void moveWithoutStopping(double angle, double power) throws InterruptedException {
+	private void moveWithoutStopping(double angle, double power) throws InterruptedException {
 		//See the move function. Just doesn't have the stopMoving() function built in.
 		if(isStopRequested()){
 			return;
@@ -458,7 +409,7 @@ public class AutoByrd extends LinearOpMode {
 		}
 	}
 
-	void telemetry(){
+	private void telemetry(){
 		telemetry.addData("/////VUFORIA", "/////");
 		telemetry.addData("VuMark", "%s visible", relicVuMark);
 		telemetry.addData("/////SENSORS", "/////");
@@ -466,8 +417,12 @@ public class AutoByrd extends LinearOpMode {
 		telemetry.addData("Color Blue:    ", robot.color.blue());
 		telemetry.addData("Current Angle: ", robot.gyro.getIntegratedZValue());
 		telemetry.addData("/////ENCODERS", "////");
-		telemetry.addData("Target Position:  ", robot.frontLeft.getTargetPosition());
-		telemetry.addData("Current Position: ", robot.frontLeft.getCurrentPosition());
+		telemetry.addData("Move Target Position:  ", robot.frontLeft.getTargetPosition());
+		telemetry.addData("Move Current Position: ", robot.frontLeft.getCurrentPosition());
+		telemetry.addData("Lift Target Position:  ", robot.lift.getTargetPosition());
+		telemetry.addData("Lift Current Position: ", robot.lift.getCurrentPosition());
+		telemetry.addData("Dump Target Position:  ", robot.dump.getTargetPosition());
+		telemetry.addData("Dump Current Position: ", robot.dump.getCurrentPosition());
 		telemetry.addData("/////MOTORS", "//////");
 		telemetry.addData("FrontLeft:  ", robot.frontLeft.getPower());
 		telemetry.addData("FrontRight: ", robot.frontRight.getPower());
@@ -476,7 +431,7 @@ public class AutoByrd extends LinearOpMode {
 		telemetry.update();
 	}
 
-	void turn(double angle, double speed) throws InterruptedException {
+	private void turn(double angle, double speed) throws InterruptedException {
 		if (isStopRequested()) {
 			return;
 		}

@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DUMP_DOWN;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DUMP_UP;
+import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INTAKE_OFFSET;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INTAKE_SPEED;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_DUMP;
 import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IDOL_CLAMP_AJAR;
@@ -46,9 +47,6 @@ public class DumpMechByrd extends OpMode{
 		robot.backLeft.setPower(v3*maxSpeed);
 		robot.backRight.setPower(v4*maxSpeed);
 
-		if(gamepad1.right_trigger>.02 || gamepad1.left_trigger>.02){
-			INTAKE_SPEED=gamepad1.left_trigger-gamepad1.right_trigger;
-		}
 		if(gamepad1.b && System.currentTimeMillis() > INPUT_TIMER+500){
 			IS_PLATE=!IS_PLATE;
 			INPUT_TIMER = System.currentTimeMillis();
@@ -81,10 +79,13 @@ public class DumpMechByrd extends OpMode{
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
-		robot.intakeFrontLeft.setPower(INTAKE_SPEED);
-		robot.intakeFrontRight.setPower(INTAKE_SPEED);
-		robot.intakeBackLeft.setPower(INTAKE_SPEED);
-		robot.intakeBackRight.setPower(INTAKE_SPEED);
+		INTAKE_SPEED= gamepad2.left_stick_y;
+		INTAKE_OFFSET= gamepad2.right_stick_x;
+
+		robot.intakeFrontLeft.setPower(INTAKE_SPEED+INTAKE_OFFSET);
+		robot.intakeFrontRight.setPower(INTAKE_SPEED-INTAKE_OFFSET);
+		robot.intakeBackLeft.setPower(INTAKE_SPEED+INTAKE_OFFSET);
+		robot.intakeBackRight.setPower(INTAKE_SPEED-INTAKE_OFFSET);
 
 	    if(IS_PLATE){
 			robot.plate.setPosition(PUSH_PLATE_DOWN);
@@ -121,7 +122,8 @@ public class DumpMechByrd extends OpMode{
 	    telemetry.addData("Gyro:       ", robot.gyro.getHeading());
 		telemetry.addData("Color Blue: ", robot.color.blue());
 		telemetry.addData("Color Red:  ", robot.color.red());
-		telemetry.addData("Range Sonic:", robot.range.cmUltrasonic());
+		telemetry.addData("Block Range:", robot.blockRange.cmUltrasonic());
+		telemetry.addData("Cubby Range:", robot.cubbyRange.cmUltrasonic());
 	    telemetry.update();
     }
 }
