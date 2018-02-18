@@ -112,7 +112,7 @@ class HardwareBellatorum
 
             backLiftMotor    = hwMap.dcMotor.get("back_lift_arm");
             backLiftMotor.setPower(0);
-            backLiftMotor.setDirection(DcMotor.Direction.REVERSE); // Reverse this motor
+            backLiftMotor.setDirection(DcMotor.Direction.FORWARD); // Reverse this motor
             backLiftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
             leftClamp = hwMap.servo.get("left_hand");
@@ -175,10 +175,14 @@ class HardwareBellatorum
 
     // Start the robot moving in the direction specified by angle (relative to the robot front)
     void startMovingInDirection(double angle, double power){
-        rightFrontMotor.setPower(Math.abs(power * Math.cos((Math.PI / 180) * angle)));
-        leftBackMotor.setPower(Math.abs(power * Math.cos((Math.PI / 180) * angle)));
-        leftFrontMotor.setPower(Math.abs(power * Math.sin((Math.PI / 180) * angle)));
-        rightBackMotor.setPower(Math.abs(power * Math.sin((Math.PI / 180) * angle)));
+        rightFrontMotor.setPower(Math.abs(power * (Math.cos((Math.PI / 180) * angle)
+                - Math.sin((Math.PI / 180) * angle))));
+        leftBackMotor.setPower(Math.abs(power * (Math.cos((Math.PI / 180) * angle)
+                - Math.sin((Math.PI / 180) * angle))));
+        leftFrontMotor.setPower(Math.abs(power * (Math.cos((Math.PI / 180) * angle)
+                + Math.sin((Math.PI / 180) * angle))));
+        rightBackMotor.setPower(Math.abs(power * (Math.cos((Math.PI / 180) * angle)
+                + Math.sin((Math.PI / 180) * angle))));
     }
 
     // Check if motors are still busy
@@ -193,13 +197,17 @@ class HardwareBellatorum
 
         // Determine new target positions
         rightFrontTarget = rightFrontMotor.getCurrentPosition()
+                - (distance*Math.sin((Math.PI / 180) * angle)* 12*COUNTS_PER_INCH)
                 + (distance*Math.cos((Math.PI / 180) * angle)* 12*COUNTS_PER_INCH);
         leftBackTarget = leftBackMotor.getCurrentPosition()
+                - (distance*Math.sin((Math.PI / 180) * angle)* 12*COUNTS_PER_INCH)
                 + (distance*Math.cos((Math.PI / 180) * angle)* 12*COUNTS_PER_INCH);
         leftFrontTarget = leftFrontMotor.getCurrentPosition()
-                + (distance*Math.sin((Math.PI / 180) * angle)* 12*COUNTS_PER_INCH);
+                + (distance*Math.sin((Math.PI / 180) * angle)* 12*COUNTS_PER_INCH)
+                + (distance*Math.cos((Math.PI / 180) * angle)* 12*COUNTS_PER_INCH);
         rightBackTarget = rightBackMotor.getCurrentPosition()
-                + (distance*Math.sin((Math.PI / 180) * angle)* 12*COUNTS_PER_INCH);
+                + (distance*Math.sin((Math.PI / 180) * angle)* 12*COUNTS_PER_INCH)
+                + (distance*Math.cos((Math.PI / 180) * angle)* 12*COUNTS_PER_INCH);
 
         // Pass new positions to motor controller
         rightFrontMotor.setTargetPosition((int)rightFrontTarget);

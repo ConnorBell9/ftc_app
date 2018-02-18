@@ -108,10 +108,13 @@ public class Teleop extends OpMode{
 
     // Function to desensitize controls
     float desens(float power) {
+/*
         if (Math.abs(power) < 0.01) return 0;
         if (Math.abs(power) < 0.05) return power * 2;
-        if (Math.abs(power) < 0.9) return power / 2;
+        if (Math.abs(power) < 0.9) return power / 4;
+*/
         return power*Math.abs(power);
+//        return power*power*power;
     }
 
     /*
@@ -146,10 +149,10 @@ public class Teleop extends OpMode{
             telemetry.addData("angle, z",  "%.2f, %.2f", angle, z);
             telemetry.addData("power",  "%.2f", power);
         } else { // use the old mode
-            robot.leftFrontMotor.setPower(x+r);  // Set wheels equal to left stick //
-            robot.rightFrontMotor.setPower(-y-r);  // direction plus amount of turn  //
-            robot.rightBackMotor.setPower(x-r);
-            robot.leftBackMotor.setPower(r-y);
+            robot.leftFrontMotor.setPower(x+y+r);  // Set wheels equal to left stick //
+            robot.rightFrontMotor.setPower(-x+y-r);  // direction plus amount of turn  //
+            robot.rightBackMotor.setPower(x+y-r);
+            robot.leftBackMotor.setPower(-x+y+r);
         }
 
         // Use gamepad left & right Bumpers to open and close the clamp
@@ -171,17 +174,23 @@ public class Teleop extends OpMode{
         clampOffset = Range.clip(clampOffset, -0.75, 0.75);
         robot.leftClamp.setPosition(robot.CLAMP_LEFT_OPEN + clampOffset);
         robot.rightClamp.setPosition(robot.CLAMP_RIGHT_OPEN - clampOffset);
+        // If the clamp is closed, close the top too
+        if (clampOffset> 0.3) {
+            robot.topClamp.setPosition(robot.CLAMP_TOP_CLOSED);
+        } else {
+            robot.topClamp.setPosition(robot.CLAMP_TOP_OPEN);
+        }
 
         // Use the bumpers to move the lifts up and down
         if(gamepad1.left_bumper || gamepad2.left_bumper
                 || (gamepad2.left_stick_y > 0.1)) {
             robot.liftMotor.setPower(robot.LIFT_DOWN_POWER / 2);
-            robot.backLiftMotor.setPower(robot.LIFT_DOWN_POWER);
+            robot.backLiftMotor.setPower(-1.0);
         }
        else if (gamepad1.right_bumper || gamepad2.right_bumper
                 || (gamepad2.left_stick_y < -0.1)) {
             robot.liftMotor.setPower(robot.LIFT_UP_POWER);
-            robot.backLiftMotor.setPower(robot.LIFT_UP_POWER * 2);
+            robot.backLiftMotor.setPower(1.0);
         }
         else {
             robot.liftMotor.setPower(0.0);
