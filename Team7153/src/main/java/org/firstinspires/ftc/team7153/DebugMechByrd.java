@@ -3,28 +3,34 @@ package org.firstinspires.ftc.team7153;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DUMP_DOWN;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DUMP_UP;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IDOL_CLAMP_AJAR;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IDOL_CLAMP_CLOSED;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IDOL_CLAMP_OPEN;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IDOL_Z_DELTA_POSITION;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INPUT_TIMER;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INTAKE_SPEED;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_DUMP;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_LIFT;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_PLATE;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LIFT_DOWN;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LIFT_UP;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.PUSH_PLATE_DOWN;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.PUSH_PLATE_UP;
+import static org.firstinspires.ftc.team7153.HardwareByrd.BLOCK_NO_PUSH;
+import static org.firstinspires.ftc.team7153.HardwareByrd.BLOCK_PUSH;
+import static org.firstinspires.ftc.team7153.HardwareByrd.DUMP_DOWN;
+import static org.firstinspires.ftc.team7153.HardwareByrd.DUMP_UP;
+import static org.firstinspires.ftc.team7153.HardwareByrd.IDOL_CLAMP_AJAR;
+import static org.firstinspires.ftc.team7153.HardwareByrd.IDOL_CLAMP_CLOSED;
+import static org.firstinspires.ftc.team7153.HardwareByrd.IDOL_CLAMP_OPEN;
+import static org.firstinspires.ftc.team7153.HardwareByrd.IDOL_Z_DELTA_POSITION;
+import static org.firstinspires.ftc.team7153.HardwareByrd.INPUT_TIMER;
+import static org.firstinspires.ftc.team7153.HardwareByrd.INTAKE_OFFSET;
+import static org.firstinspires.ftc.team7153.HardwareByrd.INTAKE_SPEED;
+import static org.firstinspires.ftc.team7153.HardwareByrd.IS_BLOCK_PUSH;
+import static org.firstinspires.ftc.team7153.HardwareByrd.IS_DUMP;
+import static org.firstinspires.ftc.team7153.HardwareByrd.IS_LIFT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.IS_PLATE;
+import static org.firstinspires.ftc.team7153.HardwareByrd.LATCH_UNLOCKED;
+import static org.firstinspires.ftc.team7153.HardwareByrd.LIFT_DOWN;
+import static org.firstinspires.ftc.team7153.HardwareByrd.LIFT_UP;
+import static org.firstinspires.ftc.team7153.HardwareByrd.PUSH_PLATE_DOWN;
+import static org.firstinspires.ftc.team7153.HardwareByrd.PUSH_PLATE_UP;
 
-@TeleOp(name="DumpMechByrdMK3")
+@TeleOp(name="DebugMechByrd")
 public class DebugMechByrd extends OpMode{
-	private HardwareByrdMK2 robot = new HardwareByrdMK2();
+	private HardwareByrd robot = new HardwareByrd();
     @Override
     public void init() {
 		robot.init(hardwareMap);
+		robot.intakeLatch.setPosition(LATCH_UNLOCKED);
     }
 
     @Override
@@ -46,11 +52,12 @@ public class DebugMechByrd extends OpMode{
 		robot.backLeft.setPower(v3*maxSpeed);
 		robot.backRight.setPower(v4*maxSpeed);
 
-		if(gamepad1.right_trigger>.02 || gamepad1.left_trigger>.02){
-			INTAKE_SPEED=gamepad1.left_trigger-gamepad1.right_trigger;
-		}
 		if(gamepad1.b && System.currentTimeMillis() > INPUT_TIMER+500){
 			IS_PLATE=!IS_PLATE;
+			INPUT_TIMER = System.currentTimeMillis();
+		}
+		if(gamepad1.a && System.currentTimeMillis() > INPUT_TIMER+500){
+			IS_DUMP=!IS_DUMP;
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
@@ -70,35 +77,61 @@ public class DebugMechByrd extends OpMode{
 			IS_LIFT=!IS_LIFT;
 			INPUT_TIMER = System.currentTimeMillis();
 		}
+		if(gamepad2.y && System.currentTimeMillis() > INPUT_TIMER+500){
+			IS_BLOCK_PUSH=!IS_BLOCK_PUSH;
+			INPUT_TIMER = System.currentTimeMillis();
+		}
 		if(gamepad2.x && System.currentTimeMillis() > INPUT_TIMER+500){
 	    	if(robot.grabber.getPosition()==IDOL_CLAMP_OPEN){robot.grabber.setPosition(IDOL_CLAMP_CLOSED);}else
 	    	if(robot.grabber.getPosition()==IDOL_CLAMP_AJAR){robot.grabber.setPosition(IDOL_CLAMP_OPEN);}else
 	    	if(robot.grabber.getPosition()==IDOL_CLAMP_CLOSED){robot.grabber.setPosition(IDOL_CLAMP_AJAR);}
 			INPUT_TIMER = System.currentTimeMillis();
 		}
-		if(gamepad2.y && System.currentTimeMillis() > INPUT_TIMER+500){
-			IS_DUMP=!IS_DUMP;
+		if(gamepad2.dpad_up && System.currentTimeMillis() > INPUT_TIMER+100){
+			robot.blockPusher.setPosition(robot.blockPusher.getPosition()+.01);
+			INPUT_TIMER = System.currentTimeMillis();
+		}
+		if(gamepad2.dpad_down && System.currentTimeMillis() > INPUT_TIMER+100){
+			robot.blockPusher.setPosition(robot.blockPusher.getPosition()-.01);
+			INPUT_TIMER = System.currentTimeMillis();
+		}
+		if(gamepad2.dpad_left && System.currentTimeMillis() > INPUT_TIMER+100){
+			robot.intakeLatch.setPosition(robot.intakeLatch.getPosition()-.01);
+			INPUT_TIMER = System.currentTimeMillis();
+		}
+		if(gamepad2.dpad_right && System.currentTimeMillis() > INPUT_TIMER+100){
+			robot.intakeLatch.setPosition(robot.intakeLatch.getPosition()+.01);
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
-		robot.intakeFrontLeft.setPower(INTAKE_SPEED);
-		robot.intakeFrontRight.setPower(INTAKE_SPEED);
-		robot.intakeBackLeft.setPower(INTAKE_SPEED);
-		robot.intakeBackRight.setPower(INTAKE_SPEED);
+		INTAKE_SPEED= gamepad2.left_stick_y;
+		INTAKE_OFFSET= gamepad2.right_stick_x;
 
-	    if(IS_PLATE){
+		robot.intakeFrontLeft.setPower(INTAKE_SPEED+INTAKE_OFFSET);
+		robot.intakeFrontRight.setPower(INTAKE_SPEED-INTAKE_OFFSET);
+		robot.intakeBackLeft.setPower(INTAKE_SPEED+INTAKE_OFFSET);
+		robot.intakeBackRight.setPower(INTAKE_SPEED-INTAKE_OFFSET);
+
+	    /*if(IS_PLATE){
 			robot.plate.setPosition(PUSH_PLATE_DOWN);
 		} else {
 			robot.plate.setPosition(PUSH_PLATE_UP);
+		}*/
+		if(IS_BLOCK_PUSH){
+			robot.blockPusher.setPosition(BLOCK_PUSH);
+		} else {
+			robot.blockPusher.setPosition(BLOCK_NO_PUSH);
 		}
-	    
+
 	    if(IS_DUMP){
-	    	robot.dump.setTargetPosition(DUMP_UP);
+			IS_BLOCK_PUSH=false;
+	    	robot.dump.setTargetPosition(100);
 	    } else {
 	    	robot.dump.setTargetPosition(DUMP_DOWN);
 	    }
 	    if(IS_LIFT){
-	    	robot.lift.setTargetPosition((int)LIFT_UP);
+			IS_BLOCK_PUSH=false;
+	    	robot.lift.setTargetPosition(100);
 		} else {
 	    	robot.lift.setTargetPosition((int)LIFT_DOWN);
 		}
@@ -106,6 +139,9 @@ public class DebugMechByrd extends OpMode{
 		telemetry.addData("Plate is: ", IS_PLATE);
 	    telemetry.addData("Intake is:", IS_DUMP);
 	    telemetry.addData("Lift is:  ", IS_LIFT);
+	    telemetry.addData("Block is: ", IS_BLOCK_PUSH);
+	    telemetry.addData("Block Pusher: ", robot.blockPusher.getPosition());
+		telemetry.addData("Intake Latch: ", robot.intakeLatch.getPosition());
 	    telemetry.addData("lift Running to:  ", robot.lift.getTargetPosition());
 		telemetry.addData("lift Running at:  ", robot.lift.getCurrentPosition());
 	    telemetry.addData("dump Running to:  ", robot.dump.getTargetPosition());
@@ -121,7 +157,8 @@ public class DebugMechByrd extends OpMode{
 	    telemetry.addData("Gyro:       ", robot.gyro.getHeading());
 		telemetry.addData("Color Blue: ", robot.color.blue());
 		telemetry.addData("Color Red:  ", robot.color.red());
-		telemetry.addData("Range Sonic:", robot.blockRange.cmUltrasonic());
+		telemetry.addData("Block Range:", robot.blockRange.cmUltrasonic());
+		telemetry.addData("Cubby Range:", robot.cubbyRange.cmUltrasonic());
 	    telemetry.update();
     }
 }

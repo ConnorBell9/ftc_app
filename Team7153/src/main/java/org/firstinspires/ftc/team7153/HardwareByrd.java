@@ -44,7 +44,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * This class can be used to define all the specific hardware for a single robot.
  *
  */
-class HardwareByrdMK2
+class HardwareByrd
 {
     /* Public OpMode members. */
     DcMotor  frontRight        = null;
@@ -66,9 +66,12 @@ class HardwareByrdMK2
     Servo    hammerY           = null;
     Servo    hammerX           = null;
 
-    Servo    plate             = null;
+    //Servo    plate             = null;
 
     Servo    grabber           = null;
+
+    Servo    intakeLatch       = null;
+    Servo    blockPusher       = null;
 
     ModernRoboticsI2cGyro gyro         = null;
     ModernRoboticsI2cColorSensor color = null;
@@ -117,6 +120,14 @@ class HardwareByrdMK2
     static final double  IDOL_CLAMP_AJAR   =    .3;
     static final double  IDOL_CLAMP_CLOSED =     1;
 
+    static boolean       IS_BLOCK_PUSH = false;
+    static final double  BLOCK_PUSH    = 1;
+    static final double  BLOCK_NO_PUSH = 0;
+
+    static boolean       IS_LATCH_RELEASE = false;
+    static final double  LATCH_LOCKED     = 1;
+    static final double  LATCH_UNLOCKED   = 0;
+
     static double INPUT_TIMER = 0;
     static boolean GYRO_MOVE  = false;
 
@@ -154,7 +165,7 @@ class HardwareByrdMK2
     static boolean VUFORIA_DISABLED = false;
 
     /* Constructor */
-    HardwareByrdMK2(){
+    HardwareByrd(){
 
     }
 
@@ -208,6 +219,8 @@ class HardwareByrdMK2
         lift.setPower(0);
         idolZ.setPower(1);
         idolY.setPower(0);
+        dump.setPower(.5);
+        lift.setPower(.5);
 
         // Define and initialize ALL installed servos.
 /*        armL = hwMap.servo.get("armL");
@@ -227,17 +240,22 @@ class HardwareByrdMK2
         hammerY = hwMap.servo.get("hammerY");
         hammerX = hwMap.servo.get("hammerX");
 
-        plate = hwMap.servo.get("plate");
+        //plate = hwMap.servo.get("plate");
 
         grabber = hwMap.servo.get("grabber");
+
+        intakeLatch = hwMap.servo.get("intakeLatch");
+        blockPusher = hwMap.servo.get("blockPusher");
 
 /*        armL.setPosition(LEFT_CLAMP_INIT);
         armR.setPosition(RIGHT_CLAMP_INIT);
         armT.setPosition(TOP_CLAMP_INIT);*/
         hammerY.setPosition(HAMMER_UP);
         hammerX.setPosition(HAMMER_CENTER);
-        plate.setPosition(PUSH_PLATE_UP);
+        //plate.setPosition(PUSH_PLATE_UP);
         grabber.setPosition(IDOL_CLAMP_OPEN);
+        intakeLatch.setPosition(LATCH_LOCKED);
+        blockPusher.setPosition(BLOCK_NO_PUSH);
 
         intakeFrontLeft.setPower(0);
         intakeFrontRight.setPower(0);

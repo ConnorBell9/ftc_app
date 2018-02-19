@@ -10,39 +10,39 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.BACKWARDS;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DEFAULT_MOVE_SPEED;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DEFAULT_TURN_SPEED;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DUMP_DOWN;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DUMP_EXPEL;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DUMP_INACTIVE;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DUMP_INTAKE;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DUMP_UP;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.FORWARDS;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.GYRO_MOVE;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_CENTER;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_DOWN;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_LEFT;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_RIGHT;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_UP;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INPUT_TIMER;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.MOVE_BACKWARDS;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.OFFSET;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RED;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RIGHT;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.SLOT_1;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.SLOT_2;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.SLOT_3;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_BACK;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_ERROR;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_FORWARDS;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_LEFT;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_RIGHT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.BACKWARDS;
+import static org.firstinspires.ftc.team7153.HardwareByrd.DEFAULT_MOVE_SPEED;
+import static org.firstinspires.ftc.team7153.HardwareByrd.DEFAULT_TURN_SPEED;
+import static org.firstinspires.ftc.team7153.HardwareByrd.DUMP_DOWN;
+import static org.firstinspires.ftc.team7153.HardwareByrd.DUMP_EXPEL;
+import static org.firstinspires.ftc.team7153.HardwareByrd.DUMP_INACTIVE;
+import static org.firstinspires.ftc.team7153.HardwareByrd.DUMP_INTAKE;
+import static org.firstinspires.ftc.team7153.HardwareByrd.DUMP_UP;
+import static org.firstinspires.ftc.team7153.HardwareByrd.FORWARDS;
+import static org.firstinspires.ftc.team7153.HardwareByrd.GYRO_MOVE;
+import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_CENTER;
+import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_DOWN;
+import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_LEFT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_RIGHT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_UP;
+import static org.firstinspires.ftc.team7153.HardwareByrd.INPUT_TIMER;
+import static org.firstinspires.ftc.team7153.HardwareByrd.LEFT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.MOVE_BACKWARDS;
+import static org.firstinspires.ftc.team7153.HardwareByrd.OFFSET;
+import static org.firstinspires.ftc.team7153.HardwareByrd.RED;
+import static org.firstinspires.ftc.team7153.HardwareByrd.RIGHT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.SLOT_1;
+import static org.firstinspires.ftc.team7153.HardwareByrd.SLOT_2;
+import static org.firstinspires.ftc.team7153.HardwareByrd.SLOT_3;
+import static org.firstinspires.ftc.team7153.HardwareByrd.TURN_BACK;
+import static org.firstinspires.ftc.team7153.HardwareByrd.TURN_ERROR;
+import static org.firstinspires.ftc.team7153.HardwareByrd.TURN_FORWARDS;
+import static org.firstinspires.ftc.team7153.HardwareByrd.TURN_LEFT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.TURN_RIGHT;
 
 
 public class AutoByrd extends LinearOpMode {
-	HardwareByrdMK2 robot = new HardwareByrdMK2(); //Gets robot from HardwareByrd class
+	HardwareByrd robot = new HardwareByrd(); //Gets robot from HardwareByrd class
 	private double imaginaryAngle=0;         //Sets the robot's initial angle to 0
 
 	ElapsedTime runTime = new ElapsedTime();
@@ -197,7 +197,7 @@ public class AutoByrd extends LinearOpMode {
 		if(OFFSET>0) {
 			moveWithEncoders(OFFSET, DEFAULT_MOVE_SPEED, FORWARDS);
 		} else {
-			moveWithEncoders(-OFFSET,DEFAULT_MOVE_SPEED,FORWARDS);
+			moveWithEncoders(-OFFSET,DEFAULT_MOVE_SPEED, BACKWARDS);
 		}
 		OFFSET = 0;
 	}
@@ -431,7 +431,7 @@ public class AutoByrd extends LinearOpMode {
 		telemetry.update();
 	}
 
-	private void turn(double angle, double speed) throws InterruptedException {
+	void turn(double angle, double speed) throws InterruptedException {
 		if (isStopRequested()) {
 			return;
 		}

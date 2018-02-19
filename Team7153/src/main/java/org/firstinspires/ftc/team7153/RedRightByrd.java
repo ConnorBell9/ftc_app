@@ -2,26 +2,22 @@ package org.firstinspires.ftc.team7153;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.BACKWARDS;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DEFAULT_MOVE_SPEED;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RED;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_BACK;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_LEFT;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.VUFORIA_DISABLED;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.VUFORIA_ENABLED;
+import static org.firstinspires.ftc.team7153.HardwareByrd.BACKWARDS;
+import static org.firstinspires.ftc.team7153.HardwareByrd.DEFAULT_MOVE_SPEED;
+import static org.firstinspires.ftc.team7153.HardwareByrd.RED;
+import static org.firstinspires.ftc.team7153.HardwareByrd.TURN_BACK;
+import static org.firstinspires.ftc.team7153.HardwareByrd.TURN_LEFT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.VUFORIA_DISABLED;
+import static org.firstinspires.ftc.team7153.HardwareByrd.VUFORIA_ENABLED;
 
 @Autonomous(name="RedRightByrd")
-public class RedRightByrd extends AutoByrdMK3 {
+public class RedRightByrd extends AutoByrd {
 	@Override
 	public void runOpMode() throws InterruptedException {
 		autonomousInit();
 		waitForStart();
 		autonomousStart();
 		if (!isStopRequested()) {
-			grab(false);
-			sleep(1000);
-			grab(true);
-			sleep(100);
 			hammer(RED);
             moveWithEncoders(24,DEFAULT_MOVE_SPEED,BACKWARDS);
             turn(TURN_LEFT,.3);

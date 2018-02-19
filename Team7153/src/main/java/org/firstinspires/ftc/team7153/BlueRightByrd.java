@@ -2,23 +2,19 @@ package org.firstinspires.ftc.team7153;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.BLUE;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.FORWARDS;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_LEFT;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.VUFORIA_ENABLED;
+import static org.firstinspires.ftc.team7153.HardwareByrd.BLUE;
+import static org.firstinspires.ftc.team7153.HardwareByrd.FORWARDS;
+import static org.firstinspires.ftc.team7153.HardwareByrd.TURN_LEFT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.VUFORIA_ENABLED;
 
 @Autonomous(name="BlueRightByrd")
-public class BlueRightByrd extends AutoByrdMK3 {
+public class BlueRightByrd extends AutoByrd {
 	@Override
 	public void runOpMode() throws InterruptedException {
 		autonomousInit();
 		waitForStart();
 		autonomousStart();
 		if (!isStopRequested()) {
-			grab(false);
-			sleep(1000);
-			grab(true);
-			sleep(100);
 			hammer(BLUE);
             moveWithEncoders(36,.3,FORWARDS);
             moveToCubby(TURN_LEFT, VUFORIA_ENABLED);

@@ -2,25 +2,21 @@ package org.firstinspires.ftc.team7153;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.BLUE;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DEFAULT_MOVE_SPEED;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.FORWARDS;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_FORWARDS;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_RIGHT;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.VUFORIA_ENABLED;
+import static org.firstinspires.ftc.team7153.HardwareByrd.BLUE;
+import static org.firstinspires.ftc.team7153.HardwareByrd.DEFAULT_MOVE_SPEED;
+import static org.firstinspires.ftc.team7153.HardwareByrd.FORWARDS;
+import static org.firstinspires.ftc.team7153.HardwareByrd.TURN_FORWARDS;
+import static org.firstinspires.ftc.team7153.HardwareByrd.TURN_RIGHT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.VUFORIA_ENABLED;
 
 @Autonomous(name="BlueLeftByrd")
-public class BlueLeftByrd extends AutoByrdMK3 {
+public class BlueLeftByrd extends AutoByrd {
 	@Override
 	public void runOpMode() throws InterruptedException {
 		autonomousInit();
 		waitForStart();
 		autonomousStart();
 		if (!isStopRequested()) {
-			grab(false);
-			sleep(1000);
-			grab(true);
-			sleep(100);
 			hammer(BLUE);
             moveWithEncoders(24,DEFAULT_MOVE_SPEED,FORWARDS);
             turn(TURN_RIGHT,.3);
