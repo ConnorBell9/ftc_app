@@ -102,11 +102,6 @@ public class DumpMechByrd extends OpMode{
 			robot.dump.setPower(.1);
 		}
 
-	    /*if(IS_PLATE){
-			robot.plate.setPosition(PUSH_PLATE_DOWN);
-		} else {
-			robot.plate.setPosition(PUSH_PLATE_UP);
-		}*/
 		if(IS_BLOCK_PUSH){
 			robot.blockPusher.setPosition(BLOCK_PUSH);
 		} else {
@@ -126,10 +121,11 @@ public class DumpMechByrd extends OpMode{
 	    	robot.lift.setTargetPosition((int)LIFT_DOWN);
 		}
 
-		telemetry.addData("Plate is: ", IS_PLATE);
+	    telemetry.addData("////////////////////", "Toggles");
 	    telemetry.addData("Intake is:", IS_DUMP);
 	    telemetry.addData("Lift is:  ", IS_LIFT);
-		telemetry.addData("Block is: ", IS_BLOCK_PUSH);
+	    telemetry.addData("Block is:  ", IS_BLOCK_PUSH);
+	    telemetry.addData("////////////////////", "Encoders");
 	    telemetry.addData("lift Running to:  ", robot.lift.getTargetPosition());
 		telemetry.addData("lift Running at:  ", robot.lift.getCurrentPosition());
 	    telemetry.addData("dump Running to:  ", robot.dump.getTargetPosition());
@@ -138,10 +134,18 @@ public class DumpMechByrd extends OpMode{
 		telemetry.addData("idolY Running at: ", robot.idolY.getCurrentPosition());
 		telemetry.addData("idolZ Running to: ", robot.idolZ.getTargetPosition());
 		telemetry.addData("idolZ Running at: ", robot.idolZ.getCurrentPosition());
+	    telemetry.addData("////////////////////", "Motors");
 	    telemetry.addData("frontLeft:  ", robot.frontLeft.getPower());
 	    telemetry.addData("frontRight: ", robot.frontRight.getPower());
 	    telemetry.addData("backLeft:   ", robot.backLeft.getPower());
 	    telemetry.addData("backRight:  ", robot.backRight.getPower());
+	    telemetry.addData("////////////////////", "Servos");
+	    telemetry.addData("HammerY:      ", robot.hammerY.getPosition());
+	    telemetry.addData("HammerX:      ", robot.hammerX.getPosition());
+	    telemetry.addData("Grabber:      ", robot.grabber.getPosition());
+	    telemetry.addData("Intake Latch: ", robot.intakeLatch.getPosition());
+	    telemetry.addData("Block Pusher: ", robot..getPosition());
+	    telemetry.addData("////////////////////", "Sensors");
 	    telemetry.addData("Gyro:       ", robot.gyro.getHeading());
 		telemetry.addData("Color Blue: ", robot.color.blue());
 		telemetry.addData("Color Red:  ", robot.color.red());
@@ -172,6 +176,20 @@ public class DumpMechByrd extends OpMode{
 	    telemetry.addData("Gamepad2 Left Stick X:  ", gamepad2.left_stick_x);
 	    telemetry.addData("Gamepad2 Right Stick X: ", gamepad2.right_stick_y);
 	    telemetry.addData("Gamepad2 Right Stick Y: ", gamepad2.right_stick_x);
+	    telemetry.addData("Gamepad2 Left Trigger:   ", gamepad2.right_trigger);
+	    telemetry.addData("Gamepad2 Right Trigger:  ", gamepad2.right_trigger);
+	    telemetry.addData("Gamepad2 Left Bumper:    ", gamepad2.left_bumper);
+	    telemetry.addData("Gamepad2 Right Bumper:   ", gamepad2.right_bumper);
+	    telemetry.addData("Gamepad2 Left Stick in:  ", gamepad2.left_stick_in);
+	    telemetry.addData("Gamepad2 Right Stick in: ", gamepad2.right_stick_in);
+	    telemetry.addData("Gamepad2 DPad Up:    ", gamepad2.dpad_up);
+	    telemetry.addData("Gamepad2 DPad Left:  ", gamepad2.dpad_left);
+	    telemetry.addData("Gamepad2 DPad Right: ", gamepad2.dpad_right);
+	    telemetry.addData("Gamepad2 DPad Down:  ", gamepad2.dpad_down);
+	    telemetry.addData("Gamepad2 A: ", gamepad2.a);
+	    telemetry.addData("Gamepad2 B: ", gamepad2.b);
+	    telemetry.addData("Gamepad2 X: ", gamepad2.x);
+	    telemetry.addData("Gamepad2 Y: ", gamepad2.y);
 	    telemetry.update();
     }
 }
