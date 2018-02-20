@@ -84,27 +84,27 @@ class HardwareByrd
     static double        INTAKE_SPEED      =     0;
     static double        INTAKE_OFFSET     =     0;
     //static boolean       IS_BLOCK_GRAB     = false;
-    static final double  LEFT_CLAMP_CLOSE  =     1;
+    /*static final double  LEFT_CLAMP_CLOSE  =     1;
     static final double  RIGHT_CLAMP_CLOSE =     0;
     static final double  TOP_CLAMP_CLOSE   =   -.2;
     static final double  LEFT_CLAMP_OPEN   =    .6;
     static final double  RIGHT_CLAMP_OPEN  =    .4;
     static final double  TOP_CLAMP_OPEN    =     1;
-    /*private static final double  LEFT_CLAMP_INIT   =    .4;
+    private static final double  LEFT_CLAMP_INIT   =    .4;
     private static final double  RIGHT_CLAMP_INIT  =    .6;
     private static final double  TOP_CLAMP_INIT    =    -1;*/
 
     static boolean       IS_LIFT   =  false;
     static final double  LIFT_DOWN =  0;
-    static final double  LIFT_UP   =  -8.5*240/(.3*Math.PI);//(InchesToTravel*1440/InchesPerRevolution)
+    static final double  LIFT_UP   =  -9.5*240/(.4*Math.PI);//(InchesToTravel*1440/InchesPerRevolution)
 
     static final int DUMP_INTAKE   = -1;
     static final int DUMP_EXPEL    =  1;
     static final int DUMP_INACTIVE =  0;
     
-    static boolean       IS_DUMP   = false;
-    static final int     DUMP_UP   = 4*100; //4 Pulses per Degree
-    static final int     DUMP_DOWN =    0;
+    static boolean       IS_DUMP         = false;
+    static final int     DUMP_UP         = 4*100; //4 Pulses per Degree
+    static final int     DUMP_DOWN       =    0;
 
     static final double  HAMMER_DOWN    =   .98;
     static final double  HAMMER_UP      =   .28;

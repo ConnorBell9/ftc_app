@@ -38,13 +38,13 @@ public class DumpMechByrd extends OpMode{
 		//double radGyro = (robot.gyro.getHeading() * Math.PI) / 180;
 	    double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
 		double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
-	    if(gamepad1.right_bumper){robotAngle=90; r=1;}
-	    else if (gamepad1.left_bumper){robotAngle=270; r=1;}
+	    if(gamepad1.right_bumper){robotAngle=Math.PI*7/4; r=1;}
+	    else if (gamepad1.left_bumper){robotAngle=Math.PI*3/4; r=1;}
 	    double rightX = gamepad1.right_stick_x;
-	    final double v1 = r * Math.cos(robotAngle) + rightX;
-	    final double v2 = r * Math.sin(robotAngle) - rightX;
-	    final double v3 = r * Math.sin(robotAngle) + rightX;
-	    final double v4 = r * Math.cos(robotAngle) - rightX;
+	    final double v1 = r * Math.sqrt(2) * Math.cos(robotAngle) + rightX;
+	    final double v2 = r * Math.sqrt(2) * Math.sin(robotAngle) - rightX;
+	    final double v3 = r * Math.sqrt(2) * Math.sin(robotAngle) + rightX;
+	    final double v4 = r * Math.sqrt(2) * Math.cos(robotAngle) - rightX;
 
 	    robot.frontLeft.setPower(v1*maxSpeed);
 		robot.frontRight.setPower(v2*maxSpeed);
@@ -94,7 +94,7 @@ public class DumpMechByrd extends OpMode{
 		robot.intakeBackLeft.setPower(INTAKE_SPEED+.5*INTAKE_OFFSET);
 		robot.intakeBackRight.setPower(INTAKE_SPEED-.5*INTAKE_OFFSET);
 
-		if(robot.dump.getCurrentPosition()<50 && robot.dump.getCurrentPosition()>-50 && robot.dump.getTargetPosition()==0 && robot.lift.getTargetPosition()!=0){
+		if(robot.dump.getCurrentPosition()<50 && robot.dump.getCurrentPosition()>-50 && robot.dump.getTargetPosition()==DUMP_DOWN && robot.lift.getTargetPosition()!=LIFT_UP){
 			robot.dump.setPower(0);
 			robot.dump.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 		} else {
@@ -135,6 +135,7 @@ public class DumpMechByrd extends OpMode{
 		telemetry.addData("idolZ Running to: ", robot.idolZ.getTargetPosition());
 		telemetry.addData("idolZ Running at: ", robot.idolZ.getCurrentPosition());
 	    telemetry.addData("////////////////////", "Motors");
+	    telemetry.addData("Dump Power: ", robot.dump.getPower());
 	    telemetry.addData("frontLeft:  ", robot.frontLeft.getPower());
 	    telemetry.addData("frontRight: ", robot.frontRight.getPower());
 	    telemetry.addData("backLeft:   ", robot.backLeft.getPower());
@@ -144,7 +145,7 @@ public class DumpMechByrd extends OpMode{
 	    telemetry.addData("HammerX:      ", robot.hammerX.getPosition());
 	    telemetry.addData("Grabber:      ", robot.grabber.getPosition());
 	    telemetry.addData("Intake Latch: ", robot.intakeLatch.getPosition());
-	    telemetry.addData("Block Pusher: ", robot..getPosition());
+	    telemetry.addData("Block Pusher: ", robot.blockPusher.getPosition());
 	    telemetry.addData("////////////////////", "Sensors");
 	    telemetry.addData("Gyro:       ", robot.gyro.getHeading());
 		telemetry.addData("Color Blue: ", robot.color.blue());
@@ -161,8 +162,8 @@ public class DumpMechByrd extends OpMode{
 	    telemetry.addData("Gamepad1 Right Trigger:  ", gamepad1.right_trigger);
 	    telemetry.addData("Gamepad1 Left Bumper:    ", gamepad1.left_bumper);
 	    telemetry.addData("Gamepad1 Right Bumper:   ", gamepad1.right_bumper);
-	    telemetry.addData("Gamepad1 Left Stick in:  ", gamepad1.left_stick_in);
-	    telemetry.addData("Gamepad1 Right Stick in: ", gamepad1.right_stick_in);
+	    telemetry.addData("Gamepad1 Left Stick in:  ", gamepad1.left_stick_button);
+	    telemetry.addData("Gamepad1 Right Stick in: ", gamepad1.right_stick_button);
 	    telemetry.addData("Gamepad1 DPad Up:    ", gamepad1.dpad_up);
 	    telemetry.addData("Gamepad1 DPad Left:  ", gamepad1.dpad_left);
 	    telemetry.addData("Gamepad1 DPad Right: ", gamepad1.dpad_right);
@@ -180,8 +181,8 @@ public class DumpMechByrd extends OpMode{
 	    telemetry.addData("Gamepad2 Right Trigger:  ", gamepad2.right_trigger);
 	    telemetry.addData("Gamepad2 Left Bumper:    ", gamepad2.left_bumper);
 	    telemetry.addData("Gamepad2 Right Bumper:   ", gamepad2.right_bumper);
-	    telemetry.addData("Gamepad2 Left Stick in:  ", gamepad2.left_stick_in);
-	    telemetry.addData("Gamepad2 Right Stick in: ", gamepad2.right_stick_in);
+	    telemetry.addData("Gamepad2 Left Stick in:  ", gamepad2.left_stick_button);
+	    telemetry.addData("Gamepad2 Right Stick in: ", gamepad2.right_stick_button);
 	    telemetry.addData("Gamepad2 DPad Up:    ", gamepad2.dpad_up);
 	    telemetry.addData("Gamepad2 DPad Left:  ", gamepad2.dpad_left);
 	    telemetry.addData("Gamepad2 DPad Right: ", gamepad2.dpad_right);
