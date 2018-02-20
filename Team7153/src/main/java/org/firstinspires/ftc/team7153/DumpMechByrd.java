@@ -2,6 +2,7 @@ package org.firstinspires.ftc.team7153;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import static org.firstinspires.ftc.team7153.HardwareByrd.BLOCK_NO_PUSH;
 import static org.firstinspires.ftc.team7153.HardwareByrd.BLOCK_PUSH;
@@ -21,8 +22,6 @@ import static org.firstinspires.ftc.team7153.HardwareByrd.IS_PLATE;
 import static org.firstinspires.ftc.team7153.HardwareByrd.LATCH_UNLOCKED;
 import static org.firstinspires.ftc.team7153.HardwareByrd.LIFT_DOWN;
 import static org.firstinspires.ftc.team7153.HardwareByrd.LIFT_UP;
-import static org.firstinspires.ftc.team7153.HardwareByrd.PUSH_PLATE_DOWN;
-import static org.firstinspires.ftc.team7153.HardwareByrd.PUSH_PLATE_UP;
 
 @TeleOp(name="DumpMechByrd")
 public class DumpMechByrd extends OpMode{
@@ -39,8 +38,8 @@ public class DumpMechByrd extends OpMode{
 		//double radGyro = (robot.gyro.getHeading() * Math.PI) / 180;
 	    double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
 		double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
-	    if(gamepad1.right_bumper){robotAngle=0; r=1;}
-	    else if (gamepad1.left_bumper){robotAngle=180; r=1;}
+	    if(gamepad1.right_bumper){robotAngle=90; r=1;}
+	    else if (gamepad1.left_bumper){robotAngle=270; r=1;}
 	    double rightX = gamepad1.right_stick_x;
 	    final double v1 = r * Math.cos(robotAngle) + rightX;
 	    final double v2 = r * Math.sin(robotAngle) - rightX;
@@ -60,7 +59,6 @@ public class DumpMechByrd extends OpMode{
 			IS_DUMP=!IS_DUMP;
 			INPUT_TIMER = System.currentTimeMillis();
 		}
-
 		if(gamepad2.right_trigger>.02){
 			robot.idolY.setPower(.75*gamepad2.right_trigger);
 		} else if (gamepad2.left_trigger>.02){
@@ -88,13 +86,21 @@ public class DumpMechByrd extends OpMode{
 			INPUT_TIMER = System.currentTimeMillis();
 		}
 
-		INTAKE_SPEED= gamepad2.left_stick_y;
-		INTAKE_OFFSET= gamepad2.right_stick_x;
+		INTAKE_SPEED = gamepad2.left_stick_y;
+		INTAKE_OFFSET = gamepad2.right_stick_x;
 
-		robot.intakeFrontLeft.setPower(INTAKE_SPEED+INTAKE_OFFSET);
-		robot.intakeFrontRight.setPower(INTAKE_SPEED-INTAKE_OFFSET);
-		robot.intakeBackLeft.setPower(INTAKE_SPEED+INTAKE_OFFSET);
-		robot.intakeBackRight.setPower(INTAKE_SPEED-INTAKE_OFFSET);
+		robot.intakeFrontLeft.setPower(INTAKE_SPEED+.5*INTAKE_OFFSET);
+		robot.intakeFrontRight.setPower(INTAKE_SPEED-.5*INTAKE_OFFSET);
+		robot.intakeBackLeft.setPower(INTAKE_SPEED+.5*INTAKE_OFFSET);
+		robot.intakeBackRight.setPower(INTAKE_SPEED-.5*INTAKE_OFFSET);
+
+		if(robot.dump.getCurrentPosition()<50 && robot.dump.getCurrentPosition()>-50 && robot.dump.getTargetPosition()==0 && robot.lift.getTargetPosition()!=0){
+			robot.dump.setPower(0);
+			robot.dump.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+		} else {
+			robot.dump.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+			robot.dump.setPower(.1);
+		}
 
 	    /*if(IS_PLATE){
 			robot.plate.setPosition(PUSH_PLATE_DOWN);

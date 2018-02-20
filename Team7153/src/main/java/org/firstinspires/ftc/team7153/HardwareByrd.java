@@ -96,7 +96,7 @@ class HardwareByrd
 
     static boolean       IS_LIFT   =  false;
     static final double  LIFT_DOWN =  0;
-    static final double  LIFT_UP   =  8.5*240/(.75*Math.PI);//(InchesToTravel*1440/InchesPerRevolution)
+    static final double  LIFT_UP   =  -8.5*240/(.3*Math.PI);//(InchesToTravel*1440/InchesPerRevolution)
 
     static final int DUMP_INTAKE   = -1;
     static final int DUMP_EXPEL    =  1;
@@ -121,12 +121,12 @@ class HardwareByrd
     static final double  IDOL_CLAMP_CLOSED =     1;
 
     static boolean       IS_BLOCK_PUSH = false;
-    static final double  BLOCK_PUSH    = 1;
-    static final double  BLOCK_NO_PUSH = 0;
+    static final double  BLOCK_PUSH    = .15;
+    static final double  BLOCK_NO_PUSH = 1;
 
     static boolean       IS_LATCH_RELEASE = false;
-    static final double  LATCH_LOCKED     = 1;
-    static final double  LATCH_UNLOCKED   = 0;
+    static final double  LATCH_LOCKED     = .03;
+    static final double  LATCH_UNLOCKED   = 1;
 
     static double INPUT_TIMER = 0;
     static boolean GYRO_MOVE  = false;
@@ -206,7 +206,7 @@ class HardwareByrd
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         dump.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         idolZ.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         idolY.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -216,10 +216,9 @@ class HardwareByrd
         frontLeft.setPower(0);
         backRight.setPower(0);
         backLeft.setPower(0);
-        lift.setPower(0);
         idolZ.setPower(1);
         idolY.setPower(0);
-        dump.setPower(.5);
+        dump.setPower(.1);
         lift.setPower(.5);
 
         // Define and initialize ALL installed servos.

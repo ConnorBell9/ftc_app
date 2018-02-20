@@ -107,21 +107,16 @@ public class DebugMechByrd extends OpMode{
 		INTAKE_SPEED= gamepad2.left_stick_y;
 		INTAKE_OFFSET= gamepad2.right_stick_x;
 
-		robot.intakeFrontLeft.setPower(INTAKE_SPEED+INTAKE_OFFSET);
-		robot.intakeFrontRight.setPower(INTAKE_SPEED-INTAKE_OFFSET);
-		robot.intakeBackLeft.setPower(INTAKE_SPEED+INTAKE_OFFSET);
-		robot.intakeBackRight.setPower(INTAKE_SPEED-INTAKE_OFFSET);
+		robot.intakeFrontLeft.setPower(INTAKE_SPEED+.5*INTAKE_OFFSET);
+		robot.intakeFrontRight.setPower(INTAKE_SPEED-.5*INTAKE_OFFSET);
+		robot.intakeBackLeft.setPower(INTAKE_SPEED+.5*INTAKE_OFFSET);
+		robot.intakeBackRight.setPower(INTAKE_SPEED-.5*INTAKE_OFFSET);
 
 	    /*if(IS_PLATE){
 			robot.plate.setPosition(PUSH_PLATE_DOWN);
 		} else {
 			robot.plate.setPosition(PUSH_PLATE_UP);
 		}*/
-		if(IS_BLOCK_PUSH){
-			robot.blockPusher.setPosition(BLOCK_PUSH);
-		} else {
-			robot.blockPusher.setPosition(BLOCK_NO_PUSH);
-		}
 
 	    if(IS_DUMP){
 			IS_BLOCK_PUSH=false;
@@ -131,15 +126,16 @@ public class DebugMechByrd extends OpMode{
 	    }
 	    if(IS_LIFT){
 			IS_BLOCK_PUSH=false;
-	    	robot.lift.setTargetPosition(100);
+	    	robot.lift.setTargetPosition(-100);
 		} else {
 	    	robot.lift.setTargetPosition((int)LIFT_DOWN);
 		}
 
 		telemetry.addData("Plate is: ", IS_PLATE);
-	    telemetry.addData("Intake is:", IS_DUMP);
+	    telemetry.addData("Dump is:  ", IS_DUMP);
 	    telemetry.addData("Lift is:  ", IS_LIFT);
 	    telemetry.addData("Block is: ", IS_BLOCK_PUSH);
+	    telemetry.addData("DUMP POSITION", robot.dump.getCurrentPosition());
 	    telemetry.addData("Block Pusher: ", robot.blockPusher.getPosition());
 		telemetry.addData("Intake Latch: ", robot.intakeLatch.getPosition());
 	    telemetry.addData("lift Running to:  ", robot.lift.getTargetPosition());
