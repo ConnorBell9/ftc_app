@@ -147,6 +147,31 @@ public class DumpMechByrd extends OpMode{
 		telemetry.addData("Color Red:  ", robot.color.red());
 		telemetry.addData("Block Range:", robot.blockRange.cmUltrasonic());
 		telemetry.addData("Cubby Range:", robot.cubbyRange.cmUltrasonic());
+	    telemetry.addData("////////////////////", "Gamepad_1");
+	    telemetry.addData("Gamepad1 Left Stick Y:   ", gamepad1.left_stick_y);
+	    telemetry.addData("Gamepad1 Left Stick X:   ", gamepad1.left_stick_x);
+	    telemetry.addData("Gamepad1 Right Stick X:  ", gamepad1.right_stick_y);
+	    telemetry.addData("Gamepad1 Right Stick Y:  ", gamepad1.right_stick_x);
+	    telemetry.addData("Gamepad1 Right Stick Y:  ", gamepad1.right_stick_x);
+	    telemetry.addData("Gamepad1 Left Trigger:   ", gamepad1.right_trigger);
+	    telemetry.addData("Gamepad1 Right Trigger:  ", gamepad1.right_trigger);
+	    telemetry.addData("Gamepad1 Left Bumper:    ", gamepad1.left_bumper);
+	    telemetry.addData("Gamepad1 Right Bumper:   ", gamepad1.right_bumper);
+	    telemetry.addData("Gamepad1 Left Stick in:  ", gamepad1.left_stick_in);
+	    telemetry.addData("Gamepad1 Right Stick in: ", gamepad1.right_stick_in);
+	    telemetry.addData("Gamepad1 DPad Up:    ", gamepad1.dpad_up);
+	    telemetry.addData("Gamepad1 DPad Left:  ", gamepad1.dpad_left);
+	    telemetry.addData("Gamepad1 DPad Right: ", gamepad1.dpad_right);
+	    telemetry.addData("Gamepad1 DPad Down:  ", gamepad1.dpad_down);
+	    telemetry.addData("Gamepad1 A: ", gamepad1.a);
+	    telemetry.addData("Gamepad1 B: ", gamepad1.b);
+	    telemetry.addData("Gamepad1 X: ", gamepad1.x);
+	    telemetry.addData("Gamepad1 Y: ", gamepad1.y);
+	    telemetry.addData("////////////////////", "Gamepad_2");
+	    telemetry.addData("Gamepad2 Left Stick Y:  ", gamepad2.left_stick_y);
+	    telemetry.addData("Gamepad2 Left Stick X:  ", gamepad2.left_stick_x);
+	    telemetry.addData("Gamepad2 Right Stick X: ", gamepad2.right_stick_y);
+	    telemetry.addData("Gamepad2 Right Stick Y: ", gamepad2.right_stick_x);
 	    telemetry.update();
     }
 }
