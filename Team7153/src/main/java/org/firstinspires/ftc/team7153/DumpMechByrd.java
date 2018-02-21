@@ -94,19 +94,12 @@ public class DumpMechByrd extends OpMode{
 		robot.intakeBackLeft.setPower(INTAKE_SPEED+.5*INTAKE_OFFSET);
 		robot.intakeBackRight.setPower(INTAKE_SPEED-.5*INTAKE_OFFSET);
 
-		if((robot.dump.getCurrentPosition()<DUMP_DOWN+20 && robot.dump.getCurrentPosition()>DUMP_DOWN-20 && robot.dump.getTargetPosition()==DUMP_DOWN) || (robot.dump.getCurrentPosition()<DUMP_UP+20 && robot.dump.getCurrentPosition()>DUMP_UP-20 && robot.dump.getTargetPosition()==DUMP_UP)){
+		if(robot.dump.getCurrentPosition()<20 && robot.dump.getCurrentPosition()>-20 && robot.dump.getTargetPosition()==DUMP_DOWN && robot.lift.getTargetPosition()==LIFT_DOWN){
 			robot.dump.setPower(0);
 			robot.dump.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 		} else {
 			robot.dump.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 			robot.dump.setPower(.1);
-		}
-		if((robot.lift.getCurrentPosition()<LIFT_DOWN+3 && robot.lift.getCurrentPosition()>LIFT_DOWN-3 && robot.lift.getTargetPosition()==LIFT_DOWN) || (robot.lift.getCurrentPosition()<LIFT_UP+3 && robot.lift.getCurrentPosition()>LIFT_UP-3 && robot.lift.getTargetPosition()==LIFT_UP)){
-			robot.lift.setPower(0);
-			robot.lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-		} else {
-			robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-			robot.lift.setPower(.1);
 		}
 
 		if(IS_BLOCK_PUSH){

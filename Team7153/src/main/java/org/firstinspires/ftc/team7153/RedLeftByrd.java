@@ -22,13 +22,13 @@ public class RedLeftByrd extends AutoByrd {
 			hammer(RED);
             moveWithEncoders(36,DEFAULT_MOVE_SPEED,BACKWARDS);//36 is previous value
             moveToCubby(TURN_RIGHT, VUFORIA_ENABLED);
-            while(runTime.milliseconds()<20000 && opModeIsActive()){
+            /*while(runTime.milliseconds()<20000 && opModeIsActive()){
             	harvest(0,42,TURN_FORWARDS);
             	moveToCubby(TURN_RIGHT,VUFORIA_DISABLED);
 			}
 			stopMoving();
             intake(DUMP_INACTIVE);
-            //moveToCubby2();
+            //moveToCubby2();*/
             stopMoving();
 		}
 	}
