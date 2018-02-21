@@ -96,7 +96,7 @@ class HardwareByrd
 
     static boolean       IS_LIFT   =  false;
     static final double  LIFT_DOWN =  0;
-    static final double  LIFT_UP   =  -9.5*240/(.4*Math.PI);//(InchesToTravel*1440/InchesPerRevolution)
+    static final double  LIFT_UP   =  -10*240/(.4*Math.PI);//(InchesToTravel*1440/InchesPerRevolution)
 
     static final int DUMP_INTAKE   = -1;
     static final int DUMP_EXPEL    =  1;
