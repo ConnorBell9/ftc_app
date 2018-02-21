@@ -254,7 +254,7 @@ class HardwareByrd
         //plate.setPosition(PUSH_PLATE_UP);
         grabber.setPosition(IDOL_CLAMP_OPEN);
         intakeLatch.setPosition(LATCH_LOCKED);
-        blockPusher.setPosition(BLOCK_NO_PUSH);
+        blockPusher.setPosition(BLOCK_PUSH);
 
         intakeFrontLeft.setPower(0);
         intakeFrontRight.setPower(0);

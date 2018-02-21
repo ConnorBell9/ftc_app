@@ -94,7 +94,7 @@ public class DumpMechByrd extends OpMode{
 		robot.intakeBackLeft.setPower(INTAKE_SPEED+.5*INTAKE_OFFSET);
 		robot.intakeBackRight.setPower(INTAKE_SPEED-.5*INTAKE_OFFSET);
 
-		if(robot.dump.getCurrentPosition()<50 && robot.dump.getCurrentPosition()>-50 && robot.dump.getTargetPosition()==DUMP_DOWN && robot.lift.getTargetPosition()!=LIFT_UP){
+		if(robot.dump.getCurrentPosition()<20 && robot.dump.getCurrentPosition()>-20 && robot.dump.getTargetPosition()==DUMP_DOWN && robot.lift.getTargetPosition()==LIFT_DOWN){
 			robot.dump.setPower(0);
 			robot.dump.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 		} else {

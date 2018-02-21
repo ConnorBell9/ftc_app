@@ -11,6 +11,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 import static org.firstinspires.ftc.team7153.HardwareByrd.BACKWARDS;
+import static org.firstinspires.ftc.team7153.HardwareByrd.BLOCK_NO_PUSH;
+import static org.firstinspires.ftc.team7153.HardwareByrd.BLOCK_PUSH;
 import static org.firstinspires.ftc.team7153.HardwareByrd.DEFAULT_MOVE_SPEED;
 import static org.firstinspires.ftc.team7153.HardwareByrd.DEFAULT_TURN_SPEED;
 import static org.firstinspires.ftc.team7153.HardwareByrd.DUMP_DOWN;
@@ -103,6 +105,8 @@ public class AutoByrd extends LinearOpMode {
 
 		//Reset the timer to 0
 		runTime.reset();
+
+		robot.blockPusher.setPosition(BLOCK_NO_PUSH);
 
 		statusCheck();
 	}
@@ -288,7 +292,7 @@ public class AutoByrd extends LinearOpMode {
 		turn(turnDirection,DEFAULT_TURN_SPEED);
 		straighten();
 		sleep(1000);
-		moveWithEncoders(8,.15,BACKWARDS);
+		moveWithEncoders(10,.4,BACKWARDS);
 		dump(true);
 		/*sleep(1000);
 		moveWithoutStopping(turnDirection,.3);
@@ -300,8 +304,9 @@ public class AutoByrd extends LinearOpMode {
 		moveWithoutStopping(turnDirection+90,.15);
 		sleep(500);*/
 		straighten();
-		moveWithEncoders(8,DEFAULT_MOVE_SPEED,FORWARDS);
+		moveWithEncoders(10,DEFAULT_MOVE_SPEED,FORWARDS);
 		dump(false);
+		sleep(1000);
 		stopMoving();
 	}
 	void moveToCubby2() throws InterruptedException{
@@ -404,7 +409,7 @@ public class AutoByrd extends LinearOpMode {
 				return;
 			}
 			stopMoving();
-			turn(imaginaryAngle,.24);
+			turn(imaginaryAngle,.26);
 			telemetry();
 		}
 	}
