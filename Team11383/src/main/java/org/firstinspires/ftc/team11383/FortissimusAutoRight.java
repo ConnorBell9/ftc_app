@@ -79,9 +79,7 @@ public class FortissimusAutoRight extends LinearOpMode {
 
 
     private void move(double angle, double distance, double power){
-        robot.startMovingInDirection(angle, power); // Start moving in the right direction
-
-        // Run long enough to make the distance
+        robot.startMovingInDirection(angle, power); // Start moving in the right direction        // Run long enough to make the distance
         runtime.reset();
         while (runtime.seconds() < distance*robot.FEET_PER_SEC/power + robot.MOVE_START_SECS) {
             telemetry.addData("Moving: ", "%2.5f deg, %2.5f secs Elapsed", angle, runtime.seconds());
@@ -137,6 +135,6 @@ public class FortissimusAutoRight extends LinearOpMode {
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
-        sleep(1000);//
+        sleep(1000);
     }
 }
