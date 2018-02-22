@@ -50,22 +50,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 @Autonomous(name="Bellatorum: Front Blue", group="Bellatorum")
 public class BellatorumAutoFrontBlue extends BellatorumAuto {
 
-    /* Declare OpMode members. */
-    private HardwareBellatorum robot   = new HardwareBellatorum();   // Use Bellatorum's hardware
-
     @Override
     public void runOpMode() {
 
-        // Disable the clamp
-        robot.clampInstalled=false;
         /*
          * Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
 
-        // Initialize the Vuforia capability
-        initVuforia();
+        autonomousInit(); // Initialize the autonomous method
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");
@@ -74,6 +68,7 @@ public class BellatorumAutoFrontBlue extends BellatorumAuto {
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+        gyro.resetZAxisIntegrator(); // Reset the gyro
 
         robot.clampClose(); // Grab the glyph
         sleep(1000); // Wait one second
@@ -84,18 +79,25 @@ public class BellatorumAutoFrontBlue extends BellatorumAuto {
 
         displaceJewel(robot.COLOR_RED); // Knock off the jewel of this color
 
+        move(robot.LEFT, 2.5, 1); // Move in feet
+        turn(robot.RIGHT/6, 0.8); turn(robot.FORWARD, 0.8 ); // Wiggle off the platform
+        move(robot.FORWARD, 0.33); // move away from the glyph box
+        move(robot.RIGHT, 1.0, 0.2); // Move back to align with platform
+
         // Move the robot according to the relic VuMark
-        double relicMove = 3.0; // Default is to move 3.0 feet
-        if (relicVuMark == RelicRecoveryVuMark.LEFT) { relicMove -= 7.63 / 12; } // 7.63" shorter
-        if (relicVuMark == RelicRecoveryVuMark.RIGHT) { relicMove += 7.63/12; } // 7.63" further
-        move(robot.LEFT, relicMove); // Move forward relicMove feet
-        turn(robot.AROUND); // Turn 180 degrees
-        move(robot.FORWARD, 0.8); // Move forward 0.8 feet
+        double relicMove = 7.63/12; // Default to move in feet
+        double turnAngle=-145.0; // Default turn angle
+        if (relicVuMark == RelicRecoveryVuMark.LEFT) { turnAngle += -19.0; } // Turn a little further
+        if (relicVuMark == RelicRecoveryVuMark.RIGHT) { relicMove += 8.63/12; } // 7.63" further
+        move(robot.LEFT, relicMove); // Move left relicMove feet
+        turn(turnAngle); // Turn left in degrees
+        move(robot.FORWARD, 0.75); // Move forward in feet
 
+        liftDown(0.6); // Lower the lift in ft
         robot.clampOpen(); // Drop the glyph
-        move(robot.FORWARD, 0.7); // Move forward 0.7 feet
+        move(robot.FORWARD, 0.65, 0.4); // Move forward in feet
 
-        move(robot.BACK, 0.5); // Back up 6 inches
+        move(robot.BACK, 0.2); // Back up
 
         telemetry.addData("Path", "Complete");
         telemetry.update();

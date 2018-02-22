@@ -23,6 +23,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Motor channel:  Left Back drive motor:    "left_back_drive"
  * Motor channel:  Right Back drive motor:   "right_back_drive"
  * Motor channel:  Lift Drive motor:         "lift_arm"
+ * Motor channel:  Back Lift Drive motor:    "back_lift_arm"
  * Servo channel:  Servo to move left clamp: "left_hand"
  * Servo channel:  Servo to move right clamp:"right_hand"
  */
@@ -34,34 +35,40 @@ class HardwareBellatorum
     DcMotor  leftBackMotor    = null;
     DcMotor  rightBackMotor   = null;
     DcMotor  liftMotor   = null;
+    DcMotor  backLiftMotor    = null;
     Servo    leftClamp   = null;
     Servo    rightClamp  = null;
     Servo    colorArm = null;
     ColorSensor colorSensor;
-    boolean clampInstalled=true;
+    boolean clampInstalled=true; // Set to false to run without clamp installed, true to run with
 
-    final double CLAMP_LEFT_OPEN  =  0.4;
-    final double CLAMP_RIGHT_OPEN = 0.7;
+    final double CLAMP_LEFT_OPEN  =  0.35;
+    final double CLAMP_RIGHT_OPEN = 0.75;
     final double CLAMP_LEFT_CLOSED  = 1.0;
     final double CLAMP_RIGHT_CLOSED = 0.0;
     final double LIFT_UP_POWER    =  0.25 ;
-    final double LIFT_DOWN_POWER  = -0.25 ;
+    final double LIFT_DOWN_POWER  = -0.13 ;
     final double LIFT_FEET_PER_SEC = 5;
     final double FORWARD_POWER = 0.6;
     final double FEET_PER_SEC = 4;
     final double MOVE_START_SECS = 0.1;
-    final double TURN_POWER    = 0.1;
+    final double TURN_POWER    = 1.0;
     final double FORWARD =0.0;
     final double RIGHT = 90.0;
     final double LEFT = -90.0;
     final double BACK = 180.0;
     final double AROUND = 180.0;
-    final double DEGREES_PER_SEC = 340+.0;
-    final double TURN_START_SECS = 0.2;
-    final double ARM_UP = 0.25;
-    final double ARM_DOWN = 115;
+    final double DEGREES_PER_SEC = 500;
+    final double TURN_START_SECS = 0;
+    final double ARM_UP = 0.22;
+    final double ARM_DOWN = 118;
     final int COLOR_RED = 1;
     final int COLOR_BLUE = 2;
+    final double     COUNTS_PER_MOTOR_REV    = 1120 ;    // eg: AndyMark NeverRest 40 Motor Encoder
+    final double     DRIVE_GEAR_REDUCTION    = 1.0;      // This is < 1.0 if geared UP
+    final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
+    final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+                                                (WHEEL_DIAMETER_INCHES * 3.1415);
 
     /* local OpMode members. */
     private HardwareMap hwMap           =  null;
@@ -82,37 +89,34 @@ class HardwareBellatorum
         rightFrontMotor  = hwMap.dcMotor.get("right_front_drive");
         leftBackMotor    = hwMap.dcMotor.get("left_back_drive");
         rightBackMotor   = hwMap.dcMotor.get("right_back_drive");
-        if (clampInstalled) liftMotor    = hwMap.dcMotor.get("lift_arm");
         leftFrontMotor.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
-        rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
+        rightFrontMotor.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
         leftBackMotor.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
-        rightBackMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
-
+        rightBackMotor.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
 
         // Set all motors to zero power
-        leftFrontMotor.setPower(0);
-        rightFrontMotor.setPower(0);
-        leftBackMotor.setPower(0);
-        rightBackMotor.setPower(0);
-        if (clampInstalled) liftMotor.setPower(0);
-
-        // Set all motors to run without encoders.
-        // May want to use RUN_USING_ENCODERS if encoders are installed.
-        leftFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        leftBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        if (clampInstalled) liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        stopMoving();
+        resetEncoders();
+        setupEncoders();
 
         // Define and initialize ALL installed servos.
         if (clampInstalled) {
+            liftMotor    = hwMap.dcMotor.get("lift_arm");
+            liftMotor.setPower(0);
+            liftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+            backLiftMotor    = hwMap.dcMotor.get("back_lift_arm");
+            backLiftMotor.setPower(0);
+            backLiftMotor.setDirection(DcMotor.Direction.REVERSE); // Reverse this motor
+            backLiftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
             leftClamp = hwMap.servo.get("left_hand");
             rightClamp = hwMap.servo.get("right_hand");
             leftClamp.setPosition(0.2);
             rightClamp.setPosition(0.8);
         }
         colorArm = hwMap.servo.get("color_arm");
-        colorArm.setPosition(-0.25);
+        colorArm.setPosition(ARM_UP);
 
         // get a reference to our colorSensor
         colorSensor = hwMap.get(ColorSensor.class, "sensor_color");
@@ -124,6 +128,26 @@ class HardwareBellatorum
         rightFrontMotor.setPower(0.0);
         leftFrontMotor.setPower(0.0);
         rightBackMotor.setPower(0.0);
+
+        setupEncoders(); // Turn off RUN_TO_POSITION
+    }
+
+    // Reset encoders
+    void resetEncoders() {
+        // Reset all encoders
+        leftFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
+    // Setup encoders and turn off RUN_TO_POSITION
+    void setupEncoders(){
+        // Set all motors to run with encoders.
+        leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     // Start the robot turning in the angle direction at specified power
@@ -136,18 +160,54 @@ class HardwareBellatorum
         }
 
         // Set all motors to turn in direction at power
-        rightBackMotor.setPower(power * direction);
-        rightFrontMotor.setPower(power * direction);
+        rightBackMotor.setPower(-power * direction);
+        rightFrontMotor.setPower(-power * direction);
         leftFrontMotor.setPower(power * direction);
         leftBackMotor.setPower(power * direction);
     }
 
     // Start the robot moving in the direction specified by angle (relative to the robot front)
     void startMovingInDirection(double angle, double power){
-        rightFrontMotor.setPower(-power * Math.cos((Math.PI / 180) * angle));
-        leftBackMotor.setPower(power * Math.cos((Math.PI / 180) * angle));
-        leftFrontMotor.setPower(power * Math.sin((Math.PI / 180) * angle));
-        rightBackMotor.setPower(-power * Math.sin((Math.PI / 180) * angle));
+        rightFrontMotor.setPower(Math.abs(power * Math.cos((Math.PI / 180) * angle)));
+        leftBackMotor.setPower(Math.abs(power * Math.cos((Math.PI / 180) * angle)));
+        leftFrontMotor.setPower(Math.abs(power * Math.sin((Math.PI / 180) * angle)));
+        rightBackMotor.setPower(Math.abs(power * Math.sin((Math.PI / 180) * angle)));
+    }
+
+    // Check if motors are still busy
+    boolean motorsBusy(){
+        return (rightFrontMotor.isBusy() || leftBackMotor.isBusy() || leftFrontMotor.isBusy()
+                || rightBackMotor.isBusy());
+    }
+
+    // Start the robot moving in the direction specified by angle (relative to the robot front)
+    void startMovingEncoder(double angle, double distance, double power){
+        double leftFrontTarget = 0, leftBackTarget =0, rightFrontTarget = 0, rightBackTarget = 0;
+
+        // Determine new target positions
+        rightFrontTarget = rightFrontMotor.getCurrentPosition()
+                + (distance*Math.cos((Math.PI / 180) * angle)* 12*COUNTS_PER_INCH);
+        leftBackTarget = leftBackMotor.getCurrentPosition()
+                + (distance*Math.cos((Math.PI / 180) * angle)* 12*COUNTS_PER_INCH);
+        leftFrontTarget = leftFrontMotor.getCurrentPosition()
+                + (distance*Math.sin((Math.PI / 180) * angle)* 12*COUNTS_PER_INCH);
+        rightBackTarget = rightBackMotor.getCurrentPosition()
+                + (distance*Math.sin((Math.PI / 180) * angle)* 12*COUNTS_PER_INCH);
+
+        // Pass new positions to motor controller
+        rightFrontMotor.setTargetPosition((int)rightFrontTarget);
+        leftBackMotor.setTargetPosition((int)leftBackTarget);
+        leftFrontMotor.setTargetPosition((int)leftFrontTarget);
+        rightBackMotor.setTargetPosition((int)rightBackTarget);
+
+        // Turn On RUN_TO_POSITION
+        rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        // Start motion
+        startMovingInDirection(angle, power);
     }
 
     // Set the clamp to the specified open angle
@@ -156,7 +216,7 @@ class HardwareBellatorum
         leftClamp.setPosition(CLAMP_LEFT_CLOSED - angle/2/180);
         rightClamp.setPosition(CLAMP_RIGHT_CLOSED + angle/2/180);
     }
-    void clampOpen() {clampOpen(180);} // Open the clamp all the way
+    void clampOpen() {clampOpen(190);} // Open the clamp all the way
     void clampClose() {clampOpen(30);} // Close the clamp on a glyph
 
     // Set the color arm to the specified down angle from 0 degrees straight up, 100 degrees down
