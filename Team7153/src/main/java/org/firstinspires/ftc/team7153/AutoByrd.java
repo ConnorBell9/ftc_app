@@ -238,7 +238,7 @@ public class AutoByrd extends LinearOpMode {
 				stopMoving();
 				return;
 			}
-			while((robot.gyro.getHeading()<imaginaryAngle-TURN_ERROR || robot.gyro.getHeading()>imaginaryAngle+TURN_ERROR) && (imaginaryAngle-TURN_ERROR<=-1 && robot.gyro.getHeading() != 360-TURN_ERROR || imaginaryAngle-TURN_ERROR>-1) && (imaginaryAngle+TURN_ERROR>=360 && robot.gyro.getHeading()>TURN_ERROR-1 || imaginaryAngle+TURN_ERROR<360) && INPUT_TIMER+5000>runTime.milliseconds()){
+			/*while((robot.gyro.getHeading()<imaginaryAngle-TURN_ERROR || robot.gyro.getHeading()>imaginaryAngle+TURN_ERROR) && (imaginaryAngle-TURN_ERROR<=-1 && robot.gyro.getHeading() != 360-TURN_ERROR || imaginaryAngle-TURN_ERROR>-1) && (imaginaryAngle+TURN_ERROR>=360 && robot.gyro.getHeading()>TURN_ERROR-1 || imaginaryAngle+TURN_ERROR<360) && INPUT_TIMER+5000>runTime.milliseconds()){
 				if(isStopRequested()) {
 					stopMoving();
 					return;
@@ -254,7 +254,7 @@ public class AutoByrd extends LinearOpMode {
 				robot.backLeft.setTargetPosition(BACK_LEFT);
 				robot.backRight.setTargetPosition(BACK_RIGHT);
 				telemetry();
-			}
+			}*/
 			robot.frontLeft.setPower(power);
 			robot.frontRight.setPower(power);
 			robot.backLeft.setPower(power);
@@ -293,7 +293,9 @@ public class AutoByrd extends LinearOpMode {
 		straighten();
 		sleep(1000);
 		moveWithEncoders(10,.4,BACKWARDS);
+		straighten();
 		dump(true);
+		sleep(100);
 		/*sleep(1000);
 		moveWithoutStopping(turnDirection,.3);
 		sleep(500);
@@ -303,7 +305,6 @@ public class AutoByrd extends LinearOpMode {
 		sleep(1000);
 		moveWithoutStopping(turnDirection+90,.15);
 		sleep(500);*/
-		straighten();
 		moveWithEncoders(10,DEFAULT_MOVE_SPEED,FORWARDS);
 		dump(false);
 		sleep(1000);
