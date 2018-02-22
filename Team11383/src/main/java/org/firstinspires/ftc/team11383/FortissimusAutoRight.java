@@ -79,8 +79,8 @@ public class FortissimusAutoRight extends LinearOpMode {
 
 
     private void move(double angle, double distance, double power){
-        robot.startMovingInDirection(angle, power); // Start moving in the right direction        
-        
+        robot.startMovingInDirection(angle, power); // Start moving in the right direction
+
         // Run long enough to make the distance
         runtime.reset();
         while (runtime.seconds() < distance*robot.FEET_PER_SEC/power + robot.MOVE_START_SECS) {
