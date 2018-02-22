@@ -129,6 +129,7 @@ class HardwareByrd
     static final double  LATCH_UNLOCKED   = 1;
 
     static double INPUT_TIMER = 0;
+    static double INPUT_TIMER_2 = 0;
     static boolean GYRO_MOVE  = false;
 
     static final boolean LEFT  = false;
@@ -150,10 +151,10 @@ class HardwareByrd
     static final double TURN_RIGHT    = 270;
     static final double TURN_BACK     = 180;
 
-    static final int TURN_ERROR = 1;
+    static final int TURN_ERROR = 3;
 
     static double DEFAULT_MOVE_SPEED = .3;
-    static double DEFAULT_TURN_SPEED = .3;
+    static double DEFAULT_TURN_SPEED = .26;
 
     static boolean SLOT_1 = false;
     static boolean SLOT_2 = false;

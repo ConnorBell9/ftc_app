@@ -47,9 +47,9 @@ public class DebugMechByrd extends OpMode{
 		}
 
 	    final double v1 = + rightX;
-	    final double v2 = + rightX;
+	    final double v2 = - rightX;
 	    final double v3 = + rightX;
-	    final double v4 = + rightX;
+	    final double v4 = - rightX;
 
 	    robot.frontLeft.setPower(v1*maxSpeed);
 		robot.frontRight.setPower(v2*maxSpeed);

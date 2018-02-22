@@ -28,6 +28,7 @@ import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_LEFT;
 import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_RIGHT;
 import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_UP;
 import static org.firstinspires.ftc.team7153.HardwareByrd.INPUT_TIMER;
+import static org.firstinspires.ftc.team7153.HardwareByrd.INPUT_TIMER_2;
 import static org.firstinspires.ftc.team7153.HardwareByrd.LEFT;
 import static org.firstinspires.ftc.team7153.HardwareByrd.MOVE_BACKWARDS;
 import static org.firstinspires.ftc.team7153.HardwareByrd.OFFSET;
@@ -51,6 +52,7 @@ public class AutoByrd extends LinearOpMode {
 
 	private VuforiaTrackable relicTemplate;
 	private RelicRecoveryVuMark relicVuMark = RelicRecoveryVuMark.UNKNOWN;
+	double motorSpeed=.2;
 	//
 	void autonomousInit(){
 
@@ -291,11 +293,10 @@ public class AutoByrd extends LinearOpMode {
 		}
 		turn(turnDirection,DEFAULT_TURN_SPEED);
 		straighten();
-		sleep(1000);
-		moveWithEncoders(10,.4,BACKWARDS);
+		moveWithEncoders(10,DEFAULT_MOVE_SPEED,BACKWARDS);
 		straighten();
 		dump(true);
-		sleep(100);
+		sleep(500);
 		/*sleep(1000);
 		moveWithoutStopping(turnDirection,.3);
 		sleep(500);
@@ -307,8 +308,7 @@ public class AutoByrd extends LinearOpMode {
 		sleep(500);*/
 		moveWithEncoders(10,DEFAULT_MOVE_SPEED,FORWARDS);
 		dump(false);
-		sleep(1000);
-		stopMoving();
+		straighten();
 	}
 	void moveToCubby2() throws InterruptedException{
 		turn(TURN_LEFT,.3);
@@ -398,6 +398,7 @@ public class AutoByrd extends LinearOpMode {
 		robot.frontRight.setPower(0);
 		robot.backLeft.setPower(0);
 		robot.backRight.setPower(0);
+		motorSpeed=.2;
 	}
 	
 	private void straighten() throws InterruptedException {
@@ -410,7 +411,7 @@ public class AutoByrd extends LinearOpMode {
 				return;
 			}
 			stopMoving();
-			turn(imaginaryAngle,.26);
+			turn(imaginaryAngle,.24);
 			telemetry();
 		}
 	}
@@ -450,6 +451,10 @@ public class AutoByrd extends LinearOpMode {
 				stopMoving();
 				return;
 			}
+			/*if(INPUT_TIMER_2 + 5 < runTime.milliseconds() && motorSpeed<speed) {
+				motorSpeed+=speed/100;
+				INPUT_TIMER_2 = runTime.milliseconds();
+			}*/
 			//Checks to see if turning left or right
 			if ((angle > robot.gyro.getHeading() && angle < robot.gyro.getHeading() + 181) || (angle < robot.gyro.getHeading() - 180)) {
 				robot.frontLeft.setPower(-speed);
@@ -468,6 +473,7 @@ public class AutoByrd extends LinearOpMode {
 			telemetry();
 		}
 		stopMoving();
+		sleep(100);
 		if ((robot.gyro.getHeading() < angle - TURN_ERROR || robot.gyro.getHeading() > angle + TURN_ERROR) && (angle - TURN_ERROR <= -1 && robot.gyro.getHeading() != 360 - TURN_ERROR || angle - TURN_ERROR > -1) && (angle + TURN_ERROR >= 360 && robot.gyro.getHeading() > TURN_ERROR - 1 || angle + TURN_ERROR < 360) && INPUT_TIMER + 5000 > runTime.milliseconds()) {
 			straighten();
 		}

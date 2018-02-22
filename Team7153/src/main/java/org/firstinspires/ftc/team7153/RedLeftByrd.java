@@ -21,7 +21,7 @@ public class RedLeftByrd extends AutoByrd {
 		if (!isStopRequested()) {
 			hammer(RED);
             moveWithEncoders(24,DEFAULT_MOVE_SPEED,BACKWARDS);//Dismount off of the platform
-	    moveWithEncoders(12,DEFUALT_MOVE_SPEED,BACKWARDS);//Drive forwards to line up with the middle cryptobox
+	    	moveWithEncoders(15,DEFAULT_MOVE_SPEED,BACKWARDS);//Drive forwards to line up with the middle cryptobox
             moveToCubby(TURN_RIGHT, VUFORIA_ENABLED);//Place block in the selected cryptobox
             /*while(runTime.milliseconds()<20000 && opModeIsActive()){
             	harvest(0,42,TURN_FORWARDS);
@@ -30,6 +30,7 @@ public class RedLeftByrd extends AutoByrd {
 			stopMoving();
             intake(DUMP_INACTIVE);
             //moveToCubby2();*/
+            sleep(1000);
             stopMoving();
 		}
 	}
