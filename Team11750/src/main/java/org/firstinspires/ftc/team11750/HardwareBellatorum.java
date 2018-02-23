@@ -44,11 +44,11 @@ class HardwareBellatorum
     ColorSensor colorSensor;
     boolean clampInstalled=true; // Set to false to run without clamp installed, true to run with
 
-    final double CLAMP_LEFT_OPEN  =  0.35;
-    final double CLAMP_RIGHT_OPEN = 0.75;
-    final double CLAMP_TOP_OPEN = -0.25;
+    final double CLAMP_LEFT_OPEN  =  0.2;
+    final double CLAMP_RIGHT_OPEN = 0.8;
     final double CLAMP_LEFT_CLOSED  = 1.0;
     final double CLAMP_RIGHT_CLOSED = 0.0;
+    final double CLAMP_TOP_OPEN = -0.1;
     final double CLAMP_TOP_CLOSED = 1.0;
 
     final double LIFT_UP_POWER    =  0.25 ;
@@ -118,8 +118,8 @@ class HardwareBellatorum
             leftClamp = hwMap.servo.get("left_hand");
             rightClamp = hwMap.servo.get("right_hand");
             topClamp = hwMap.servo.get("top_hand");
-            leftClamp.setPosition(0.2);
-            rightClamp.setPosition(0.8);
+            leftClamp.setPosition(CLAMP_LEFT_OPEN);
+            rightClamp.setPosition(CLAMP_RIGHT_OPEN);
             topClamp.setPosition(CLAMP_TOP_OPEN);
         }
         colorArm = hwMap.servo.get("color_arm");
@@ -231,7 +231,11 @@ class HardwareBellatorum
         leftClamp.setPosition(CLAMP_LEFT_CLOSED - angle/2/180);
         rightClamp.setPosition(CLAMP_RIGHT_CLOSED + angle/2/180);
     }
-    void clampOpen() {clampOpen(190);} // Open the clamp all the way
+    void clampOpen(){ // Open the clamp all the way
+        if (!clampInstalled) return;
+        leftClamp.setPosition(CLAMP_LEFT_OPEN);
+        rightClamp.setPosition(CLAMP_RIGHT_OPEN);
+    }
     void clampClose() {clampOpen(30);} // Close the clamp on a glyph
 
     // Set the color arm to the specified down angle from 0 degrees straight up, 100 degrees down

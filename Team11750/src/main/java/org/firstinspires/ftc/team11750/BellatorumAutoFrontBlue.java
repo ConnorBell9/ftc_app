@@ -79,14 +79,14 @@ public class BellatorumAutoFrontBlue extends BellatorumAuto {
 
         displaceJewel(robot.COLOR_RED); // Knock off the jewel of this color
 
-        move(robot.LEFT, 2.5, 1); // Move in feet
+        move(robot.LEFT, 2.5); // Move in feet
         // turn(robot.RIGHT/6); turn(robot.FORWARD); // Wiggle off the platform
         move(robot.FORWARD, 0.33); // move away from the glyph box
-        move(robot.RIGHT, 1.0, 0.2); // Move back to align with platform
+        move(robot.RIGHT, 0.5, 0.2); // Move back to align with platform
 
         // Move the robot according to the relic VuMark
         double relicMove = 7.63/12; // Default to move in feet
-        double turnAngle=-145.0; // Default turn angle
+        double turnAngle=-155.0; // Default turn angle
         if (relicVuMark == RelicRecoveryVuMark.LEFT) { turnAngle += -19.0; } // Turn a little further
         if (relicVuMark == RelicRecoveryVuMark.RIGHT) { relicMove += 8.63/12; } // 7.63" further
         move(robot.LEFT, relicMove); // Move left relicMove feet

@@ -234,8 +234,8 @@ public class BellatorumAuto extends LinearOpMode {
             if (!opModeIsActive()) {robot.stopMoving(); return;} // Stop and return
         }
         // Displace the blue color ball
-        if (robot.colorSensor.blue() >= 1) turnAngle += 15;
-        if (robot.colorSensor.red() >= 1) turnAngle -= 15;
+        if (robot.colorSensor.blue() >= 1) turnAngle += 12;
+        if (robot.colorSensor.red() >= 1) turnAngle -= 12;
 
         // Turn the other way to displace thr
         if(color == robot.COLOR_RED) turnAngle*=-1; // Turn the other way
@@ -313,7 +313,7 @@ public class BellatorumAuto extends LinearOpMode {
             runtime.reset();
             // keep looping while we are still active, and BOTH motors are running.
             while (opModeIsActive() && robot.motorsBusy()
-                    && runtime.seconds() < distance/robot.FEET_PER_SEC/speed + 1) {
+                    && runtime.seconds() < distance/robot.FEET_PER_SEC/speed + 0.5) {
 
                 // adjust direction and speed based on heading error.
                 error = getError(angle);
@@ -330,6 +330,7 @@ public class BellatorumAuto extends LinearOpMode {
                         robot.rightFrontMotor.getCurrentPosition(),
                         robot.leftBackMotor.getCurrentPosition(),
                         robot.rightBackMotor.getCurrentPosition());
+                telemetry.addData("Runtime", "%5.3f", runtime.seconds());
                 telemetry.update();
             }
 
