@@ -52,7 +52,6 @@ public class AutoByrd extends LinearOpMode {
 
 	private VuforiaTrackable relicTemplate;
 	private RelicRecoveryVuMark relicVuMark = RelicRecoveryVuMark.UNKNOWN;
-	double motorSpeed=.2;
 	//
 	void autonomousInit(){
 
@@ -115,9 +114,11 @@ public class AutoByrd extends LinearOpMode {
 
 	private void dump(boolean mode) throws InterruptedException{
 		if(mode){
+			robot.dump.setPower(.3);
 			robot.dump.setTargetPosition(DUMP_UP);
 		} else{
 			robot.dump.setTargetPosition(DUMP_DOWN);
+			robot.dump.setPower(.1);
 		}
 	}
 	
@@ -235,7 +236,7 @@ public class AutoByrd extends LinearOpMode {
 
 		resetTimer();
 
-		while(robot.frontLeft.getTargetPosition()!=robot.frontLeft.getCurrentPosition() && INPUT_TIMER+5000>runTime.milliseconds()){
+		while(robot.frontRight.getTargetPosition()!=robot.frontRight.getCurrentPosition() && INPUT_TIMER+5000>runTime.milliseconds()){
 			if(isStopRequested()){
 				stopMoving();
 				return;
@@ -258,9 +259,9 @@ public class AutoByrd extends LinearOpMode {
 				telemetry();
 			}*/
 			robot.frontLeft.setPower(power);
-			robot.frontRight.setPower(power);
+			robot.frontRight.setPower(power+power/5);
 			robot.backLeft.setPower(power);
-			robot.backRight.setPower(power);
+			robot.backRight.setPower(power+power/5);
 			telemetry();
 			sleep(10);
 		}
@@ -293,10 +294,10 @@ public class AutoByrd extends LinearOpMode {
 		}
 		turn(turnDirection,DEFAULT_TURN_SPEED);
 		straighten();
-		moveWithEncoders(10,DEFAULT_MOVE_SPEED,BACKWARDS);
+		moveWithEncoders(8,DEFAULT_MOVE_SPEED,BACKWARDS);
 		straighten();
 		dump(true);
-		sleep(500);
+		sleep(1000);
 		/*sleep(1000);
 		moveWithoutStopping(turnDirection,.3);
 		sleep(500);
@@ -306,8 +307,8 @@ public class AutoByrd extends LinearOpMode {
 		sleep(1000);
 		moveWithoutStopping(turnDirection+90,.15);
 		sleep(500);*/
-		moveWithEncoders(10,DEFAULT_MOVE_SPEED,FORWARDS);
 		dump(false);
+		moveWithEncoders(10,DEFAULT_MOVE_SPEED,FORWARDS);
 		straighten();
 	}
 	void moveToCubby2() throws InterruptedException{
@@ -398,7 +399,6 @@ public class AutoByrd extends LinearOpMode {
 		robot.frontRight.setPower(0);
 		robot.backLeft.setPower(0);
 		robot.backRight.setPower(0);
-		motorSpeed=.2;
 	}
 	
 	private void straighten() throws InterruptedException {

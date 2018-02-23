@@ -79,7 +79,7 @@ class HardwareByrd
     ModernRoboticsI2cRangeSensor blockRange = null;
 
     private static final double IDOL_Z_START_POSITION =  0;
-    static final int    IDOL_Z_DELTA_POSITION = 50;
+    static final int    IDOL_Z_DELTA_POSITION = 60;
 
     static double        INTAKE_SPEED      =     0;
     static double        INTAKE_OFFSET     =     0;
@@ -106,7 +106,7 @@ class HardwareByrd
     static final int     DUMP_UP         = 4*100; //4 Pulses per Degree
     static final int     DUMP_DOWN       =    0;
 
-    static final double  HAMMER_DOWN    =   .98;
+    static final double  HAMMER_DOWN    =   1;
     static final double  HAMMER_UP      =   .28;
     static final double  HAMMER_LEFT    =    .6;
     static final double  HAMMER_RIGHT   =    .2;
