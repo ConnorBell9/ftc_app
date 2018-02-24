@@ -28,7 +28,7 @@ public class BlueRightByrd extends AutoByrd {
 			 * If it doesn't go far enough or ends up extremely far enough away simply change the first value distance
 			 * If it goes in the wrong direction simply swap FORWARDS for BACKWARDS
 			 */
-			moveWithEncoders(16,DEFAULT_MOVE_SPEED,FORWARDS);
+			moveWithEncoders(12,DEFAULT_MOVE_SPEED,FORWARDS);
 			/* This should get the robot to the middle of the cubbies
 			 * If it doesn't go far enough or ends up extremely far enough away simply change the first value distance
 			 * If it goes in the wrong direction simply swap FORWARDS for BACKWARDS
@@ -36,7 +36,7 @@ public class BlueRightByrd extends AutoByrd {
 			 * if the robot does so then it may be best to adjust the distance value to account for this movement
 			 * I would suggest moving the distance to 12 as a start if you need to account for the rotation
 			 */
-            moveToCubby(TURN_LEFT, VUFORIA_ENABLED);
+            moveToCubby(TURN_RIGHT, VUFORIA_ENABLED);
             /* This should do everything necessary to place the block
              * If this turns the wrong direction make sure the Turn_Direction value is set to which position has the
              * robot facing away from the cubby. Forwards is considered the direction the robot was facing when it was turned on

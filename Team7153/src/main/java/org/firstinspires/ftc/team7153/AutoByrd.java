@@ -137,13 +137,15 @@ public class AutoByrd extends LinearOpMode {
 		*then, if the argument is red it will putt the blue ball off (Left)
 		*otherwise it will putt the red ball off (Right)
 		*/
-		for(double increment=0; robot.color.red()==robot.color.blue() && increment<2; increment+=.01){
-			robot.hammerX.setPosition(HAMMER_CENTER+increment);
-			sleep(50);
+		for(double increment=0; robot.color.red()==robot.color.blue() && increment<.25; increment+=.01){
+			robot.hammerX.setPosition(HAMMER_CENTER+increment/10);
+			telemetry.addData("Hammer Position: ", "%3.2f",HAMMER_CENTER+increment);
+			telemetry();
+			sleep(10);
 		}
 		if(robot.color.red()>=robot.color.blue()){
 			telemetry.addData("Found Color: ", "red");
-			telemetry();
+			telemetry.update();
 			if(colorRemaining==RED){putt(RIGHT);} else {putt(LEFT);}
 		} else if (robot.color.red()<=robot.color.blue()){
 			/*If the color red is less than the color blue
@@ -151,18 +153,19 @@ public class AutoByrd extends LinearOpMode {
 			*otherwise it will putt the red ball off (Left)
 			*/
 			telemetry.addData("Found Color: ", "blue");
-			telemetry();
+			telemetry.update();
 			if(colorRemaining==RED){putt(LEFT);} else {putt(RIGHT);}
 		} else {
 			//If no color is found then nothing will occur
 			telemetry.addData("Found Color: ", "Nothing");
-			telemetry();
+			telemetry.update();
 		}
 		statusCheck();
 		sleep(500);
 		statusCheck();
 		//Reset the hammer position to up and turn off the LED
 		robot.hammerY.setPosition(HAMMER_UP);
+		sleep(250);
 		robot.hammerX.setPosition(HAMMER_CENTER);
 		robot.color.enableLed(false);
 	}

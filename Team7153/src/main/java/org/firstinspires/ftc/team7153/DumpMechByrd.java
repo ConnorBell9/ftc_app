@@ -8,15 +8,14 @@ import static org.firstinspires.ftc.team7153.HardwareByrd.BLOCK_NO_PUSH;
 import static org.firstinspires.ftc.team7153.HardwareByrd.BLOCK_PUSH;
 import static org.firstinspires.ftc.team7153.HardwareByrd.DUMP_DOWN;
 import static org.firstinspires.ftc.team7153.HardwareByrd.DUMP_UP;
+import static org.firstinspires.ftc.team7153.HardwareByrd.IDOL_CLAMP_AJAR;
+import static org.firstinspires.ftc.team7153.HardwareByrd.IDOL_CLAMP_CLOSED;
+import static org.firstinspires.ftc.team7153.HardwareByrd.IDOL_CLAMP_OPEN;
+import static org.firstinspires.ftc.team7153.HardwareByrd.INPUT_TIMER;
 import static org.firstinspires.ftc.team7153.HardwareByrd.INTAKE_OFFSET;
 import static org.firstinspires.ftc.team7153.HardwareByrd.INTAKE_SPEED;
 import static org.firstinspires.ftc.team7153.HardwareByrd.IS_BLOCK_PUSH;
 import static org.firstinspires.ftc.team7153.HardwareByrd.IS_DUMP;
-import static org.firstinspires.ftc.team7153.HardwareByrd.IDOL_CLAMP_AJAR;
-import static org.firstinspires.ftc.team7153.HardwareByrd.IDOL_CLAMP_CLOSED;
-import static org.firstinspires.ftc.team7153.HardwareByrd.IDOL_CLAMP_OPEN;
-import static org.firstinspires.ftc.team7153.HardwareByrd.IDOL_Z_DELTA_POSITION;
-import static org.firstinspires.ftc.team7153.HardwareByrd.INPUT_TIMER;
 import static org.firstinspires.ftc.team7153.HardwareByrd.IS_LIFT;
 import static org.firstinspires.ftc.team7153.HardwareByrd.IS_PLATE;
 import static org.firstinspires.ftc.team7153.HardwareByrd.LATCH_UNLOCKED;
@@ -64,12 +63,15 @@ public class DumpMechByrd extends OpMode{
 		} else if (gamepad2.left_trigger>.02){
 			robot.idolY.setPower(-.75*gamepad2.left_trigger);
 		} else {robot.idolY.setPower(0);}
-		if(gamepad2.right_bumper && System.currentTimeMillis() > INPUT_TIMER+5){
-			robot.idolZ.setTargetPosition(robot.idolZ.getCurrentPosition()+IDOL_Z_DELTA_POSITION);
-			INPUT_TIMER = System.currentTimeMillis();
-		}else if(gamepad2.left_bumper && System.currentTimeMillis() > INPUT_TIMER+5){
-			robot.idolZ.setTargetPosition(robot.idolZ.getCurrentPosition()-IDOL_Z_DELTA_POSITION);
-			INPUT_TIMER = System.currentTimeMillis();
+		if(gamepad2.right_bumper){
+			robot.idolZ.setPower(.5);
+			robot.idolZ.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+		}else if(gamepad2.left_bumper){
+			robot.idolZ.setPower(-.5);
+			robot.idolZ.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+		} else {
+			robot.idolZ.setTargetPosition(robot.idolZ.getCurrentPosition());
+			robot.idolZ.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 		}
 		if(gamepad2.a && System.currentTimeMillis() > INPUT_TIMER+500){
 			IS_LIFT=!IS_LIFT;
@@ -94,8 +96,8 @@ public class DumpMechByrd extends OpMode{
 		robot.intakeBackLeft.setPower(INTAKE_SPEED+.5*INTAKE_OFFSET);
 		robot.intakeBackRight.setPower(INTAKE_SPEED-.5*INTAKE_OFFSET);
 
-		if(robot.dump.getCurrentPosition()<5 && robot.dump.getCurrentPosition()>-40 && robot.dump.getTargetPosition()==DUMP_DOWN && robot.lift.getTargetPosition()==LIFT_DOWN){
-			robot.dump.setPower(-.02);
+		if(robot.dump.getCurrentPosition()<5 && robot.dump.getCurrentPosition()>-80 && robot.dump.getTargetPosition()==DUMP_DOWN && robot.lift.getTargetPosition()==LIFT_DOWN){
+			robot.dump.setPower(-.001);
 			robot.dump.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 		} else {
 			robot.dump.setMode(DcMotor.RunMode.RUN_TO_POSITION);
