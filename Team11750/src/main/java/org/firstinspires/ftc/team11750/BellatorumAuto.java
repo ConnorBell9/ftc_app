@@ -221,27 +221,34 @@ public class BellatorumAuto extends LinearOpMode {
 
     void displaceJewel(int color){
         double turnAngle = 0;
+        double red=0, blue=0;
+        double initialTurn=3;
         log("ArmDown");
         robot.armDown(); // Drop the color sensor arm
+        sleep(100); // Wait for the arm to drop
+
+        turn(initialTurn); // Get close to the jewel
 
         runtime.reset();
-        while (runtime.seconds() < 1) {
+        while (runtime.seconds() < 0.5) {
+            blue+=robot.colorSensor.blue(); // Add up the blue readings
+            red+=robot.colorSensor.red(); // Add up the red readings
             telemetry.addData("Clear", robot.colorSensor.alpha());
-            telemetry.addData("Red  ", robot.colorSensor.red());
+            telemetry.addData("Red  ", red);
             telemetry.addData("Green", robot.colorSensor.green());
-            telemetry.addData("Blue ", robot.colorSensor.blue());
+            telemetry.addData("Blue ", blue);
             telemetry.update();
             if (!opModeIsActive()) {robot.stopMoving(); return;} // Stop and return
         }
         // Displace the blue color ball
-        if (robot.colorSensor.blue() >= 1) turnAngle += 12;
-        if (robot.colorSensor.red() >= 1) turnAngle -= 12;
+        if (blue > red) turnAngle += 12;
+        else if (red > blue) turnAngle -= 12;
 
-        // Turn the other way to displace thr
+        // Turn the other way to displace red
         if(color == robot.COLOR_RED) turnAngle*=-1; // Turn the other way
 
         log("Displacing jewel...");
-        turn(turnAngle); // Turn to knock off the jewel
+        turn(turnAngle-initialTurn); // Turn to knock off the jewel
         robot.armUp();   // Raise the arm
         turn(0);// Turn back
         log("Jewel displaced!");

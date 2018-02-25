@@ -66,7 +66,7 @@ class HardwareBellatorum
     final double DEGREES_PER_SEC = 500;
     final double TURN_START_SECS = 0;
     final double ARM_UP = 0.22;
-    final double ARM_DOWN = 118;
+    final double ARM_DOWN = 115;
     final int COLOR_RED = 1;
     final int COLOR_BLUE = 2;
     final double     COUNTS_PER_MOTOR_REV    = 1120 ;    // eg: AndyMark NeverRest 40 Motor Encoder
