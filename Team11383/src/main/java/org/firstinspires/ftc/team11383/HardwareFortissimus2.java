@@ -35,12 +35,13 @@ class HardwareFortissimus2
     DcMotor  leftFrontMotor   = null; // runs in x direction //
     DcMotor  rightFrontMotor  = null; // runs in y direction //
     DcMotor  leftBackMotor    = null; // runs in y  direction //
-    DcMotor  rightBackMotor   = null; // runs in y direction //
+    DcMotor  rightBackMotor   = null; // runs in x direction //
     DcMotor  reel   = null;
     DcMotor track = null;
     Servo    armleft   = null;
     Servo    armright  = null;
     Servo    color = null;
+    Servo   colorh = null;
     ColorSensor c;
 
     final double ARM_LEFT_OPEN  =  0.4;
@@ -55,13 +56,13 @@ class HardwareFortissimus2
     final double MOVE_START_SECS = 0.1;
     final double TURN_POWER    = 0.1;
     final double FORWARD =0.0;
-    final double RIGHT = 90.0;
-    final double LEFT = -90.0;
+    final double LEFT = 90.0;
+    final double RIGHT = -90.0;
     final double BACK = 180.0;
     final double AROUND = 180.0;
-    final double DEGREES_PER_SEC = 335+.0;
+    final double DEGREES_PER_SEC = 340+.0;
     final double TURN_START_SECS = 0.2;
-    final double ARM_UP = 0.25;
+    final double ARM_UP = 0.18;
     final double ARM_DOWN = 115;
     final int COLOR_RED = 1;
     final int COLOR_BLUE = 2;
@@ -75,18 +76,16 @@ class HardwareFortissimus2
 
     }
 
-
-
     /* Initialize standard Hardware interfaces */
     void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
         hwMap = ahwMap;
 
         // Define and Initialize Motors
-        leftFrontMotor   = hwMap.dcMotor.get("left_front_drive");
-        rightFrontMotor  = hwMap.dcMotor.get("right_front_drive");
-        leftBackMotor    = hwMap.dcMotor.get("left_back_drive");
-        rightBackMotor   = hwMap.dcMotor.get("right_back_drive");
+        leftFrontMotor   = hwMap.dcMotor.get("fl");
+        rightFrontMotor  = hwMap.dcMotor.get("fr");
+        leftBackMotor    = hwMap.dcMotor.get("bl");
+        rightBackMotor   = hwMap.dcMotor.get("br");
         track   = hwMap.dcMotor.get("track");
         reel    = hwMap.dcMotor.get("reel");
         leftFrontMotor.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
@@ -113,10 +112,12 @@ class HardwareFortissimus2
         // Define and initialize ALL installed servos.
         armleft = hwMap.servo.get("al");
         armright = hwMap.servo.get("ar");
-        armleft.setPosition(ARM_LEFT_OPEN);
-        armright.setPosition(ARM_RIGHT_OPEN);
+        armleft.setPosition(ARM_LEFT_CLOSED);
+        armright.setPosition(ARM_RIGHT_CLOSED);
         color = hwMap.servo.get("ac");
+        colorh = hwMap.servo.get("ach");
         color.setPosition(ARM_UP);
+        colorh.setPosition(.5);
 
         // get a reference to our colorSensor
         c = hwMap.get(ColorSensor.class, "c");
@@ -153,6 +154,9 @@ class HardwareFortissimus2
         leftFrontMotor.setPower(power * Math.sin((Math.PI / 180) * angle));
         rightBackMotor.setPower(-power * Math.sin((Math.PI / 180) * angle));
     }
+
+    long timer = 0;
+    boolean FlipDrive = true;
 
     // Set the clamp to the specified open angle
     void clampOpen(double angle){
