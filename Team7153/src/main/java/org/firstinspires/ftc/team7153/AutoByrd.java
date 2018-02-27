@@ -12,7 +12,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 import static org.firstinspires.ftc.team7153.HardwareByrd.BACKWARDS;
 import static org.firstinspires.ftc.team7153.HardwareByrd.BLOCK_NO_PUSH;
-import static org.firstinspires.ftc.team7153.HardwareByrd.BLOCK_PUSH;
 import static org.firstinspires.ftc.team7153.HardwareByrd.DEFAULT_MOVE_SPEED;
 import static org.firstinspires.ftc.team7153.HardwareByrd.DEFAULT_TURN_SPEED;
 import static org.firstinspires.ftc.team7153.HardwareByrd.DUMP_DOWN;
@@ -28,7 +27,6 @@ import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_LEFT;
 import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_RIGHT;
 import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_UP;
 import static org.firstinspires.ftc.team7153.HardwareByrd.INPUT_TIMER;
-import static org.firstinspires.ftc.team7153.HardwareByrd.INPUT_TIMER_2;
 import static org.firstinspires.ftc.team7153.HardwareByrd.LEFT;
 import static org.firstinspires.ftc.team7153.HardwareByrd.MOVE_BACKWARDS;
 import static org.firstinspires.ftc.team7153.HardwareByrd.OFFSET;
@@ -244,27 +242,10 @@ public class AutoByrd extends LinearOpMode {
 				stopMoving();
 				return;
 			}
-			/*while((robot.gyro.getHeading()<imaginaryAngle-TURN_ERROR || robot.gyro.getHeading()>imaginaryAngle+TURN_ERROR) && (imaginaryAngle-TURN_ERROR<=-1 && robot.gyro.getHeading() != 360-TURN_ERROR || imaginaryAngle-TURN_ERROR>-1) && (imaginaryAngle+TURN_ERROR>=360 && robot.gyro.getHeading()>TURN_ERROR-1 || imaginaryAngle+TURN_ERROR<360) && INPUT_TIMER+5000>runTime.milliseconds()){
-				if(isStopRequested()) {
-					stopMoving();
-					return;
-				}
-				stopMoving();
-				int FRONT_LEFT=robot.frontLeft.getTargetPosition()-robot.frontLeft.getCurrentPosition();
-				int FRONT_RIGHT=robot.frontRight.getTargetPosition()-robot.frontRight.getCurrentPosition();
-				int BACK_LEFT=robot.backLeft.getTargetPosition()-robot.backLeft.getCurrentPosition();
-				int BACK_RIGHT=robot.backRight.getTargetPosition()-robot.backRight.getCurrentPosition();
-				straighten();
-				robot.frontLeft.setTargetPosition(FRONT_LEFT);
-				robot.frontRight.setTargetPosition(FRONT_RIGHT);
-				robot.backLeft.setTargetPosition(BACK_LEFT);
-				robot.backRight.setTargetPosition(BACK_RIGHT);
-				telemetry();
-			}*/
 			robot.frontLeft.setPower(power);
-			robot.frontRight.setPower(power+power/5);
+			robot.frontRight.setPower(power);
 			robot.backLeft.setPower(power);
-			robot.backRight.setPower(power+power/5);
+			robot.backRight.setPower(power);
 			telemetry();
 			sleep(10);
 		}
