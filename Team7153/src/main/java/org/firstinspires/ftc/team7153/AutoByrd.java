@@ -10,42 +10,40 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.BACKWARDS;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.CLAMP_POSITION_1;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.CLAMP_POSITION_2;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DEFAULT_MOVE_SPEED;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.DEFAULT_TURN_SPEED;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.FORWARDS;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_CENTER;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_DOWN;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_LEFT;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_RIGHT;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.HAMMER_UP;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INPUT_TIMER;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INTAKE_OFF;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.INTAKE_ON;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.IS_GYRO_ON;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_CLOSE;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.LEFT_CLAMP_OPEN;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.OFFSET;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RED;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RIGHT;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RIGHT_CLAMP_CLOSE;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.RIGHT_CLAMP_OPEN;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.SLOT_1;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.SLOT_2;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.SLOT_3;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TOP_CLAMP_CLOSE;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TOP_CLAMP_OPEN;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_BACK;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_ERROR;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_FORWARDS;
-import static org.firstinspires.ftc.team7153.HardwareByrdMK2.TURN_RIGHT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.BACKWARDS;
+import static org.firstinspires.ftc.team7153.HardwareByrd.BLOCK_NO_PUSH;
+import static org.firstinspires.ftc.team7153.HardwareByrd.DEFAULT_MOVE_SPEED;
+import static org.firstinspires.ftc.team7153.HardwareByrd.DEFAULT_TURN_SPEED;
+import static org.firstinspires.ftc.team7153.HardwareByrd.DUMP_DOWN;
+import static org.firstinspires.ftc.team7153.HardwareByrd.DUMP_EXPEL;
+import static org.firstinspires.ftc.team7153.HardwareByrd.DUMP_INACTIVE;
+import static org.firstinspires.ftc.team7153.HardwareByrd.DUMP_INTAKE;
+import static org.firstinspires.ftc.team7153.HardwareByrd.DUMP_UP;
+import static org.firstinspires.ftc.team7153.HardwareByrd.FORWARDS;
+import static org.firstinspires.ftc.team7153.HardwareByrd.GYRO_MOVE;
+import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_CENTER;
+import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_DOWN;
+import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_LEFT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_RIGHT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.HAMMER_UP;
+import static org.firstinspires.ftc.team7153.HardwareByrd.INPUT_TIMER;
+import static org.firstinspires.ftc.team7153.HardwareByrd.LEFT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.MOVE_BACKWARDS;
+import static org.firstinspires.ftc.team7153.HardwareByrd.OFFSET;
+import static org.firstinspires.ftc.team7153.HardwareByrd.RED;
+import static org.firstinspires.ftc.team7153.HardwareByrd.RIGHT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.SLOT_1;
+import static org.firstinspires.ftc.team7153.HardwareByrd.SLOT_2;
+import static org.firstinspires.ftc.team7153.HardwareByrd.SLOT_3;
+import static org.firstinspires.ftc.team7153.HardwareByrd.TURN_BACK;
+import static org.firstinspires.ftc.team7153.HardwareByrd.TURN_ERROR;
+import static org.firstinspires.ftc.team7153.HardwareByrd.TURN_FORWARDS;
+import static org.firstinspires.ftc.team7153.HardwareByrd.TURN_LEFT;
+import static org.firstinspires.ftc.team7153.HardwareByrd.TURN_RIGHT;
 
 
-public class AutoByrdMK3 extends LinearOpMode {
-	HardwareByrdMK2 robot = new HardwareByrdMK2(); //Gets robot from HardwareByrd class
+public class AutoByrd extends LinearOpMode {
+	HardwareByrd robot = new HardwareByrd(); //Gets robot from HardwareByrd class
 	private double imaginaryAngle=0;         //Sets the robot's initial angle to 0
 
 	ElapsedTime runTime = new ElapsedTime();
@@ -59,10 +57,6 @@ public class AutoByrdMK3 extends LinearOpMode {
 		////////////////////////////////////////////////////////////////////////////////////Hardware////////////////////////////////////////////////////////////////////////////////
 		robot.init(hardwareMap);
 		robot.color.enableLed(false);
-
-		//Activate Clamps's encoders
-		robot.clamp.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-		robot.clamp.setPower(1);
 
 		//Calibrate the Gyroscope
 		telemetry.addData("Gyro", " Calibrating. Do Not move!");
@@ -111,40 +105,18 @@ public class AutoByrdMK3 extends LinearOpMode {
 		//Reset the timer to 0
 		runTime.reset();
 
-		//Tell the robot that the Gyroscope has been correctly calibrated (Not used yet)
-		IS_GYRO_ON = true;
+		robot.blockPusher.setPosition(BLOCK_NO_PUSH);
 
 		statusCheck();
 	}
 
-	void clamp(int position){
-		if(isStopRequested()){
-			return;
-		}
-		/* Moves the clamp to either
-		*CLAMP_POSITION_1 (Which is ground level)
-		*CLAMP_POSITION_2 (Which is the position for the second block)
-		*CLAMP_POSITION_3 (Which is the position for the third block)
-		*CLAMP_POSITION_4 (Which is the position for the fourth block)
-		*/
-		robot.clamp.setTargetPosition(position);
-	}
-	
-	void grab(boolean grab) {
-		if(isStopRequested()){
-			return;
-		}
-		/*If grab is true then the clamps will move to their respective close positions
-		*otherwise they will move to their respective open positions
-		*/
-		if (grab) {
-			robot.armL.setPosition(LEFT_CLAMP_CLOSE);
-			robot.armR.setPosition(RIGHT_CLAMP_CLOSE);
-			robot.armT.setPosition(TOP_CLAMP_CLOSE);
-		} else {
-			robot.armL.setPosition(LEFT_CLAMP_OPEN);
-			robot.armR.setPosition(RIGHT_CLAMP_OPEN);
-			robot.armT.setPosition(TOP_CLAMP_OPEN);
+	private void dump(boolean mode) throws InterruptedException{
+		if(mode){
+			robot.dump.setPower(.3);
+			robot.dump.setTargetPosition(DUMP_UP);
+		} else{
+			robot.dump.setTargetPosition(DUMP_DOWN);
+			robot.dump.setPower(.1);
 		}
 	}
 	
@@ -163,13 +135,15 @@ public class AutoByrdMK3 extends LinearOpMode {
 		*then, if the argument is red it will putt the blue ball off (Left)
 		*otherwise it will putt the red ball off (Right)
 		*/
-		for(double increment=0; robot.color.red()==robot.color.blue() && increment<2; increment+=.01){
-			robot.hammerX.setPosition(HAMMER_CENTER+increment);
-			sleep(50);
+		for(double increment=0; robot.color.red()==robot.color.blue() && increment<.25; increment+=.01){
+			robot.hammerX.setPosition(HAMMER_CENTER+increment/10);
+			telemetry.addData("Hammer Position: ", "%3.2f",HAMMER_CENTER+increment);
+			telemetry();
+			sleep(10);
 		}
 		if(robot.color.red()>=robot.color.blue()){
 			telemetry.addData("Found Color: ", "red");
-			telemetry();
+			telemetry.update();
 			if(colorRemaining==RED){putt(RIGHT);} else {putt(LEFT);}
 		} else if (robot.color.red()<=robot.color.blue()){
 			/*If the color red is less than the color blue
@@ -177,27 +151,28 @@ public class AutoByrdMK3 extends LinearOpMode {
 			*otherwise it will putt the red ball off (Left)
 			*/
 			telemetry.addData("Found Color: ", "blue");
-			telemetry();
+			telemetry.update();
 			if(colorRemaining==RED){putt(LEFT);} else {putt(RIGHT);}
 		} else {
 			//If no color is found then nothing will occur
 			telemetry.addData("Found Color: ", "Nothing");
-			telemetry();
+			telemetry.update();
 		}
 		statusCheck();
 		sleep(500);
 		statusCheck();
 		//Reset the hammer position to up and turn off the LED
 		robot.hammerY.setPosition(HAMMER_UP);
+		sleep(250);
 		robot.hammerX.setPosition(HAMMER_CENTER);
 		robot.color.enableLed(false);
 	}
 
 	void harvest(double X_AXIS, double Y_AXIS,double END_DIRECTION) throws InterruptedException{
+		GYRO_MOVE=true;
 		turn(TURN_RIGHT,.5);
 		//Open up the clamp and activate the intake in preparation of blocks.
-		grab(false);
-		intake(true);
+		intake(DUMP_INTAKE);
 		//Move away from the wall for Y_AXIS inches.
 		moveWithEncoders(Y_AXIS,.6,FORWARDS);
 		/* X_AXIS is based off of the bot's forward direction.
@@ -213,19 +188,13 @@ public class AutoByrdMK3 extends LinearOpMode {
 		if(X_AXIS>0){
 			turn(TURN_FORWARDS,DEFAULT_TURN_SPEED);
 			moveWithEncoders(X_AXIS,.4,FORWARDS);
-			grab(true);
-			intake(false);
 			moveWithEncoders(X_AXIS,.4,BACKWARDS);
 		} else if (X_AXIS<0) {
 			turn(TURN_BACK,DEFAULT_TURN_SPEED);
 			moveWithEncoders(-X_AXIS,.4,FORWARDS);
-			grab(true);
-			intake(false);
 			moveWithEncoders(-X_AXIS,.4,BACKWARDS);
 		}
-		grab(true);
-		intake(false);
-		clamp(CLAMP_POSITION_2);
+		intake(DUMP_INACTIVE);
 		//Add the offset incurred by placing the cryptoblock
 		/*
 		* Return using the Y_AXIS now going back towards the cryptobox
@@ -236,23 +205,16 @@ public class AutoByrdMK3 extends LinearOpMode {
 		if(OFFSET>0) {
 			moveWithEncoders(OFFSET, DEFAULT_MOVE_SPEED, FORWARDS);
 		} else {
-			moveWithEncoders(-OFFSET,DEFAULT_MOVE_SPEED,FORWARDS);
+			moveWithEncoders(-OFFSET,DEFAULT_MOVE_SPEED, BACKWARDS);
 		}
 		OFFSET = 0;
 	}
 
-	void intake(boolean mode){
-		if(mode){
-			robot.intakeTopLeft.setPower(INTAKE_ON);
-			robot.intakeTopRight.setPower(INTAKE_ON);
-			robot.intakeBottomLeft.setPower(INTAKE_ON);
-			robot.intakeBottomRight.setPower(INTAKE_ON);
-		} else {
-			robot.intakeTopLeft.setPower(INTAKE_OFF);
-			robot.intakeTopRight.setPower(INTAKE_OFF);
-			robot.intakeBottomLeft.setPower(INTAKE_OFF);
-			robot.intakeBottomRight.setPower(INTAKE_OFF);
-		}
+	void intake(double mode) {
+		robot.intakeFrontLeft.setPower(mode);
+		robot.intakeFrontRight.setPower(mode);
+		robot.intakeBackLeft.setPower(mode);
+		robot.intakeBackRight.setPower(mode);
 	}
 
 
@@ -275,35 +237,11 @@ public class AutoByrdMK3 extends LinearOpMode {
 
 		resetTimer();
 
-		while(robot.frontLeft.getTargetPosition()!=robot.frontLeft.getCurrentPosition() && INPUT_TIMER+5000>runTime.milliseconds()){
+		while(robot.frontRight.getTargetPosition()!=robot.frontRight.getCurrentPosition() && INPUT_TIMER+5000>runTime.milliseconds()){
 			if(isStopRequested()){
 				stopMoving();
 				return;
 			}
-			/*while((robot.gyro.getHeading()<imaginaryAngle-TURN_ERROR || robot.gyro.getHeading()>imaginaryAngle+TURN_ERROR) && (imaginaryAngle-TURN_ERROR<=-1 && robot.gyro.getHeading() != 360-TURN_ERROR || imaginaryAngle-TURN_ERROR>-1) && (imaginaryAngle+TURN_ERROR>=360 && robot.gyro.getHeading()>TURN_ERROR-1 || imaginaryAngle+TURN_ERROR<360) && INPUT_TIMER+5000>runTime.milliseconds()){
-				if(isStopRequested()) {
-					stopMoving();
-					return;
-				}
-					stopMoving();
-					FRONT_LEFT=robot.frontLeft.getTargetPosition()-robot.frontLeft.getCurrentPosition();
-					FRONT_RIGHT=robot.frontRight.getTargetPosition()-robot.frontRight.getCurrentPosition();
-					BACK_LEFT=robot.backLeft.getTargetPosition()-robot.backLeft.getCurrentPosition();
-					BACK_RIGHT=robot.backRight.getTargetPosition()-robot.backRight.getCurrentPosition();
-					straighten();
-					robot.frontLeft.setTargetPosition(FRONT_LEFT);
-					robot.frontRight.setTargetPosition(FRONT_RIGHT);
-					robot.backLeft.setTargetPosition(BACK_LEFT);
-					robot.backRight.setTargetPosition(BACK_RIGHT);
-					telemetry();
-			}*/
-			/*if(RAMP<power){
-				RAMP+=DELTA_RAMP;
-				robot.frontLeft.setPower(RAMP);
-				robot.frontRight.setPower(RAMP);
-				robot.backLeft.setPower(RAMP);
-				robot.backRight.setPower(RAMP);
-			}*/
 			robot.frontLeft.setPower(power);
 			robot.frontRight.setPower(power);
 			robot.backLeft.setPower(power);
@@ -312,10 +250,10 @@ public class AutoByrdMK3 extends LinearOpMode {
 			sleep(10);
 		}
 		sleep(100);
-		robot.frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-		robot.frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-		robot.backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-		robot.backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+		robot.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+		robot.frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+		robot.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+		robot.backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 	}
 
 	void moveToCubby(double turnDirection, boolean mode) throws InterruptedException {
@@ -339,60 +277,42 @@ public class AutoByrdMK3 extends LinearOpMode {
 			SLOT_2 = true;
 		}
 		turn(turnDirection,DEFAULT_TURN_SPEED);
-		clamp(CLAMP_POSITION_1);
 		straighten();
-		sleep(1000);
-		grab(false);
-		double DELTA_POSITION = robot.frontLeft.getCurrentPosition();
-		moveWithoutStopping(turnDirection+90,.15);
-		resetTimer();
-		while(robot.frontLeft.getCurrentPosition()-420<=DELTA_POSITION && INPUT_TIMER+1500>System.currentTimeMillis()){
-			telemetry();
-			sleep(10);
-		}
-		if(robot.frontLeft.getCurrentPosition()-280<=DELTA_POSITION){
-			if(OFFSET>=0){
-				moveWithoutStopping(turnDirection+90+80,1);
-				sleep(500);
-				DELTA_POSITION = robot.frontLeft.getCurrentPosition();
-				moveWithoutStopping(turnDirection+90,.15);
-				while(robot.frontLeft.getCurrentPosition()-140<DELTA_POSITION && INPUT_TIMER+1000>System.currentTimeMillis()){
-					telemetry();
-					sleep(10);
-				}
-				if(robot.frontLeft.getCurrentPosition()-140<=DELTA_POSITION){
-					moveWithoutStopping(turnDirection+90-80,1);
-					sleep(1000);
-					moveWithoutStopping(turnDirection+90,.15);
-					sleep(500);
-				}
-				stopMoving();
-			} else if(OFFSET<=0){
-				moveWithoutStopping(turnDirection+90-80,1);
-				sleep(500);
-				DELTA_POSITION = robot.frontLeft.getCurrentPosition();
-				moveWithoutStopping(turnDirection+90,.15);
-				while(robot.frontLeft.getCurrentPosition()-140<DELTA_POSITION && INPUT_TIMER+1000>System.currentTimeMillis()){
-					telemetry();
-					sleep(10);
-				}
-				if(robot.frontLeft.getCurrentPosition()-140<=DELTA_POSITION){
-					moveWithoutStopping(turnDirection+90+80,1);
-					sleep(1000);
-					moveWithoutStopping(turnDirection+90,.15);
-					sleep(500);
-				}
-				stopMoving();
-			}
-		}
-		stopMoving();
-		straighten();
-		grab(false);
 		moveWithEncoders(8,DEFAULT_MOVE_SPEED,BACKWARDS);
-		stopMoving();
+		straighten();
+		dump(true);
+		sleep(1000);
+		/*sleep(1000);
+		moveWithoutStopping(turnDirection,.3);
+		sleep(500);
+		moveWithoutStopping(turnDirection+90,.3);
+		sleep(500);
+		moveWithoutStopping(turnDirection-90,.3);
+		sleep(1000);
+		moveWithoutStopping(turnDirection+90,.15);
+		sleep(500);*/
+		dump(false);
+		moveWithEncoders(10,DEFAULT_MOVE_SPEED,FORWARDS);
+		straighten();
+	}
+	void moveToCubby2() throws InterruptedException{
+		turn(TURN_LEFT,.3);
+		for(int x=0; x<2;x++) {
+			double distance = robot.cubbyRange.cmUltrasonic();
+			moveWithoutStopping(MOVE_BACKWARDS, 1);
+			while (robot.cubbyRange.cmUltrasonic() > distance - 5) {
+				telemetry();
+				sleep(10);
+			}
+			stopMoving();
+			sleep(5000);
+		}
+		intake(DUMP_EXPEL);
+		sleep(1000);
+		intake(DUMP_INACTIVE);
 	}
 
-	void moveWithoutStopping(double angle, double power) throws InterruptedException {
+	private void moveWithoutStopping(double angle, double power) throws InterruptedException {
 		//See the move function. Just doesn't have the stopMoving() function built in.
 		if(isStopRequested()){
 			return;
@@ -448,7 +368,7 @@ public class AutoByrdMK3 extends LinearOpMode {
 	private void statusCheck() throws InterruptedException{
 		if(isStopRequested()){
 			stopMoving();
-			intake(false);
+			intake(DUMP_INACTIVE);
 			return;
 		}
 
@@ -480,7 +400,7 @@ public class AutoByrdMK3 extends LinearOpMode {
 		}
 	}
 
-	void telemetry(){
+	private void telemetry(){
 		telemetry.addData("/////VUFORIA", "/////");
 		telemetry.addData("VuMark", "%s visible", relicVuMark);
 		telemetry.addData("/////SENSORS", "/////");
@@ -488,8 +408,12 @@ public class AutoByrdMK3 extends LinearOpMode {
 		telemetry.addData("Color Blue:    ", robot.color.blue());
 		telemetry.addData("Current Angle: ", robot.gyro.getIntegratedZValue());
 		telemetry.addData("/////ENCODERS", "////");
-		telemetry.addData("Target Position:  ", robot.frontLeft.getTargetPosition());
-		telemetry.addData("Current Position: ", robot.frontLeft.getCurrentPosition());
+		telemetry.addData("Move Target Position:  ", robot.frontLeft.getTargetPosition());
+		telemetry.addData("Move Current Position: ", robot.frontLeft.getCurrentPosition());
+		telemetry.addData("Lift Target Position:  ", robot.lift.getTargetPosition());
+		telemetry.addData("Lift Current Position: ", robot.lift.getCurrentPosition());
+		telemetry.addData("Dump Target Position:  ", robot.dump.getTargetPosition());
+		telemetry.addData("Dump Current Position: ", robot.dump.getCurrentPosition());
 		telemetry.addData("/////MOTORS", "//////");
 		telemetry.addData("FrontLeft:  ", robot.frontLeft.getPower());
 		telemetry.addData("FrontRight: ", robot.frontRight.getPower());
@@ -511,6 +435,10 @@ public class AutoByrdMK3 extends LinearOpMode {
 				stopMoving();
 				return;
 			}
+			/*if(INPUT_TIMER_2 + 5 < runTime.milliseconds() && motorSpeed<speed) {
+				motorSpeed+=speed/100;
+				INPUT_TIMER_2 = runTime.milliseconds();
+			}*/
 			//Checks to see if turning left or right
 			if ((angle > robot.gyro.getHeading() && angle < robot.gyro.getHeading() + 181) || (angle < robot.gyro.getHeading() - 180)) {
 				robot.frontLeft.setPower(-speed);
@@ -529,6 +457,7 @@ public class AutoByrdMK3 extends LinearOpMode {
 			telemetry();
 		}
 		stopMoving();
+		sleep(100);
 		if ((robot.gyro.getHeading() < angle - TURN_ERROR || robot.gyro.getHeading() > angle + TURN_ERROR) && (angle - TURN_ERROR <= -1 && robot.gyro.getHeading() != 360 - TURN_ERROR || angle - TURN_ERROR > -1) && (angle + TURN_ERROR >= 360 && robot.gyro.getHeading() > TURN_ERROR - 1 || angle + TURN_ERROR < 360) && INPUT_TIMER + 5000 > runTime.milliseconds()) {
 			straighten();
 		}

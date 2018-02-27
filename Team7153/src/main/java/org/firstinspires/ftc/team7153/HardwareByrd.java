@@ -44,7 +44,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * This class can be used to define all the specific hardware for a single robot.
  *
  */
-class HardwareByrdMK2
+class HardwareByrd
 {
     /* Public OpMode members. */
     DcMotor  frontRight        = null;
@@ -52,38 +52,39 @@ class HardwareByrdMK2
     DcMotor  backRight         = null;
     DcMotor  backLeft          = null;
 
-    DcMotor  clamp             = null;
+    DcMotor  lift              = null;
+    DcMotor  dump              = null;
 
     DcMotor  idolZ             = null;
     DcMotor  idolY             = null;
 
-    Servo    armL              = null;
-    Servo    armR              = null;
-    Servo    armT              = null;
-
-    CRServo  intakeTopLeft     = null;
-    CRServo  intakeTopRight    = null;
-    CRServo  intakeBottomLeft  = null;
-    CRServo  intakeBottomRight = null;
+    CRServo  intakeFrontLeft   = null;
+    CRServo  intakeFrontRight  = null;
+    CRServo  intakeBackLeft    = null;
+    CRServo  intakeBackRight   = null;
 
     Servo    hammerY           = null;
     Servo    hammerX           = null;
 
-    Servo    plate             = null;
+    //Servo    plate             = null;
 
     Servo    grabber           = null;
 
+    Servo    intakeLatch       = null;
+    Servo    blockPusher       = null;
+
     ModernRoboticsI2cGyro gyro         = null;
     ModernRoboticsI2cColorSensor color = null;
-    ModernRoboticsI2cRangeSensor range = null;
+    ModernRoboticsI2cRangeSensor cubbyRange = null;
+    ModernRoboticsI2cRangeSensor blockRange = null;
 
-    private static final double IDOL_Z_START_POSITION =  0;//300
-    static final double IDOL_Z_POSITION       =  0;
-    static final int    IDOL_Z_DELTA_POSITION = 50;
-    static final double IDOL_Y_POSITION       =  0;
+    private static final double IDOL_Z_START_POSITION =  0;
+    static final int    IDOL_Z_DELTA_POSITION = 60;
 
-    static boolean       IS_BLOCK_GRAB     = false;
-    static final double  LEFT_CLAMP_CLOSE  =     1;
+    static double        INTAKE_SPEED      =     0;
+    static double        INTAKE_OFFSET     =     0;
+    //static boolean       IS_BLOCK_GRAB     = false;
+    /*static final double  LEFT_CLAMP_CLOSE  =     1;
     static final double  RIGHT_CLAMP_CLOSE =     0;
     static final double  TOP_CLAMP_CLOSE   =   -.2;
     static final double  LEFT_CLAMP_OPEN   =    .6;
@@ -91,17 +92,21 @@ class HardwareByrdMK2
     static final double  TOP_CLAMP_OPEN    =     1;
     private static final double  LEFT_CLAMP_INIT   =    .4;
     private static final double  RIGHT_CLAMP_INIT  =    .6;
-    private static final double  TOP_CLAMP_INIT    =    -1;
+    private static final double  TOP_CLAMP_INIT    =    -1;*/
 
-    static final double  INTAKE_ON         = 1;
-    static final double  INTAKE_OFF        = 0;
+    static boolean       IS_LIFT   =  false;
+    static final double  LIFT_DOWN =  0;
+    static final double  LIFT_UP   =  -10*240/(.4*Math.PI);//(InchesToTravel*1440/InchesPerRevolution)
 
-    static final int     CLAMP_POSITION_1  =       0;
-    static final int     CLAMP_POSITION_2  =  (7*1440)/3;//(InchesToTravel*1440/InchesPerRevolution)
-    static final int     CLAMP_POSITION_3  = (13*1440)/3;
-    static final int     CLAMP_POSITION_4  = (19*1440)/3;
+    static final int DUMP_INTAKE   = -1;
+    static final int DUMP_EXPEL    =  1;
+    static final int DUMP_INACTIVE =  0;
+    
+    static boolean       IS_DUMP         = false;
+    static final int     DUMP_UP         = 4*100; //4 Pulses per Degree
+    static final int     DUMP_DOWN       =    0;
 
-    static final double  HAMMER_DOWN    =     .98;
+    static final double  HAMMER_DOWN    =   1;
     static final double  HAMMER_UP      =   .28;
     static final double  HAMMER_LEFT    =    .6;
     static final double  HAMMER_RIGHT   =    .2;
@@ -111,15 +116,21 @@ class HardwareByrdMK2
     static final double  PUSH_PLATE_DOWN =     0;
     static final double  PUSH_PLATE_UP   =     1;
 
-    static boolean       IS_IDOL_GRAB      = false;
-    static boolean       IS_IDOL_TILT      = false;
     static final double  IDOL_CLAMP_OPEN   =     0;
     static final double  IDOL_CLAMP_AJAR   =    .3;
     static final double  IDOL_CLAMP_CLOSED =     1;
 
-    static boolean IS_GYRO_ON = false;
+    static boolean       IS_BLOCK_PUSH = false;
+    static final double  BLOCK_PUSH    = .15;
+    static final double  BLOCK_NO_PUSH = 1;
+
+    static boolean       IS_LATCH_RELEASE = false;
+    static final double  LATCH_LOCKED     = .03;
+    static final double  LATCH_UNLOCKED   = 1;
 
     static double INPUT_TIMER = 0;
+    static double INPUT_TIMER_2 = 0;
+    static boolean GYRO_MOVE  = false;
 
     static final boolean LEFT  = false;
     static final boolean RIGHT = true;
@@ -140,18 +151,10 @@ class HardwareByrdMK2
     static final double TURN_RIGHT    = 270;
     static final double TURN_BACK     = 180;
 
-    static final int TURN_ERROR = 1;
-
-    static int FRONT_LEFT  = 0;
-    static int FRONT_RIGHT = 0;
-    static int BACK_LEFT   = 0;
-    static int BACK_RIGHT  = 0;
+    static final int TURN_ERROR = 3;
 
     static double DEFAULT_MOVE_SPEED = .3;
-    static double DEFAULT_TURN_SPEED = .3;
-
-    static final double DELTA_RAMP = .1;
-    static double       RAMP       = 0;
+    static double DEFAULT_TURN_SPEED = .26;
 
     static boolean SLOT_1 = false;
     static boolean SLOT_2 = false;
@@ -163,7 +166,7 @@ class HardwareByrdMK2
     static boolean VUFORIA_DISABLED = false;
 
     /* Constructor */
-    HardwareByrdMK2(){
+    HardwareByrd(){
 
     }
 
@@ -181,7 +184,8 @@ class HardwareByrdMK2
         backRight  = hwMap.get(DcMotor.class, "br");
         backLeft   = hwMap.get(DcMotor.class, "bl");
 
-        clamp      = hwMap.get(DcMotor.class, "clamp");
+        lift       = hwMap.get(DcMotor.class, "lift");
+        dump       = hwMap.get(DcMotor.class, "dump");
 
         idolZ      = hwMap.get(DcMotor.class, "idolZ");
         idolY      = hwMap.get(DcMotor.class, "idolY");
@@ -190,19 +194,22 @@ class HardwareByrdMK2
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
         backRight.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.FORWARD);
-        clamp.setDirection(DcMotor.Direction.REVERSE);
+        lift.setDirection(DcMotor.Direction.FORWARD);
+        dump.setDirection(DcMotor.Direction.REVERSE);
         idolZ.setDirection(DcMotor.Direction.FORWARD);
         idolY.setDirection(DcMotor.Direction.FORWARD);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
+        idolZ.setTargetPosition((int)IDOL_Z_START_POSITION);
+        dump.setTargetPosition(DUMP_DOWN);
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        clamp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        dump.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         idolZ.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        idolZ.setTargetPosition((int)IDOL_Z_START_POSITION);
         idolY.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Set all motors to zero power
@@ -210,49 +217,56 @@ class HardwareByrdMK2
         frontLeft.setPower(0);
         backRight.setPower(0);
         backLeft.setPower(0);
-        clamp.setPower(0);
         idolZ.setPower(1);
         idolY.setPower(0);
+        dump.setPower(.1);
+        lift.setPower(.5);
 
         // Define and initialize ALL installed servos.
-        armL = hwMap.servo.get("armL");
+/*        armL = hwMap.servo.get("armL");
         armR = hwMap.servo.get("armR");
-        armT = hwMap.servo.get("armT");
+        armT = hwMap.servo.get("armT");*/
 
-        intakeTopLeft     = hwMap.crservo.get("intakeTopLeft");
-        intakeTopRight    = hwMap.crservo.get("intakeTopRight");
-        intakeBottomLeft  = hwMap.crservo.get("intakeBottomLeft");
-        intakeBottomRight = hwMap.crservo.get("intakeBottomRight");
+        intakeFrontLeft = hwMap.crservo.get("intakeFrontLeft");
+        intakeFrontRight= hwMap.crservo.get("intakeFrontRight");
+        intakeBackLeft  = hwMap.crservo.get("intakeBackLeft");
+        intakeBackRight = hwMap.crservo.get("intakeBackRight");
 
-        intakeTopLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        intakeTopRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        intakeBottomLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        intakeBottomRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeFrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        intakeFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeBackLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeBackRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
         hammerY = hwMap.servo.get("hammerY");
         hammerX = hwMap.servo.get("hammerX");
 
-        plate = hwMap.servo.get("plate");
+        //plate = hwMap.servo.get("plate");
 
         grabber = hwMap.servo.get("grabber");
 
-        armL.setPosition(LEFT_CLAMP_INIT);
+        intakeLatch = hwMap.servo.get("intakeLatch");
+        blockPusher = hwMap.servo.get("blockPusher");
+
+/*        armL.setPosition(LEFT_CLAMP_INIT);
         armR.setPosition(RIGHT_CLAMP_INIT);
-        armT.setPosition(TOP_CLAMP_INIT);
+        armT.setPosition(TOP_CLAMP_INIT);*/
         hammerY.setPosition(HAMMER_UP);
         hammerX.setPosition(HAMMER_CENTER);
-        plate.setPosition(PUSH_PLATE_UP);
+        //plate.setPosition(PUSH_PLATE_UP);
         grabber.setPosition(IDOL_CLAMP_OPEN);
+        intakeLatch.setPosition(LATCH_LOCKED);
+        blockPusher.setPosition(BLOCK_PUSH);
 
-        intakeTopLeft.setPower(INTAKE_OFF);
-        intakeTopRight.setPower(INTAKE_OFF);
-        intakeBottomLeft.setPower(INTAKE_OFF);
-        intakeBottomRight.setPower(INTAKE_OFF);
+        intakeFrontLeft.setPower(0);
+        intakeFrontRight.setPower(0);
+        intakeBackLeft.setPower(0);
+        intakeBackRight.setPower(0);
 
         // Define Sensors
         gyro = hwMap.get(ModernRoboticsI2cGyro.class, "gyro");
         color = hwMap.get(ModernRoboticsI2cColorSensor.class, "color");
-        range = hwMap.get(ModernRoboticsI2cRangeSensor.class, "range");
+        cubbyRange = hwMap.get(ModernRoboticsI2cRangeSensor.class, "cubbyRange");
+        blockRange = hwMap.get(ModernRoboticsI2cRangeSensor.class, "blockRange");
 
         color.enableLed(false);
 
