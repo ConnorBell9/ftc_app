@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamInventum;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name="DebugMechByrdMK2")
-public class DebugMechByrdMK2 extends OpMode{
+@TeleOp(name="DebugMechInnoMK2")
+public class DebugMechInnoMK2 extends OpMode{
 	private HardwareInventum robot = new HardwareInventum();
     @Override
     public void init() {
@@ -34,24 +34,50 @@ public class DebugMechByrdMK2 extends OpMode{
 
 		}*/
 	    if(gamepad2.right_stick_y>.02){
-	    	robot.armMotor.setPower(gamepad1.right_stick_y*1);
-		} else if(gamepad1.right_stick_y<-.02){
-			robot.armMotor.setPower(gamepad1.right_stick_y*1);
+			if(robot.backClamp.getCurrentPosition()<280/2.5*8) {
+				robot.backClamp.setPower(gamepad2.right_stick_y * 1);
+			} else {robot.backClamp.setPower(0);}
+			if(robot.frontClamp.getCurrentPosition()<280/2.5*7) {
+				robot.frontClamp.setPower(gamepad2.right_stick_y * 1);
+			} else {robot.frontClamp.setPower(0);}
+		} else if(gamepad2.right_stick_y<-.02){
+	    	if(robot.backClamp.getCurrentPosition()>0) {
+				robot.backClamp.setPower(gamepad2.right_stick_y * 1);
+			} else {robot.backClamp.setPower(0);}
+			if(robot.frontClamp.getCurrentPosition()>0) {
+				robot.frontClamp.setPower(gamepad2.right_stick_y * 1);
+			} else {robot.frontClamp.setPower(0);}
+		} else {
+			robot.backClamp.setPower(0);
+			robot.frontClamp.setPower(0);
 		}
 
-		if(gamepad1.dpad_up){
+		if(gamepad1.dpad_down && System.currentTimeMillis() > INPUT_TIMER+100){
 			robot.rightClaw.setPosition(.01+robot.rightClaw.getPosition());
 			robot.leftClaw.setPosition(-.01+robot.leftClaw.getPosition());
-		} else if (gamepad1.dpad_up){
+			INPUT_TIMER = System.currentTimeMillis();
+		}
+		if(gamepad1.dpad_down && System.currentTimeMillis() > INPUT_TIMER+100){
 			robot.rightClaw.setPosition(-.01+robot.rightClaw.getPosition());
 			robot.leftClaw.setPosition(.01+robot.leftClaw.getPosition());
+			INPUT_TIMER = System.currentTimeMillis();
 		}
 		if(gamepad1.dpad_left){
 			robot.hammer.setPosition(.01+robot.hammer.getPosition());
 		} else if(gamepad1.dpad_right){
 			robot.hammer.setPosition(-.01+robot.hammer.getPosition());
 		}
+		if(gamepad1.dpad_left && System.currentTimeMillis() > INPUT_TIMER+100){
+			robot.hammer.setPosition(-.01+robot.hammer.getPosition());
+			INPUT_TIMER = System.currentTimeMillis();
+		}
+		if(gamepad1.dpad_right && System.currentTimeMillis() > INPUT_TIMER+100){
+			robot.hammer.setPosition(-.01+robot.hammer.getPosition());
+			INPUT_TIMER = System.currentTimeMillis();
+		}
 
+		telemetry.addData("FrontClamp: ", robot.frontClamp.getCurrentPosition());
+		telemetry.addData("BackClamp: ", robot.backClamp.getCurrentPosition());
 		telemetry.addData("rightClaw:  ", robot.rightClaw.getPosition());
 		telemetry.addData("leftClaw:   ", robot.leftClaw.getPosition());
 		telemetry.addData("hammer:     ", robot.hammer.getPosition());
