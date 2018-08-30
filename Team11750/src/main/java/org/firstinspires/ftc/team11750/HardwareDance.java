@@ -9,12 +9,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-/**
- * This is NOT an opmode.
- *
- * This class can be used to define all the specific hardware for a single robot.
- *
- */
 class HardwareByrd
 {
     /* Public OpMode members. */
@@ -23,118 +17,50 @@ class HardwareByrd
     DcMotor  backRight         = null;
     DcMotor  backLeft          = null;
 
-    DcMotor  lift              = null;
-    DcMotor  dump              = null;
+    DcMotor  foreLift          = null;
+    DcMotor  aftLift           = null;
 
-    DcMotor  idolZ             = null;
-    DcMotor  idolY             = null;
-
-    CRServo  intakeFrontLeft   = null;
-    CRServo  intakeFrontRight  = null;
-    CRServo  intakeBackLeft    = null;
-    CRServo  intakeBackRight   = null;
-
-    Servo    hammerY           = null;
-    Servo    hammerX           = null;
-
-    //Servo    plate             = null;
-
-    Servo    grabber           = null;
-
-    Servo    intakeLatch       = null;
-    Servo    blockPusher       = null;
+    Servo    leftClamp         = null;
+    Servo    rightClamp        = null;
+    Servo    topClamp          = null;
+    
+    Servo    colorArm          = null;
 
     ModernRoboticsI2cGyro gyro         = null;
     ModernRoboticsI2cColorSensor color = null;
     ModernRoboticsI2cRangeSensor cubbyRange = null;
     ModernRoboticsI2cRangeSensor blockRange = null;
 
-    private static final double IDOL_Z_START_POSITION =  0;
-    static final int    IDOL_Z_DELTA_POSITION = 60;
+    final double CLAMP_LEFT_OPEN  =  0.2;
+    final double CLAMP_RIGHT_OPEN = 0.8;
+    final double CLAMP_LEFT_CLOSED  = 1.0;
+    final double CLAMP_RIGHT_CLOSED = 0.0;
+    final double CLAMP_TOP_OPEN = -0.1;
+    final double CLAMP_TOP_CLOSED = 1.0;
 
-    static double        INTAKE_SPEED      =     0;
-    static double        INTAKE_OFFSET     =     0;
-    //static boolean       IS_BLOCK_GRAB     = false;
-    /*static final double  LEFT_CLAMP_CLOSE  =     1;
-    static final double  RIGHT_CLAMP_CLOSE =     0;
-    static final double  TOP_CLAMP_CLOSE   =   -.2;
-    static final double  LEFT_CLAMP_OPEN   =    .6;
-    static final double  RIGHT_CLAMP_OPEN  =    .4;
-    static final double  TOP_CLAMP_OPEN    =     1;
-    private static final double  LEFT_CLAMP_INIT   =    .4;
-    private static final double  RIGHT_CLAMP_INIT  =    .6;
-    private static final double  TOP_CLAMP_INIT    =    -1;*/
-
-    static boolean       IS_LIFT   =  false;
-    static final double  LIFT_DOWN =  0;
-    static final double  LIFT_UP   =  -10*240/(.4*Math.PI);//(InchesToTravel*1440/InchesPerRevolution)
-
-    static final int DUMP_INTAKE   = -1;
-    static final int DUMP_EXPEL    =  1;
-    static final int DUMP_INACTIVE =  0;
-    
-    static boolean       IS_DUMP         = false;
-    static final int     DUMP_UP         = 4*100; //4 Pulses per Degree
-    static final int     DUMP_DOWN       =    0;
-
-    static final double  HAMMER_DOWN    =   1;
-    static final double  HAMMER_UP      =   .28;
-    static final double  HAMMER_LEFT    =    .6;
-    static final double  HAMMER_RIGHT   =    .2;
-    static final double  HAMMER_CENTER  =    .4;
-
-    static boolean       IS_PLATE        = false;
-    static final double  PUSH_PLATE_DOWN =     0;
-    static final double  PUSH_PLATE_UP   =     1;
-
-    static final double  IDOL_CLAMP_OPEN   =     0;
-    static final double  IDOL_CLAMP_AJAR   =    .3;
-    static final double  IDOL_CLAMP_CLOSED =     1;
-
-    static boolean       IS_BLOCK_PUSH = false;
-    static final double  BLOCK_PUSH    = .15;
-    static final double  BLOCK_NO_PUSH = 1;
-
-    static boolean       IS_LATCH_RELEASE = false;
-    static final double  LATCH_LOCKED     = .03;
-    static final double  LATCH_UNLOCKED   = 1;
-
-    static double INPUT_TIMER = 0;
-    static double INPUT_TIMER_2 = 0;
-    static boolean GYRO_MOVE  = false;
-
-    static final boolean LEFT  = false;
-    static final boolean RIGHT = true;
-
-    static final boolean RED  = false;
-    static final boolean BLUE = true;
-
-    static final double MOVE_BACKWARDS = 270;
-    static final double MOVE_FORWARDS  = 90;
-    static final double MOVE_LEFT      = 180;
-    static final double MOVE_RIGHT     = 0;
-
-    static final boolean BACKWARDS = false;
-    static final boolean FORWARDS  = true;
-
-    static final double TURN_FORWARDS = 0;
-    static final double TURN_LEFT     = 90;
-    static final double TURN_RIGHT    = 270;
-    static final double TURN_BACK     = 180;
-
-    static final int TURN_ERROR = 3;
-
-    static double DEFAULT_MOVE_SPEED = .3;
-    static double DEFAULT_TURN_SPEED = .26;
-
-    static boolean SLOT_1 = false;
-    static boolean SLOT_2 = false;
-    static boolean SLOT_3 = false;
-    static double  OFFSET = 0;
-
-
-    static boolean VUFORIA_ENABLED  = true;
-    static boolean VUFORIA_DISABLED = false;
+    final double LIFT_UP_POWER    =  0.25 ;
+    final double LIFT_DOWN_POWER  = -0.13 ;
+    final double LIFT_FEET_PER_SEC = 5;
+    final double FORWARD_POWER = 0.6;
+    final double FEET_PER_SEC = 4;
+    final double MOVE_START_SECS = 0.1;
+    final double TURN_POWER    = 1.0;
+    final double FORWARD =0.0;
+    final double RIGHT = 90.0;
+    final double LEFT = -90.0;
+    final double BACK = 180.0;
+    final double AROUND = 180.0;
+    final double DEGREES_PER_SEC = 500;
+    final double TURN_START_SECS = 0;
+    final double ARM_UP = 0.22;
+    final double ARM_DOWN = 115;
+    final int COLOR_RED = 1;
+    final int COLOR_BLUE = 2;
+    final double     COUNTS_PER_MOTOR_REV    = 1120 ;    // eg: AndyMark NeverRest 40 Motor Encoder
+    final double     DRIVE_GEAR_REDUCTION    = 1.0;      // This is < 1.0 if geared UP
+    final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
+    final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+                                                (WHEEL_DIAMETER_INCHES * 3.1415);
 
     /* Constructor */
     HardwareByrd(){
