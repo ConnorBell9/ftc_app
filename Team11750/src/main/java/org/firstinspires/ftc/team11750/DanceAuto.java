@@ -83,85 +83,7 @@ public class DanceAuto extends LinearOpMode {
     static final double     P_TURN_COEFF            = 0.008;     // Larger is more responsive, but also less stable
     static final double     P_DRIVE_COEFF           = 0.15;     // Larger is more responsive, but also less stable
 
-    /**
-     * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
-     * localization engine.
-     */
-    private VuforiaLocalizer vuforia;
-    private VuforiaLocalizer.Parameters parameters;
-    private VuforiaTrackables relicTrackables;
-    private VuforiaTrackable relicTemplate;
-    RelicRecoveryVuMark relicVuMark = RelicRecoveryVuMark.UNKNOWN;
-
-    void log(String update){
-        telemetry.addLine(update);
-        telemetry.update();
-    }
-
-    void initVuforia(){
-        int cameraMonitorViewId;
-
-        /*
-         * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);
-         * If no camera monitor is desired, use the parameterless constructor instead (commented out below).
-         */
-        cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-        // OR...  Do Not Activate the Camera Monitor View, to save power
-        // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-
-        // Use CHS Robotics license key
-        parameters.vuforiaLicenseKey = "AfOu+xX/////AAAAGdsYKU+bz0Fnv1XlcuaTiqUXVLGVTLZI6iw2Ddd34qXAIdi6IjqLFqG7Tm1uGNvfW29lkxuh2jF47MydTZX9AdADaEW2NuPtfFpGDQQd9wto5MIjzJHIWnY4aBGY8zDtePEHX68Sez31rq3IfGuKIQBa/Ewsl8obrkMQLlUvdLYNVRLvQVnvp9beui5vF3YU+gGKEs76eN27tF40Uq+u3SqRqpbC9W+2p33xHIdyxmJynd4OYF9PQjdB0oGajsRBpZSVjD+mwtBYynshpj3ay2coXvzBO250/MkGp7ZEXdHC8C0uYqz/jXQaBjuLGdBBVUukBGLTgSqLO3Q33SI5WCykF8G05G+5YmWJ2KDcp/ze";
-
-        // Use the front camera on the robot controller phone
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
-        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
-
-        /**
-         * Load the data set containing the VuMarks for Relic Recovery. There's only one trackable
-         * in this data set: all three of the VuMarks in the game were created from this one template,
-         * but differ in their instance id information.
-         * @see VuMarkInstanceId
-         */
-        relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
-        relicTemplate = relicTrackables.get(0);
-
-        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
-    }
-
-     RelicRecoveryVuMark getRelicRecoveryVuMark() {
-
-        relicTrackables.activate();
-
-        // Look for a bit to see the VuMark
-        runtime.reset();
-        while (runtime.seconds() < 1) {
-            if (!opModeIsActive()) {robot.stopMoving(); break;} // Stop and return
-            /*
-             * See if any of the instances of {@link relicTemplate} are currently visible.
-             * {@link RelicRecoveryVuMark} is an enum which can have the following values:
-             * UNKNOWN, LEFT, CENTER, and RIGHT. When a VuMark is visible, something other than
-             * UNKNOWN will be returned by {@link RelicRecoveryVuMark#from(VuforiaTrackable)}.
-             */
-            relicVuMark = RelicRecoveryVuMark.from(relicTemplate);
-            if (relicVuMark != RelicRecoveryVuMark.UNKNOWN) {
-
-                /* Found an instance of the template. In the actual game, you will probably
-                 * loop until this condition occurs, then move on to act accordingly depending
-                 * on which VuMark was visible. */
-                telemetry.addData("VuMark", "%s visible", relicVuMark);
-                telemetry.update();
-                sleep(500);
-                return relicVuMark; // Return now. No need to wait longer
-            }
-            else {
-                telemetry.addData("VuMark", "not visible: %2.1f secs", runtime.seconds());
-                telemetry.update();
-            }
-        }
-        return relicVuMark;
-    }
-
+   
     void oldTurn(double angle, double power) {
 
         if (angle==0) return; // Return immediately for 0 degree turn
@@ -218,43 +140,6 @@ public class DanceAuto extends LinearOpMode {
     }
     void liftUp(double distance) { lift(robot.LIFT_UP_POWER, distance);}
     void liftDown(double distance) { lift(robot.LIFT_DOWN_POWER, distance);}
-
-    void displaceJewel(int color){
-        double turnAngle = 0;
-        double red=0, blue=0;
-        double initialTurn=3;
-        log("ArmDown");
-        robot.armDown(); // Drop the color sensor arm
-        sleep(100); // Wait for the arm to drop
-
-        turn(initialTurn); // Get close to the jewel
-
-        runtime.reset();
-        while (runtime.seconds() < 0.5) {
-            blue+=robot.colorSensor.blue(); // Add up the blue readings
-            red+=robot.colorSensor.red(); // Add up the red readings
-            telemetry.addData("Clear", robot.colorSensor.alpha());
-            telemetry.addData("Red  ", red);
-            telemetry.addData("Green", robot.colorSensor.green());
-            telemetry.addData("Blue ", blue);
-            telemetry.update();
-            if (!opModeIsActive()) {robot.stopMoving(); return;} // Stop and return
-        }
-        // Displace the blue color ball
-        if (blue > red) turnAngle += 12;
-        else if (red > blue) turnAngle -= 12;
-
-        // Turn the other way to displace red
-        if(color == robot.COLOR_RED) turnAngle*=-1; // Turn the other way
-
-        log("Displacing jewel...");
-        turn(turnAngle-initialTurn); // Turn to knock off the jewel
-        robot.armUp();   // Raise the arm
-        turn(0);// Turn back
-        log("Jewel displaced!");
-    }
-    void redTeamDisplaceJewel(){ displaceJewel(robot.COLOR_BLUE);}
-    void blueTeamDisplaceJewel() {displaceJewel(robot.COLOR_RED);}
 
     void autonomousInit(){
         gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
