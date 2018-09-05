@@ -24,6 +24,7 @@ public class OmniTeleOp extends OpMode {
     Servo armright;
     Servo color;
     Servo colorh;
+    Servo marshmallow;
 
     ModernRoboticsI2cGyro gyro; // Gyroscope Sensor //
     ModernRoboticsI2cColorSensor c; // Color Sensor //
