@@ -99,6 +99,10 @@ public class DanceAuto extends LinearOpMode {
         }
         robot.stopMoving();
     }
+    void log(String update){
+        telemetry.addLine(update);
+        telemetry.update();
+    }
     void turn(double angle, double power) { gyroTurn(power, angle);}
     void turn(double angle) {turn(angle, robot.TURN_POWER);} // Overload with default power
 
@@ -150,9 +154,6 @@ public class DanceAuto extends LinearOpMode {
             sleep(50);
             idle();
         }
-
-        // Initialize the Vuforia capability
-        initVuforia();
     }
 
     @Override
@@ -173,7 +174,6 @@ public class DanceAuto extends LinearOpMode {
         gyro.resetZAxisIntegrator();
 
         // Get the RelicRecoverVuMark location
-        getRelicRecoveryVuMark();
     }
 
 

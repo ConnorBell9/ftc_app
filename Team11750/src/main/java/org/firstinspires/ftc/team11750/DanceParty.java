@@ -2,6 +2,8 @@ package org.firstinspires.ftc.team11750;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -18,10 +20,12 @@ import java.util.concurrent.ThreadLocalRandom;
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-int direction = 1;
+
 @Autonomous(name="Dance", group="Bellatorum")
 public class DanceParty extends BellatorumAuto {
-
+  int direction = 1;
+  int seed = 0;
+  Random rand;
     @Override
     public void runOpMode() {
 
@@ -69,14 +73,14 @@ public class DanceParty extends BellatorumAuto {
           move(robot.LEFT, 1);
           robot.armUp();
         } else if (seed == 6) {
-          for(int i = 0, i<8, i++){
+          for(int i = 0; i<8; i++){
             robot.armUp();
             move(robot.RIGHT, 1);
             robot.armDown();
             turn(45*direction, 1);
           }
         } else if (seed == 7) {
-          for(int i=0, i<4, i++){
+          for(int i=0; i<4; i++){
             robot.armUp();
             move(robot.FORWARD,1);
             move(robot.BACK,1);
@@ -84,7 +88,7 @@ public class DanceParty extends BellatorumAuto {
             turn(90*direction, 1);
           }
         } else if (seed == 8){
-          for(int i = 0, i<10, i++){
+          for(int i = 0; i<10; i++){
             robot.armUp();
             sleep(50);
             robot.armDown();
@@ -95,9 +99,9 @@ public class DanceParty extends BellatorumAuto {
       }
     }
   public void seed(){
-    int seed = ThreadLocalRandom.current().nextInt(1, 8 + 1);
+    seed = rand.nextInt((8-1)+1)+1;
     direction*=-1;
-    telemetry.addData("Seed: " + seed);
+    telemetry.addData("Seed: " , seed);
     telemetry.update();
   }
 }
