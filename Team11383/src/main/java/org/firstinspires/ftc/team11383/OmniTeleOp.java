@@ -76,7 +76,7 @@ public class OmniTeleOp extends OpMode {
             armright.setPosition(-.4);
         }
         else if (gamepad2.a) {
-            marshmallow.setPosition(.2);
+            marshmallow.setPosition(.5);
 
         }
         
