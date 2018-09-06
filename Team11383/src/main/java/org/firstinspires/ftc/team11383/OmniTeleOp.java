@@ -43,11 +43,14 @@ public class OmniTeleOp extends OpMode {
         colorh = hardwareMap.servo.get("ach");
         track.setDirection(DcMotor.Direction.REVERSE);
         reel.setDirection(DcMotor.Direction.REVERSE);
+        marshmallow = hardwareMap.servo.get("gun");
 
         color.setPosition(.2);
         armright.setPosition(.5);
         armleft.setPosition(-.5);
         colorh.setPosition(.5);
+        marshmallow.setPosition(0);
+
     }
     @Override
     public void loop() {
@@ -71,6 +74,10 @@ public class OmniTeleOp extends OpMode {
         else if (gamepad2.b) {
             armleft.setPosition(.4);
             armright.setPosition(-.4);
+        }
+        else if (gamepad2.a) {
+            marshmallow.setPosition(.2);
+
         }
         
     }
