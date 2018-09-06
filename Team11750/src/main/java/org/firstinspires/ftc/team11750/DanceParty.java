@@ -95,7 +95,7 @@ public class DanceParty extends BellatorumAuto {
       }
     }
   public void seed(){
-    double seed = ThreadLocalRandom.current().nextInt(1, 8 + 1);
+    int seed = ThreadLocalRandom.current().nextInt(1, 8 + 1);
     direction*=-1;
     telemetry.addData("Seed: " + seed);
     telemetry.update();
