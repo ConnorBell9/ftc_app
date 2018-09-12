@@ -1,245 +1,59 @@
 package org.firstinspires.ftc.team7153;
 
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
-import com.qualcomm.robotcore.hardware.CRServo;
+//These imports import specific functions that our code will use
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
-
-/**
- * This is NOT an opmode.
- *
- * This class can be used to define all the specific hardware for a single robot.
- *
- */
-class HardwareByrd
-{
-    /* Public OpMode members. */
-    DcMotor  frontRight        = null;
-    DcMotor  frontLeft         = null;
-    DcMotor  backRight         = null;
-    DcMotor  backLeft          = null;
-
-    DcMotor  lift              = null;
-    DcMotor  dump              = null;
-
-    DcMotor  idolZ             = null;
-    DcMotor  idolY             = null;
-
-    CRServo  intakeFrontLeft   = null;
-    CRServo  intakeFrontRight  = null;
-    CRServo  intakeBackLeft    = null;
-    CRServo  intakeBackRight   = null;
-
-    Servo    hammerY           = null;
-    Servo    hammerX           = null;
-
-    //Servo    plate             = null;
-
-    Servo    grabber           = null;
-
-    Servo    intakeLatch       = null;
-    Servo    blockPusher       = null;
-
-    ModernRoboticsI2cGyro gyro         = null;
-    ModernRoboticsI2cColorSensor color = null;
-    ModernRoboticsI2cRangeSensor cubbyRange = null;
-    ModernRoboticsI2cRangeSensor blockRange = null;
-
-    private static final double IDOL_Z_START_POSITION =  0;
-    static final int    IDOL_Z_DELTA_POSITION = 60;
-
-    static double        INTAKE_SPEED      =     0;
-    static double        INTAKE_OFFSET     =     0;
-    //static boolean       IS_BLOCK_GRAB     = false;
-    /*static final double  LEFT_CLAMP_CLOSE  =     1;
-    static final double  RIGHT_CLAMP_CLOSE =     0;
-    static final double  TOP_CLAMP_CLOSE   =   -.2;
-    static final double  LEFT_CLAMP_OPEN   =    .6;
-    static final double  RIGHT_CLAMP_OPEN  =    .4;
-    static final double  TOP_CLAMP_OPEN    =     1;
-    private static final double  LEFT_CLAMP_INIT   =    .4;
-    private static final double  RIGHT_CLAMP_INIT  =    .6;
-    private static final double  TOP_CLAMP_INIT    =    -1;*/
-
-    static boolean       IS_LIFT   =  false;
-    static final double  LIFT_DOWN =  0;
-    static final double  LIFT_UP   =  -10*240/(.4*Math.PI);//(InchesToTravel*1440/InchesPerRevolution)
-
-    static final int DUMP_INTAKE   = -1;
-    static final int DUMP_EXPEL    =  1;
-    static final int DUMP_INACTIVE =  0;
-    
-    static boolean       IS_DUMP         = false;
-    static final int     DUMP_UP         = 4*100; //4 Pulses per Degree
-    static final int     DUMP_DOWN       =    0;
-
-    static final double  HAMMER_DOWN    =   1;
-    static final double  HAMMER_UP      =   .28;
-    static final double  HAMMER_LEFT    =    .6;
-    static final double  HAMMER_RIGHT   =    .2;
-    static final double  HAMMER_CENTER  =    .4;
-
-    static boolean       IS_PLATE        = false;
-    static final double  PUSH_PLATE_DOWN =     0;
-    static final double  PUSH_PLATE_UP   =     1;
-
-    static final double  IDOL_CLAMP_OPEN   =     0;
-    static final double  IDOL_CLAMP_AJAR   =    .3;
-    static final double  IDOL_CLAMP_CLOSED =     1;
-
-    static boolean       IS_BLOCK_PUSH = false;
-    static final double  BLOCK_PUSH    = .15;
-    static final double  BLOCK_NO_PUSH = 1;
-
-    static boolean       IS_LATCH_RELEASE = false;
-    static final double  LATCH_LOCKED     = .03;
-    static final double  LATCH_UNLOCKED   = 1;
-
-    static double INPUT_TIMER = 0;
-    static double INPUT_TIMER_2 = 0;
-    static boolean GYRO_MOVE  = false;
-
-    static final boolean LEFT  = false;
-    static final boolean RIGHT = true;
-
-    static final boolean RED  = false;
-    static final boolean BLUE = true;
-
-    static final double MOVE_BACKWARDS = 270;
-    static final double MOVE_FORWARDS  = 90;
-    static final double MOVE_LEFT      = 180;
-    static final double MOVE_RIGHT     = 0;
-
-    static final boolean BACKWARDS = false;
-    static final boolean FORWARDS  = true;
-
-    static final double TURN_FORWARDS = 0;
-    static final double TURN_LEFT     = 90;
-    static final double TURN_RIGHT    = 270;
-    static final double TURN_BACK     = 180;
-
-    static final int TURN_ERROR = 3;
-
-    static double DEFAULT_MOVE_SPEED = .3;
-    static double DEFAULT_TURN_SPEED = .26;
-
-    static boolean SLOT_1 = false;
-    static boolean SLOT_2 = false;
-    static boolean SLOT_3 = false;
-    static double  OFFSET = 0;
-
-
-    static boolean VUFORIA_ENABLED  = true;
-    static boolean VUFORIA_DISABLED = false;
-
-    /* Constructor */
-    HardwareByrd(){
-
-    }
-
-    /* Initialize standard Hardware interfaces */
-    void init(HardwareMap ahwMap) {
-        // Save reference to Hardware map
-
-        HardwareMap hwMap;
-
-        hwMap = ahwMap;
-
-        // Define and Initialize Motors
-        frontRight = hwMap.get(DcMotor.class, "fr");
-        frontLeft  = hwMap.get(DcMotor.class, "fl");
-        backRight  = hwMap.get(DcMotor.class, "br");
-        backLeft   = hwMap.get(DcMotor.class, "bl");
-
-        lift       = hwMap.get(DcMotor.class, "lift");
-        dump       = hwMap.get(DcMotor.class, "dump");
-
-        idolZ      = hwMap.get(DcMotor.class, "idolZ");
-        idolY      = hwMap.get(DcMotor.class, "idolY");
-
+/*
+* This unfinished code is meant to be used by the junior robotics coders to learn how to create a functioning tank drive
+* and from there potentially create an arcade drive, mechanum drive, or any other.
+* The code that is commented out is code that WILL give an error if not commented and means that it must be fixed/set to a value.
+*/
+@TeleOp(name="tankDriveBasics")
+public class tankDriveBasics extends OpMode{
+    @Override
+    public void init() {
+        //This creates the DcMotor object and gives it a value of null
+		DcMotor  frontRight        = null;
+        DcMotor  frontLeft         = null;
+        DcMotor  backRight         = null;
+        DcMotor  backLeft          = null;
+        
+        //This sets our object equal to the motor on our robot that the phone calls "frontRight"
+        frontRight = HardwareMap.get(DcMotor.class, "frontRight");
+        
+        //This sets the direction that positive values (0<x<1] will make the motor go
         frontRight.setDirection(DcMotor.Direction.REVERSE);
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
-        backRight.setDirection(DcMotor.Direction.REVERSE);
-        backLeft.setDirection(DcMotor.Direction.FORWARD);
-        lift.setDirection(DcMotor.Direction.FORWARD);
-        dump.setDirection(DcMotor.Direction.REVERSE);
-        idolZ.setDirection(DcMotor.Direction.FORWARD);
-        idolY.setDirection(DcMotor.Direction.FORWARD);
-
-        // Set all motors to run without encoders.
-        // May want to use RUN_USING_ENCODERS if encoders are installed.
-        idolZ.setTargetPosition((int)IDOL_Z_START_POSITION);
-        dump.setTargetPosition(DUMP_DOWN);
+        
+        //This sets the mode that out motor runs in. This isn't needed until you actually use the encoders
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        dump.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        idolZ.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        idolY.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        // Set all motors to zero power
+        
+        //This sets the starting power of the motor to 0. The power can be in a range including and between -1 to 1
         frontRight.setPower(0);
-        frontLeft.setPower(0);
-        backRight.setPower(0);
-        backLeft.setPower(0);
-        idolZ.setPower(1);
-        idolY.setPower(0);
-        dump.setPower(.1);
-        lift.setPower(.5);
-
-        // Define and initialize ALL installed servos.
-/*        armL = hwMap.servo.get("armL");
-        armR = hwMap.servo.get("armR");
-        armT = hwMap.servo.get("armT");*/
-
-        intakeFrontLeft = hwMap.crservo.get("intakeFrontLeft");
-        intakeFrontRight= hwMap.crservo.get("intakeFrontRight");
-        intakeBackLeft  = hwMap.crservo.get("intakeBackLeft");
-        intakeBackRight = hwMap.crservo.get("intakeBackRight");
-
-        intakeFrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        intakeFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        intakeBackLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        intakeBackRight.setDirection(DcMotorSimple.Direction.FORWARD);
-
-        hammerY = hwMap.servo.get("hammerY");
-        hammerX = hwMap.servo.get("hammerX");
-
-        //plate = hwMap.servo.get("plate");
-
-        grabber = hwMap.servo.get("grabber");
-
-        intakeLatch = hwMap.servo.get("intakeLatch");
-        blockPusher = hwMap.servo.get("blockPusher");
-
-/*        armL.setPosition(LEFT_CLAMP_INIT);
-        armR.setPosition(RIGHT_CLAMP_INIT);
-        armT.setPosition(TOP_CLAMP_INIT);*/
-        hammerY.setPosition(HAMMER_UP);
-        hammerX.setPosition(HAMMER_CENTER);
-        //plate.setPosition(PUSH_PLATE_UP);
-        grabber.setPosition(IDOL_CLAMP_OPEN);
-        intakeLatch.setPosition(LATCH_LOCKED);
-        blockPusher.setPosition(BLOCK_PUSH);
-
-        intakeFrontLeft.setPower(0);
-        intakeFrontRight.setPower(0);
-        intakeBackLeft.setPower(0);
-        intakeBackRight.setPower(0);
-
-        // Define Sensors
-        gyro = hwMap.get(ModernRoboticsI2cGyro.class, "gyro");
-        color = hwMap.get(ModernRoboticsI2cColorSensor.class, "color");
-        cubbyRange = hwMap.get(ModernRoboticsI2cRangeSensor.class, "cubbyRange");
-        blockRange = hwMap.get(ModernRoboticsI2cRangeSensor.class, "blockRange");
-
-        color.enableLed(false);
-
     }
- }
+
+    @Override
+    public void loop() {
+        //This returns the value of the gamepad sticks
+        /*
+        gamepad1.left_stick_y;
+        gamepad1.left_stick_x;
+        gamepad1.right_stick_y;
+        gamepad1.right_stick_x;
+        */
+
+        //This sets the power of the motors to whatever is in the corresponding motors .setPower()
+	    /*
+        frontLeft.setPower();
+		frontRight.setPower();
+		backLeft.setPower();
+		backRight.setPower();
+        */
+
+        //This outputs the value of the gamepad sticks to the phone for the user to see mid-operation
+	    telemetry.addData("Gamepad1 Left Stick Y: ", gamepad1.left_stick_y);
+	    telemetry.update();
+    }
+}
